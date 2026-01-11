@@ -104,27 +104,61 @@ body {
   padding: 10px 16px;
   border-radius: 10px;
   cursor: pointer;
+  font-size: 0.95rem;
+}
+
+/* ===============================
+   INFO TOOLTIP (MOBILE FIX)
+   =============================== */
+
+.info-tooltip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 6px;
+  cursor: pointer;
+}
+
+.info-tooltip > span[aria-hidden="true"] {
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
+.tooltip-content {
+  display: none;
+  position: absolute;
+  top: 130%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #0f172a;
+  color: #e5e7eb;
+  padding: 10px 12px;
+  border-radius: 8px;
+  width: 260px;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  z-index: 50;
+  border: 1px solid var(--line);
+}
+
+/* Desktop hover */
+.info-tooltip:hover .tooltip-content {
+  display: block;
+}
+
+/* Mobile tap + keyboard */
+.info-tooltip:focus .tooltip-content,
+.info-tooltip:active .tooltip-content {
+  display: block;
 }
 
 /* Footer */
 .site-footer {
-  border-top: 1px solid var(--line);
-  margin-top: 80px;
-  padding: 24px 0;
-  text-align: center;
-  color: var(--muted);
-}
-/* ======================================
-   SITE FOOTER (FINAL FIX)
-   ====================================== */
-
-.site-footer {
   width: 100%;
-  background-color: #0f172a; /* deep slate, matches professional dashboards */
+  background-color: #0f172a;
   color: #cbd5e1;
   padding: 48px 20px;
   margin-top: 64px;
-  font-family: inherit;
 }
 
 .site-footer .footer-inner {
@@ -135,8 +169,6 @@ body {
   gap: 28px;
   text-align: center;
 }
-
-/* FOOTER NAV */
 
 .footer-nav {
   display: flex;
@@ -156,8 +188,6 @@ body {
   text-decoration: underline;
 }
 
-/* DISCLAIMER TEXT */
-
 .footer-disclaimer {
   max-width: 900px;
   margin: 0 auto;
@@ -170,150 +200,23 @@ body {
   margin: 0 0 10px;
 }
 
-/* COPYRIGHT */
-
 .footer-meta {
   font-size: 0.75rem;
   color: #94a3b8;
 }
-/* ======================================
+
+/* ===============================
    MOBILE RESPONSIVENESS
-   ====================================== */
+   =============================== */
 
 @media (max-width: 768px) {
 
-  /* Global spacing */
   body {
     background-attachment: scroll;
   }
 
   .container {
     padding: 0 14px;
-  }
-
-  /* Header */
-  .header-inner {
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 0;
-  }
-
-  .brand {
-    flex-direction: column;
-    gap: 6px;
-    text-align: center;
-  }
-
-  .brand-logo {
-    max-height: 56px;
-  }
-
-  .brand-name {
-    font-size: 1.4rem;
-  }
-
-  .nav {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-  }
-
-  .nav a {
-    margin: 0;
-    padding: 6px 10px;
-    font-size: 0.9rem;
-  }
-
-  /* Hero */
-  .hero {
-    padding: 56px 0 48px;
-  }
-
-  .hero h1 {
-    font-size: 2rem;
-    line-height: 1.2;
-  }
-
-  .subhead {
-    font-size: 1rem;
-    padding: 0 10px;
-  }
-
-  /* Buttons */
-  .btn {
-    padding: 12px 18px;
-    font-si
-/* ======================================
-   GLOBAL MOBILE RESET (PHASE 2)
-   ====================================== */
-
-@media (max-width: 768px) {
-
-  html {
-    font-size: 15px;
-  }
-
-  body {
-    line-height: 1.55;
-  }
-
-  h1, h2, h3 {
-    line-height: 1.2;
-    margin-bottom: 0.75em;
-  }
-
-  p {
-    margin-bottom: 1em;
-  }
-
-  /* Prevent horizontal overflow */
-  * {
-    max-width: 100%;
-  }
-
-  /* Improve tap targets */
-  a,
-  button,
-  .btn,
-  input,
-  select,
-  textarea {
-    min-height: 44px;
-  }
-
-  /* Panels and cards spacing */
-  section,
-  article,
-  .panel,
-  .card {
-    margin-left: 0;
-    margin-right: 0;
-  }
-}
-
-/* Small phones */
-@media (max-width: 480px) {
-
-  html {
-    font-size: 14px;
-  }
-
-  .container {
-    padding: 0 12px;
-  }
-}
-/* ======================================
-   MOBILE HEADER & NAV FIX
-   ====================================== */
-
-@media (max-width: 768px) {
-
-  .site-header {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
   }
 
   .header-inner {
@@ -353,11 +256,58 @@ body {
     background: var(--panel);
     border: 1px solid var(--line);
     font-size: 0.9rem;
+    margin: 0;
   }
 
   .nav a:hover,
   .nav a.active {
     background: var(--panel-strong);
     color: var(--text);
+  }
+
+  .hero {
+    padding: 56px 0 48px;
+  }
+
+  .hero h1 {
+    font-size: 2rem;
+    line-height: 1.2;
+  }
+
+  .subhead {
+    font-size: 1rem;
+    padding: 0 10px;
+  }
+
+  html {
+    font-size: 15px;
+  }
+
+  body {
+    line-height: 1.55;
+  }
+
+  * {
+    max-width: 100%;
+  }
+
+  a,
+  button,
+  .btn,
+  input,
+  select,
+  textarea {
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 480px) {
+
+  html {
+    font-size: 14px;
+  }
+
+  .container {
+    padding: 0 12px;
   }
 }
