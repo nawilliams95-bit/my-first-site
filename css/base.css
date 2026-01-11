@@ -294,3 +294,22 @@ body {
     max-width: 360px;
   }
 }
+@media (max-width: 768px) {
+
+  /* Keep the ⓘ icon fixed in the top-right of the box */
+  .info-tooltip {
+    position: absolute;
+  }
+
+  /* Move tooltip fully to the LEFT and keep it in frame */
+  .info-tooltip .tooltip-content {
+    position: fixed;
+    top: auto;
+    bottom: auto;
+    right: 16px;      /* anchors from the right edge */
+    left: 16px;       /* prevents overflow on small phones */
+    transform: none;  /* no centering */
+    width: auto;
+    max-width: calc(100vw - 32px);
+  }
+}
