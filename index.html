@@ -1,62 +1,192 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <link rel="stylesheet" href="css/styles.css" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home | My First Site</title>
+    <title>Realty Data Labs | Real Estate Intelligence</title>
+
+    <!-- GLOBAL + HOME CSS -->
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/home.css" />
   </head>
+
   <body>
-    <div class="container">
-      <header>
-        <div class="header-row">
-          <div class="header-left">
-  <div class="brand">
-    <img src="images/logo.jpg" alt="My First Site logo" class="logo" />
-    <div class="brand-text">
-      <h1>My First Site</h1>
-      <p>This site is built with Notepad: HTML + CSS.</p>
-    </div>
-  </div>
-</div>
+    <!-- HEADER -->
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="index.html">
+          <img
+            class="brand-logo"
+            src="images/logo.jpg"
+            alt="Realty Data Labs logo"
+          />
+          <span class="brand-name">Realty Data Labs</span>
+        </a>
 
+        <nav class="nav">
+          <a href="index.html" class="active">Home</a>
+          <a href="auth.html" class="nav-cta">Sign In</a>
+          <a href="analyzer.html">Property Analyzer</a>
+          <a href="about.html">About</a>
+          <a href="contact.html">Contact</a>
+        </nav>
+      </div>
+    </header>
 
-          <nav class="header-nav">
-            <a href="index.html" class="active">Home</a>
-            <a href="about.html" class="">About</a>
-            <a href="contact.html" class="">Contact</a>
-          </nav>
+    <main>
+      <!-- HERO -->
+      <section class="hero">
+        <div class="container hero-inner">
+          <h1>Real Estate Intelligence, Updated Daily</h1>
+          <p class="subhead">
+            Live market context, mortgage rate benchmarks, and economic signals
+            built for buyers, owners, investors, and agents.
+          </p>
         </div>
-      </header>
+      </section>
 
-      <main>
- <section>
-  <h2>Welcome</h2>
-  <p>This is the home page. Use this section to explain what the site is.</p>
-</section>
+      <!-- INTELLIGENCE -->
+      <section class="home-intelligence">
+        <div class="container">
 
-<section>
-  <h2>Work</h2>
-  <ul>
-    <li>Project or service #1</li>
-    <li>Project or service #2</li>
-    <li>Project or service #3</li>
-  </ul>
-</section>
+          <!-- NEWS -->
+          <div class="news-section">
+            <h2>Today’s Real Estate and Economic News</h2>
+            <div class="news-feed">
+              <article class="news-item">
+                <span class="news-source">Loading</span>
+                <h3>Fetching the latest housing and economic headlines…</h3>
+                <time>—</time>
+              </article>
+            </div>
+          </div>
 
-<section>
-  <h2>Contact</h2>
-  <p>Visit the Contact page to send a message.</p>
-</section>
+          <!-- MARKET DATA -->
+          <div class="market-section">
 
-      </main>
+            <!-- MORTGAGE RATES -->
+            <div class="market-box">
+              <h2>
+                National Mortgage Rate Averages
+                <span class="info-tooltip" aria-label="About these rates">
+                  <span aria-hidden="true">ⓘ</span>
+                  <span class="tooltip-content">
+                    Rates shown are Freddie Mac Primary Mortgage Market Survey
+                    (PMMS) national averages. PMMS reflects lender-reported
+                    pricing trends and is published weekly. Rates are benchmarks
+                    only and not loan offers.
+                  </span>
+                </span>
+              </h2>
 
-      <footer>
-        <p>© 2026 My First Site</p>
-      </footer>
-    </div>
+              <p class="data-note">
+                Freddie Mac PMMS national averages. Updated weekly.
+              </p>
+              <p class="data-note">
+                As of <span id="pmmsAsOf">—</span>. Next update expected
+                <span id="pmmsNext">—</span>.
+              </p>
 
-    <!-- Optional: only include this on pages that need JavaScript -->
-    <!-- <script src="js/script.js"></script> -->
+              <table class="rates-table">
+                <tr>
+                  <td>30-Year Fixed</td>
+                  <td id="rate30">—</td>
+                </tr>
+                <tr>
+                  <td>15-Year Fixed</td>
+                  <td id="rate15">—</td>
+                </tr>
+                <tr>
+                  <td>5/1 ARM</td>
+                  <td id="rateARM">—</td>
+                </tr>
+              </table>
+            </div>
+
+            <!-- TREASURY -->
+            <div class="market-box">
+              <h2>10-Year Treasury Yield</h2>
+
+              <div class="treasury-value" id="treasury10">—</div>
+
+              <div class="treasury-chart-wrap">
+                <canvas id="treasuryChart"></canvas>
+              </div>
+
+              <p class="data-note">
+                30-day yield trend. Source: U.S. Treasury via FRED.
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <nav class="footer-nav">
+          <a href="index.html">Home</a>
+	  <a href="auth.html">Sign In</a>
+          <a href="analyzer.html">Property Analyzer</a>
+          <a href="about.html">About</a>
+          <a href="contact.html">Contact</a>
+        </nav>
+
+        <div class="footer-disclaimer">
+          <p>
+            Realty Data Labs provides general real estate, housing market,
+            and economic information for educational purposes only.
+          </p>
+          <p>
+            The author of this site is a licensed real estate agent in the State of Georgia.
+          </p>
+        </div>
+
+        <p class="footer-meta">
+          © <span id="year"></span> Realty Data Labs. All rights reserved.
+        </p>
+      </div>
+    </footer>
+
+    <!-- FOOTER YEAR -->
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
+
+    <!-- PMMS DATE LOGIC -->
+    <script>
+      (function () {
+        const asOfEl = document.getElementById("pmmsAsOf");
+        const nextEl = document.getElementById("pmmsNext");
+        if (!asOfEl || !nextEl) return;
+
+        const today = new Date();
+        const day = today.getDay();
+        const diffToThursday = day >= 4 ? day - 4 : day + 3;
+
+        const lastThursday = new Date(today);
+        lastThursday.setDate(today.getDate() - diffToThursday);
+
+        const nextThursday = new Date(lastThursday);
+        nextThursday.setDate(lastThursday.getDate() + 7);
+
+        const format = d =>
+          d.toLocaleDateString("en-US", {
+            month: "long",
+            day: "numeric",
+            year: "numeric"
+          });
+
+        asOfEl.textContent = format(lastThursday);
+        nextEl.textContent = format(nextThursday);
+      })();
+    </script>
+
+    <!-- SCRIPTS -->
+    <script src="js/news.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="js/rates.js"></script>
   </body>
 </html>

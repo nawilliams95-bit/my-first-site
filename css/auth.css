@@ -1,0 +1,64 @@
+/* AUTH PAGE ONLY */
+
+/* Page-level centering */
+.auth-page {
+  min-height: calc(100vh - 80px); /* header height safety */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+/* Constrain auth content width */
+.auth-center {
+  width: 100%;
+  max-width: 520px;
+}
+
+/* Auth card wrapper */
+.auth-wrap {
+  width: 100%;
+}
+
+/* Tabs */
+.auth-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.auth-tab {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--muted);
+  cursor: pointer;
+  text-align: center;
+}
+
+.auth-tab.is-active {
+  color: var(--text);
+  background: var(--panel-strong);
+}
+
+/* Panels */
+.auth-panel {
+  display: none;
+}
+
+.auth-panel.is-active {
+  display: block;
+}
+
+/* Inputs */
+.auth-input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+  margin-bottom: 14px;
+}

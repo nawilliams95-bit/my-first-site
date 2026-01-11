@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In | Realty Data Labs</title>
+
+  <!-- GLOBAL + AUTH CSS -->
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/auth.css" />
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="index.html">
+      <img
+        class="brand-logo"
+        src="images/logo.jpg"
+        alt="Realty Data Labs logo"
+      />
+      <span class="brand-name">Realty Data Labs</span>
+    </a>
+
+    <nav class="nav">
+      <a href="index.html">Home</a>
+      <a href="auth.html" class="active">Sign In</a>
+      <a href="analyzer.html">Property Analyzer</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<!-- CENTERED AUTH PAGE -->
+<main class="auth-page">
+  <div class="auth-center">
+
+    <div class="page-center">
+      <h1>Sign in / Sign up</h1>
+      <p class="subhead">Account features coming soon.</p>
+    </div>
+
+    <div class="card auth-wrap">
+      <div class="auth-tabs">
+        <button class="auth-tab is-active" data-tab="signin">Sign in</button>
+        <button class="auth-tab" data-tab="signup">Sign up</button>
+      </div>
+
+      <!-- SIGN IN -->
+      <div class="auth-panel is-active" id="signin">
+        <label class="field">
+          <span class="label">Email</span>
+          <input class="auth-input" type="email" />
+        </label>
+
+        <label class="field">
+          <span class="label">Password</span>
+          <input class="auth-input" type="password" />
+        </label>
+
+        <button class="btn">Sign in</button>
+      </div>
+
+      <!-- SIGN UP -->
+      <div class="auth-panel" id="signup">
+        <label class="field">
+          <span class="label">Name</span>
+          <input class="auth-input" type="text" />
+        </label>
+
+        <label class="field">
+          <span class="label">Email</span>
+          <input class="auth-input" type="email" />
+        </label>
+
+        <label class="field">
+          <span class="label">Password</span>
+          <input class="auth-input" type="password" />
+        </label>
+
+        <button class="btn">Create account</button>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+
+    <!-- FOOTER NAV -->
+    <nav class="footer-nav">
+      <a href="index.html">Home</a>
+      <a href="auth.html">Sign In</a>
+      <a href="analyzer.html">Property Analyzer</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+
+    <!-- DISCLAIMER -->
+    <div class="footer-disclaimer">
+      <p>
+        Realty Data Labs provides general real estate, housing market, and economic
+        information for educational purposes only.
+      </p>
+      <p>
+        The author of this site is a licensed real estate agent in the State of Georgia.
+      </p>
+    </div>
+
+    <!-- META -->
+    <div class="footer-meta">
+      <p>© <span id="year"></span> Realty Data Labs</p>
+    </div>
+
+  </div>
+</footer>
+
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  document.querySelectorAll(".auth-tab").forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll(".auth-tab").forEach(b =>
+        b.classList.remove("is-active")
+      );
+      document.querySelectorAll(".auth-panel").forEach(p =>
+        p.classList.remove("is-active")
+      );
+      btn.classList.add("is-active");
+      document.getElementById(btn.dataset.tab).classList.add("is-active");
+    };
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Property Intelligence Analyzer | Realty Data Labs</title>
+
+    <!-- GLOBAL + ANALYZER CSS -->
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/analyzer.css" />
+  </head>
+
+  <body>
+    <!-- SITE HEADER -->
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="index.html">
+          <img
+            class="brand-logo"
+            src="images/logo.jpg"
+            alt="Realty Data Labs logo"
+          />
+          <span class="brand-name">Realty Data Labs</span>
+        </a>
+
+        <nav class="nav">
+          <a href="index.html">Home</a>
+          <a href="auth.html" class="nav-cta">Sign In</a>
+          <a href="analyzer.html" class="active">Property Analyzer</a>
+          <a href="about.html">About</a>
+          <a href="contact.html">Contact</a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="analyzer-page">
+      <div class="container">
+        <!-- HERO -->
+        <section class="analyzer-hero">
+          <h1>Property Intelligence Analyzer</h1>
+          <p>
+            Enter a property address to generate an objective, data-driven
+            property insight report.
+          </p>
+        </section>
+
+        <!-- ADDRESS SEARCH -->
+        <section class="address-search">
+          <form id="addressForm">
+            <label for="addressInput">Property Address</label>
+            <input
+              type="text"
+              id="addressInput"
+              name="address"
+              placeholder="123 Main St, City, State"
+              required
+            />
+            <button type="submit" class="primary-btn">
+              Analyze Property
+            </button>
+          </form>
+
+          <p class="form-note">
+            No account required for a basic report.
+          </p>
+        </section>
+
+        <!-- RESULTS -->
+        <section
+          class="analysis-results"
+          id="analysisResults"
+          style="display: none;"
+        >
+          <!-- PROPERTY SNAPSHOT -->
+          <div class="report-card">
+            <h2>Property Snapshot</h2>
+            <div class="snapshot-grid">
+              <div><strong>Property Type:</strong> <span id="propType">—</span></div>
+              <div><strong>Beds / Baths:</strong> <span id="bedsBaths">—</span></div>
+              <div><strong>Living Area:</strong> <span id="sqft">—</span></div>
+              <div><strong>Lot Size:</strong> <span id="lotSize">—</span></div>
+              <div><strong>Year Built:</strong> <span id="yearBuilt">—</span></div>
+              <div><strong>Last Sale:</strong> <span id="lastSale">—</span></div>
+            </div>
+          </div>
+
+          <!-- INTELLIGENCE SCORE -->
+          <div class="report-card">
+            <h2>Property Intelligence Score</h2>
+            <div class="score-display">
+              <span class="score-number" id="intelligenceScore">—</span>
+              <span class="score-label" id="scoreLabel">—</span>
+            </div>
+            <p id="scoreExplanation"></p>
+          </div>
+
+          <!-- MARKET CONTEXT -->
+          <div class="report-card">
+            <h2>Market Context</h2>
+            <ul class="context-list">
+              <li><strong>Market Exposure:</strong> <span id="domTrend">—</span></li>
+              <li><strong>Inventory Pressure:</strong> <span id="inventory">—</span></li>
+              <li><strong>Buyer Demand:</strong> <span id="buyerDemand">—</span></li>
+            </ul>
+          </div>
+
+          <!-- RISK & OPPORTUNITY -->
+          <div class="report-card">
+            <h2>Risk & Opportunity Signals</h2>
+
+            <!-- FINANCING DISCLOSURE -->
+            <div class="analyzer-disclosure">
+              <p class="data-note" id="analyzerRateDisclosure">
+                Mortgage assumptions are based on national rate benchmarks.
+              </p>
+            </div>
+
+            <div class="signals-grid">
+              <div><strong>Market Risk:</strong> <span id="marketRisk">—</span></div>
+              <div><strong>Liquidity Risk:</strong> <span id="liquidityRisk">—</span></div>
+              <div><strong>Financing Friction:</strong> <span id="financingRisk">—</span></div>
+              <div><strong>Condition Sensitivity:</strong> <span id="conditionRisk">—</span></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+      <div class="container footer-inner">
+
+        <!-- FOOTER NAV -->
+        <nav class="footer-nav">
+          <a href="index.html">Home</a>
+          <a href="auth.html">Sign In</a>
+          <a href="analyzer.html">Property Analyzer</a>
+          <a href="about.html">About</a>
+          <a href="contact.html">Contact</a>
+        </nav>
+
+        <!-- DISCLAIMER -->
+        <div class="footer-disclaimer">
+          <p>
+            Realty Data Labs provides general real estate, housing market, and economic
+            information for educational purposes only.
+          </p>
+          <p>
+            The author of this site is a licensed real estate agent in the State of Georgia.
+          </p>
+        </div>
+
+        <!-- META -->
+        <div class="footer-meta">
+          <p>© <span id="year"></span> Realty Data Labs</p>
+        </div>
+
+      </div>
+    </footer>
+
+    <!-- YEAR -->
+    <script>
+      document.getElementById("year").textContent =
+        new Date().getFullYear();
+    </script>
+
+    <!-- PMMS DISCLOSURE + PREFILL LOGIC -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const pmmsAsOf = localStorage.getItem("pmmsAsOf");
+        const disclosureEl = document.getElementById("analyzerRateDisclosure");
+
+        if (pmmsAsOf && disclosureEl) {
+          disclosureEl.textContent =
+            "Mortgage assumptions are based on Freddie Mac PMMS national averages as of " +
+            pmmsAsOf +
+            ".";
+        }
+
+        const DEFAULT_PMMS_RATE = 6.62;
+        const rateInput = document.getElementById("interestRate");
+
+        if (rateInput && !rateInput.value) {
+          rateInput.value = DEFAULT_PMMS_RATE;
+        }
+      });
+    </script>
+  </body>
+</html>

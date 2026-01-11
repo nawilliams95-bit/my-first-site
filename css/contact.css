@@ -1,0 +1,62 @@
+/* CONTACT PAGE ONLY */
+
+/* Page-level centering */
+.contact-page {
+  min-height: calc(100vh - 80px); /* header safety */
+  display: flex;
+  justify-content: center;
+  padding: 4rem 1.5rem;
+}
+
+/* Centered content column */
+.contact-page .container {
+  width: 100%;
+  max-width: 700px;
+}
+
+/* Wrapper */
+.contact-wrap {
+  width: 100%;
+}
+
+/* Card */
+.contact-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 32px;
+}
+
+/* Headings */
+.contact-card h2 {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+/* Fields */
+.contact-card .field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.contact-card label {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* Inputs */
+.contact-card input,
+.contact-card textarea {
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+}
+
+.contact-card textarea {
+  min-height: 180px;
+  resize: vertical;
+}

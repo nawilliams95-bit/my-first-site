@@ -1,49 +1,176 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <link rel="stylesheet" href="css/styles.css" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home | My First Site</title>
+    <title>About | Realty Data Labs</title>
+
+    <!-- GLOBAL + PAGE CSS -->
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/about.css" />
   </head>
+
   <body>
-    <div class="container">
-      <header>
-        <div class="header-row">
-          <div class="header-left">
-  <div class="brand">
-    <img src="images/logo.jpg" alt="My First Site logo" class="logo" />
-    <div class="brand-text">
-      <h1>My First Site</h1>
-      <p>This site is built with Notepad: HTML + CSS.</p>
-    </div>
-  </div>
-</div>
+    <!-- SITE HEADER -->
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="index.html">
+          <img
+            class="brand-logo"
+            src="images/logo.jpg"
+            alt="Realty Data Labs logo"
+          />
+          <span class="brand-name">Realty Data Labs</span>
+        </a>
 
+        <nav class="nav">
+          <a href="index.html">Home</a>
+          <a href="auth.html">Sign In</a>
+          <a href="analyzer.html">Property Analyzer</a>
+          <a href="about.html" class="active">About</a>
+          <a href="contact.html">Contact</a>
+        </nav>
+      </div>
+    </header>
 
-    	<nav class="header-nav">
- 	 <a href="index.html" class="">Home</a>
-	 <a href="about.html" class="active">About</a>
-  	 <a href="contact.html" class="">Contact</a>
-	</nav>
+    <!-- MAIN CONTENT -->
+    <main class="about-page">
+      <div class="container">
+
+        <!-- HERO -->
+        <section class="about-hero">
+          <h1>About Realty Data Labs</h1>
+          <p class="subhead">
+            Objective real estate intelligence built for clarity, not hype.
+          </p>
+        </section>
+
+        <!-- MISSION -->
+        <section class="about-section">
+          <h2>Our Purpose</h2>
+          <p>
+            Realty Data Labs exists to make real estate data easier to understand,
+            more transparent, and more useful for everyday decision making.
+            The platform is designed to aggregate market signals, historical trends,
+            and economic indicators into tools that help users think clearly about
+            property and housing markets.
+          </p>
+          <p>
+            We focus on education and analysis. We do not replace professional advice,
+            and we do not attempt to predict outcomes. Our goal is to provide context,
+            not conclusions.
+          </p>
+        </section>
+
+        <!-- WHAT WE BUILD -->
+        <section class="about-section">
+          <h2>What We Build</h2>
+          <ul class="about-list">
+            <li>Market driven property analysis tools</li>
+            <li>Exposure and liquidity indicators</li>
+            <li>Risk and opportunity signal frameworks</li>
+            <li>Educational resources tied to real data</li>
+            <li>Investor and homeowner focused intelligence tools</li>
+          </ul>
+        </section>
+
+        <!-- WHO IT IS FOR -->
+        <section class="about-section">
+          <h2>Who This Is For</h2>
+          <p>
+            Realty Data Labs is built for homeowners, investors, real estate
+            professionals, and anyone who wants a clearer understanding of
+            property markets without marketing pressure or lead capture tactics.
+          </p>
+          <p>
+            Some tools are available without an account. Additional features may
+            require registration as the platform evolves.
+          </p>
+        </section>
+
+        <!-- TRANSPARENCY -->
+        <section class="about-section">
+          <h2>Transparency & Compliance</h2>
+          <p>
+            This site provides general real estate, housing market, and economic
+            information for educational purposes only. Data may be delayed,
+            estimated, or sourced from third party providers.
+          </p>
+          <p>
+            The author of this site is a licensed real estate agent in the State of
+            Georgia. Use of this site does not create an agency relationship.
+            Representation is only provided through separate written agreement
+            where permitted by law.
+          </p>
+        </section>
+
+        <!-- DATA USE -->
+        <section class="about-section">
+          <h2>Data Use & Platform Operations</h2>
+          <p>
+            Realty Data Labs may collect limited user provided information when
+            individuals interact with tools, submit property data, or create an
+            account. This information is used to operate the platform, improve
+            analytical models, enhance user experience, and support future
+            feature development.
+          </p>
+          <p>
+            We do not sell personal user data. Aggregated and anonymized usage data
+            may be analyzed to understand market trends, system performance, and
+            platform adoption.
+          </p>
+          <p>
+            Use of this site does not create an agency, advisory, or fiduciary
+            relationship.
+          </p>
+        </section>
+
+        <!-- FUTURE -->
+        <section class="about-section">
+          <h2>Looking Ahead</h2>
+          <p>
+            Realty Data Labs is an evolving platform. Future development may include
+            expanded analytics, account based dashboards, and additional educational
+            tools. All features will continue to prioritize clarity, transparency,
+            and compliance.
+          </p>
+        </section>
+
+      </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+      <div class="container footer-inner">
+
+        <nav class="footer-nav">
+          <a href="index.html">Home</a>
+          <a href="auth.html">Sign In</a>
+	  <a href="analyzer.html">Property Analyzer</a>
+          <a href="about.html">About</a>
+          <a href="contact.html">Contact</a>
+        </nav>
+
+        <div class="footer-disclaimer">
+          <p>
+            Realty Data Labs provides general real estate, housing market, and economic
+            information for educational purposes only.
+          </p>
+          <p>
+            The author of this site is a licensed real estate agent in the State of Georgia.
+          </p>
         </div>
-      </header>
 
-      <main>
-        <section>
-  	 <h2>About</h2>
-  	 <p>Write who you are, what you do, and who you help.</p>
-  	 <p>Keep it short and clear.</p>
-	</section>
+        <div class="footer-meta">
+          <p>© <span id="year"></span> Realty Data Labs</p>
+        </div>
 
-      </main>
+      </div>
+    </footer>
 
-      <footer>
-        <p>© 2026 My First Site</p>
-      </footer>
-    </div>
-
-    <!-- Optional: only include this on pages that need JavaScript -->
-    <!-- <script src="js/script.js"></script> -->
+    <script>
+      document.getElementById("year").textContent =
+        new Date().getFullYear();
+    </script>
   </body>
 </html>

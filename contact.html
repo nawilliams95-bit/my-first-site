@@ -1,78 +1,140 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <link rel="stylesheet" href="css/styles.css" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home | My First Site</title>
+    <title>Contact | Realty Data Labs</title>
+
+    <!-- GLOBAL + CONTACT CSS -->
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/contact.css" />
   </head>
+
   <body>
-    <div class="container">
-      <header>
-        <div class="header-row">
-          <div class="header-left">
-  <div class="brand">
-    <img src="images/logo.jpg" alt="My First Site logo" class="logo" />
-    <div class="brand-text">
-      <h1>My First Site</h1>
-      <p>This site is built with Notepad: HTML + CSS.</p>
-    </div>
-  </div>
-</div>
+    <!-- SITE HEADER -->
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="index.html">
+          <img
+            class="brand-logo"
+            src="images/logo.jpg"
+            alt="Realty Data Labs logo"
+          />
+          <span class="brand-name">Realty Data Labs</span>
+        </a>
 
+        <nav class="nav">
+          <a href="index.html">Home</a>
+          <a href="auth.html" class="nav-cta">Sign In</a>
+          <a href="analyzer.html">Property Analyzer</a>
+          <a href="about.html">About</a>
+          <a href="contact.html" class="active">Contact</a>
+        </nav>
+      </div>
+    </header>
 
-        <nav class="header-nav">
-  	 <a href="index.html" class="">Home</a>
-  	 <a href="about.html" class="">About</a>
-  	 <a href="contact.html" class="active">Contact</a>
-	</nav>
+    <!-- MAIN CONTENT -->
+    <main class="contact-page">
+      <div class="container">
 
+        <!-- PAGE HEADER -->
+        <div class="page-center">
+          <h1>Contact Us</h1>
+          <p class="subhead">
+            Use this form to request a resource, suggest a tool, or ask a
+            question. I read every message.
+          </p>
         </div>
-      </header>
 
-      <main>
-        <section>
-  <h2>Contact</h2>
-  <p>Use the form below to send a message (demo).</p>
+        <!-- CONTACT FORM -->
+        <div class="contact-wrap">
+          <section class="contact-card">
+            <h2>Send us a message</h2>
 
-  <form id="contactForm">
-    <p>
-      <label>
-        Name<br />
-        <input type="text" id="name" required />
-      </label>
-    </p>
+            <!-- Static form using mailto -->
+            <form
+              class="form"
+              action="mailto:your@email.com"
+              method="post"
+              enctype="text/plain"
+            >
+              <label class="field">
+                <span class="label">Name</span>
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Your name"
+                  required
+                />
+              </label>
 
-    <p>
-      <label>
-        Email<br />
-        <input type="email" id="email" required />
-      </label>
-    </p>
+              <label class="field">
+                <span class="label">Email</span>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="you@email.com"
+                  required
+                />
+              </label>
 
-    <p>
-      <label>
-        Message<br />
-        <textarea id="message" rows="5" required></textarea>
-      </label>
-    </p>
+              <label class="field">
+                <span class="label">Message</span>
+                <textarea
+                  name="message"
+                  placeholder="What do you need?"
+                  required
+                ></textarea>
+              </label>
 
-    <p>
-      <button type="submit">Send</button>
-    </p>
+              <div class="form-row">
+                <button class="btn" type="submit">Send message</button>
+                <span class="muted">
+                  This will open your email app to send the message.
+                </span>
+              </div>
+            </form>
+          </section>
+        </div>
 
-    <p id="formStatus"></p>
-  </form>
-</section>
+      </div>
+    </main>
 
-      </main>
+    <!-- FOOTER -->
+    <footer class="site-footer">
+      <div class="container footer-inner">
 
-      <footer>
-        <p>© 2026 My First Site</p>
-      </footer>
-    </div>
+        <!-- FOOTER NAV -->
+        <nav class="footer-nav">
+          <a href="index.html">Home</a>
+          <a href="auth.html">Sign In</a>
+	  <a href="analyzer.html">Property Analyzer</a>
+          <a href="about.html">About</a>
+          <a href="contact.html">Contact</a>
+        </nav>
 
-    <!-- Optional: only include this on pages that need JavaScript -->
-    <<script src="js/script.js"></script>
+        <!-- DISCLAIMER -->
+        <div class="footer-disclaimer">
+          <p>
+            Realty Data Labs provides general real estate, housing market, and economic
+            information for educational purposes only.
+          </p>
+          <p>
+            The author of this site is a licensed real estate agent in the State of Georgia.
+          </p>
+        </div>
+
+        <!-- META -->
+        <div class="footer-meta">
+          <p>© <span id="year"></span> Realty Data Labs</p>
+        </div>
+
+      </div>
+    </footer>
+
+    <script>
+      document.getElementById("year").textContent =
+        new Date().getFullYear();
+    </script>
   </body>
 </html>
