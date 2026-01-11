@@ -13,10 +13,16 @@
   box-sizing: border-box;
 }
 
+/* ===============================
+   GLOBAL OVERFLOW LOCK (CRITICAL)
+   =============================== */
+
 html,
 body {
   margin: 0;
   padding: 0;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 body {
@@ -25,6 +31,16 @@ body {
   background:
     linear-gradient(rgba(11, 18, 32, 0.85), rgba(11, 18, 32, 0.85)),
     url("../images/background.jpg") center / cover no-repeat fixed;
+}
+
+/* Prevent media overflow */
+img,
+canvas,
+iframe,
+video {
+  max-width: 100%;
+  height: auto;
+  display: block;
 }
 
 /* Layout */
@@ -57,9 +73,6 @@ body {
 
 .brand-logo {
   max-height: 72px;
-  height: auto;
-  width: auto;
-  display: block;
 }
 
 .brand-name {
@@ -108,7 +121,7 @@ body {
 }
 
 /* ===============================
-   INFO TOOLTIP (MOBILE FIX)
+   INFO TOOLTIP (MOBILE SAFE)
    =============================== */
 
 .info-tooltip {
@@ -196,17 +209,13 @@ body {
   color: #cbd5e1;
 }
 
-.footer-disclaimer p {
-  margin: 0 0 10px;
-}
-
 .footer-meta {
   font-size: 0.75rem;
   color: #94a3b8;
 }
 
 /* ===============================
-   MOBILE RESPONSIVENESS
+   MOBILE HARDENING
    =============================== */
 
 @media (max-width: 768px) {
@@ -215,22 +224,28 @@ body {
     background-attachment: scroll;
   }
 
-  .container {
-    padding: 0 14px;
+  .container,
+  .market-box,
+  .news-item {
+    overflow-x: hidden;
+  }
+
+  /* Tooltip stays on screen */
+  .tooltip-content {
+    left: 0;
+    transform: none;
+    width: min(90vw, 320px);
+    max-width: 100%;
   }
 
   .header-inner {
     flex-direction: column;
-    align-items: center;
     gap: 14px;
-    padding: 14px 0;
   }
 
   .brand {
     flex-direction: column;
-    align-items: center;
     text-align: center;
-    gap: 6px;
   }
 
   .brand-logo {
@@ -243,26 +258,16 @@ body {
 
   .nav {
     width: 100%;
-    display: flex;
-    flex-wrap: wrap;
     justify-content: center;
     gap: 10px;
   }
 
   .nav a {
-    display: block;
     padding: 10px 14px;
     border-radius: 8px;
     background: var(--panel);
     border: 1px solid var(--line);
-    font-size: 0.9rem;
     margin: 0;
-  }
-
-  .nav a:hover,
-  .nav a.active {
-    background: var(--panel-strong);
-    color: var(--text);
   }
 
   .hero {
@@ -271,24 +276,10 @@ body {
 
   .hero h1 {
     font-size: 2rem;
-    line-height: 1.2;
-  }
-
-  .subhead {
-    font-size: 1rem;
-    padding: 0 10px;
   }
 
   html {
     font-size: 15px;
-  }
-
-  body {
-    line-height: 1.55;
-  }
-
-  * {
-    max-width: 100%;
   }
 
   a,
