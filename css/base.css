@@ -245,3 +245,62 @@ body {
   .btn {
     padding: 12px 18px;
     font-si
+/* ======================================
+   GLOBAL MOBILE RESET (PHASE 2)
+   ====================================== */
+
+@media (max-width: 768px) {
+
+  html {
+    font-size: 15px;
+  }
+
+  body {
+    line-height: 1.55;
+  }
+
+  h1, h2, h3 {
+    line-height: 1.2;
+    margin-bottom: 0.75em;
+  }
+
+  p {
+    margin-bottom: 1em;
+  }
+
+  /* Prevent horizontal overflow */
+  * {
+    max-width: 100%;
+  }
+
+  /* Improve tap targets */
+  a,
+  button,
+  .btn,
+  input,
+  select,
+  textarea {
+    min-height: 44px;
+  }
+
+  /* Panels and cards spacing */
+  section,
+  article,
+  .panel,
+  .card {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+
+  html {
+    font-size: 14px;
+  }
+
+  .container {
+    padding: 0 12px;
+  }
+}
