@@ -14,7 +14,7 @@
 }
 
 /* ===============================
-   ROOT WIDTH LOCK (NO DRIFT)
+   GLOBAL WIDTH LOCK (NO DRIFT)
    =============================== */
 
 html,
@@ -26,7 +26,7 @@ body {
   overflow-x: hidden;
 }
 
-/* Media elements can never exceed viewport */
+/* Media elements never overflow */
 img,
 canvas,
 iframe,
@@ -101,7 +101,7 @@ body {
 .hero h1 {
   font-size: 2.8rem;
   margin-bottom: 16px;
-  word-wrap: break-word;
+  word-break: break-word;
 }
 
 .subhead {
@@ -131,16 +131,16 @@ body {
   position: relative;
 }
 
-/* Header space for icon */
+/* Space for icon */
 .market-box h2 {
   position: relative;
   padding-right: 32px;
 }
 
-/* Icon stays top-right always */
+/* ⓘ icon fixed top-right */
 .info-tooltip {
   position: absolute;
-  top: 0.2rem;
+  top: 0.25rem;
   right: 0;
   cursor: pointer;
 }
@@ -150,7 +150,7 @@ body {
   opacity: 0.85;
 }
 
-/* Tooltip base */
+/* Tooltip base (desktop) */
 .tooltip-content {
   display: none;
   position: absolute;
@@ -174,10 +174,7 @@ body {
   display: block;
 }
 
-/* ===============================
-   FOOTER
-   =============================== */
-
+/* Footer */
 .site-footer {
   width: 100%;
   background-color: #0f172a;
@@ -187,7 +184,7 @@ body {
 }
 
 /* ===============================
-   MOBILE FIXES ONLY
+   MOBILE ONLY FIXES (AUTHORITATIVE)
    =============================== */
 
 @media (max-width: 768px) {
@@ -196,17 +193,22 @@ body {
     background-attachment: scroll;
   }
 
-  /* Prevent horizontal overscroll */
+  /* Kill horizontal panning */
   body,
   main {
     overscroll-behavior-x: none;
   }
 
-  /* Tooltip must stay in viewport */
-  .tooltip-content {
-    left: 0;
-    right: auto;
-    width: min(90vw, 300px);
+  /* Tooltip stays fully in frame, shifted left */
+  .info-tooltip .tooltip-content {
+    position: fixed;
+    left: 16px;
+    right: 16px;
+    top: auto;
+    bottom: auto;
+    transform: none;
+    width: auto;
+    max-width: calc(100vw - 32px);
   }
 
   .container {
@@ -272,44 +274,5 @@ body {
 
   .container {
     padding: 0 12px;
-  }
-}
-@media (max-width: 768px) {
-
-  /* Keep icon where it is */
-  .info-tooltip {
-    position: absolute;
-  }
-
-  /* Force tooltip fully inside viewport */
-  .info-tooltip .tooltip-content {
-    position: fixed;
-    left: 50%;
-    right: auto;
-    transform: translateX(-50%);
-    bottom: auto;
-    top: auto;
-    margin-top: 12px;
-    width: calc(100vw - 32px);
-    max-width: 360px;
-  }
-}
-@media (max-width: 768px) {
-
-  /* Keep the ⓘ icon fixed in the top-right of the box */
-  .info-tooltip {
-    position: absolute;
-  }
-
-  /* Move tooltip fully to the LEFT and keep it in frame */
-  .info-tooltip .tooltip-content {
-    position: fixed;
-    top: auto;
-    bottom: auto;
-    right: 16px;      /* anchors from the right edge */
-    left: 16px;       /* prevents overflow on small phones */
-    transform: none;  /* no centering */
-    width: auto;
-    max-width: calc(100vw - 32px);
   }
 }
