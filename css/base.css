@@ -14,37 +14,19 @@
 }
 
 /* ===============================
-   HARD VIEWPORT CLAMP (CRITICAL)
+   ROOT WIDTH LOCK (NO DRIFT)
    =============================== */
 
-html {
-  width: 100%;
-  overflow-x: hidden;
-}
-
+html,
 body {
-  width: 100%;
-  max-width: 100vw;
-  overflow-x: hidden;
   margin: 0;
   padding: 0;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  color: var(--text);
-  background:
-    linear-gradient(rgba(11, 18, 32, 0.85), rgba(11, 18, 32, 0.85)),
-    url("../images/background.jpg") center / cover no-repeat fixed;
-}
-
-/* Force all sections to respect viewport */
-main,
-section,
-article,
-.container {
+  width: 100%;
   max-width: 100vw;
   overflow-x: hidden;
 }
 
-/* Media safety */
+/* Media elements can never exceed viewport */
 img,
 canvas,
 iframe,
@@ -52,6 +34,14 @@ video {
   max-width: 100%;
   height: auto;
   display: block;
+}
+
+body {
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color: var(--text);
+  background:
+    linear-gradient(rgba(11, 18, 32, 0.85), rgba(11, 18, 32, 0.85)),
+    url("../images/background.jpg") center / cover no-repeat fixed;
 }
 
 /* Layout */
@@ -104,12 +94,12 @@ video {
 
 /* Hero */
 .hero {
-  padding: 72px 0 56px;
+  padding: 80px 0 64px;
   text-align: center;
 }
 
 .hero h1 {
-  font-size: 2.4rem;
+  font-size: 2.8rem;
   margin-bottom: 16px;
   word-wrap: break-word;
 }
@@ -118,7 +108,7 @@ video {
   max-width: 720px;
   margin: 0 auto;
   color: var(--muted);
-  font-size: 1.05rem;
+  font-size: 1.15rem;
   padding: 0 12px;
 }
 
@@ -134,24 +124,24 @@ video {
 }
 
 /* ===============================
-   MARKET BOX + TOOLTIP (LOCKED)
+   MARKET BOX + INFO ICON
    =============================== */
 
 .market-box {
   position: relative;
 }
 
-/* Lock icon position relative to card */
+/* Header space for icon */
 .market-box h2 {
   position: relative;
-  padding-right: 28px;
+  padding-right: 32px;
 }
 
+/* Icon stays top-right always */
 .info-tooltip {
   position: absolute;
-  top: 50%;
+  top: 0.2rem;
   right: 0;
-  transform: translateY(-50%);
   cursor: pointer;
 }
 
@@ -160,31 +150,34 @@ video {
   opacity: 0.85;
 }
 
-/* Tooltip */
+/* Tooltip base */
 .tooltip-content {
   display: none;
   position: absolute;
-  top: 120%;
+  top: 140%;
   right: 0;
   background: #0f172a;
   color: #e5e7eb;
   padding: 10px 12px;
   border-radius: 8px;
-  width: min(90vw, 300px);
+  width: 280px;
   font-size: 0.85rem;
   line-height: 1.4;
   z-index: 100;
   border: 1px solid var(--line);
 }
 
-/* Show states */
+/* Show tooltip */
 .info-tooltip:hover .tooltip-content,
 .info-tooltip:focus .tooltip-content,
 .info-tooltip:active .tooltip-content {
   display: block;
 }
 
-/* Footer */
+/* ===============================
+   FOOTER
+   =============================== */
+
 .site-footer {
   width: 100%;
   background-color: #0f172a;
@@ -194,7 +187,7 @@ video {
 }
 
 /* ===============================
-   MOBILE CORRECTIONS
+   MOBILE FIXES ONLY
    =============================== */
 
 @media (max-width: 768px) {
@@ -203,10 +196,17 @@ video {
     background-attachment: scroll;
   }
 
-  /* Prevent overscroll bounce */
+  /* Prevent horizontal overscroll */
   body,
   main {
     overscroll-behavior-x: none;
+  }
+
+  /* Tooltip must stay in viewport */
+  .tooltip-content {
+    left: 0;
+    right: auto;
+    width: min(90vw, 300px);
   }
 
   .container {
