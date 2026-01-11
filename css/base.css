@@ -44,7 +44,10 @@ body {
     url("../images/background.jpg") center / cover no-repeat fixed;
 }
 
-/* Layout */
+/* ===============================
+   LAYOUT
+   =============================== */
+
 .container {
   max-width: var(--max);
   margin: 0 auto;
@@ -92,7 +95,10 @@ body {
   color: var(--text);
 }
 
-/* Hero */
+/* ===============================
+   HERO
+   =============================== */
+
 .hero {
   padding: 80px 0 64px;
   text-align: center;
@@ -124,20 +130,20 @@ body {
 }
 
 /* ===============================
-   MARKET BOX + INFO ICON
+   MARKET BOX + TOOLTIP (FIXED)
    =============================== */
 
 .market-box {
   position: relative;
 }
 
-/* Space for icon */
+/* Reserve space for ⓘ */
 .market-box h2 {
   position: relative;
-  padding-right: 32px;
+  padding-right: 36px;
 }
 
-/* ⓘ icon fixed top-right */
+/* ⓘ icon stays top-right */
 .info-tooltip {
   position: absolute;
   top: 0.25rem;
@@ -145,25 +151,23 @@ body {
   cursor: pointer;
 }
 
-.info-tooltip > span[aria-hidden="true"] {
-  font-size: 0.9rem;
-  opacity: 0.85;
-}
-
-/* Tooltip base (desktop) */
+/* Tooltip text */
 .tooltip-content {
   display: none;
   position: absolute;
   top: 140%;
   right: 0;
+  transform: translateX(-100%);
+  margin-right: 8px;
   background: #0f172a;
   color: #e5e7eb;
   padding: 10px 12px;
   border-radius: 8px;
   width: 280px;
+  max-width: calc(100vw - 32px);
   font-size: 0.85rem;
   line-height: 1.4;
-  z-index: 100;
+  z-index: 999;
   border: 1px solid var(--line);
 }
 
@@ -174,7 +178,10 @@ body {
   display: block;
 }
 
-/* Footer */
+/* ===============================
+   FOOTER
+   =============================== */
+
 .site-footer {
   width: 100%;
   background-color: #0f172a;
@@ -184,7 +191,7 @@ body {
 }
 
 /* ===============================
-   MOBILE ONLY FIXES (AUTHORITATIVE)
+   MOBILE FIXES
    =============================== */
 
 @media (max-width: 768px) {
@@ -193,22 +200,9 @@ body {
     background-attachment: scroll;
   }
 
-  /* Kill horizontal panning */
   body,
   main {
     overscroll-behavior-x: none;
-  }
-
-  /* Tooltip stays fully in frame, shifted left */
-  .info-tooltip .tooltip-content {
-    position: fixed;
-    left: 16px;
-    right: 16px;
-    top: auto;
-    bottom: auto;
-    transform: none;
-    width: auto;
-    max-width: calc(100vw - 32px);
   }
 
   .container {
