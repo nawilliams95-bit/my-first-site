@@ -14,18 +14,20 @@
 }
 
 /* ===============================
-   GLOBAL OVERFLOW LOCK (CRITICAL)
+   HARD VIEWPORT CLAMP (CRITICAL)
    =============================== */
 
-html,
-body {
-  margin: 0;
-  padding: 0;
-  max-width: 100%;
+html {
+  width: 100%;
   overflow-x: hidden;
 }
 
 body {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   color: var(--text);
   background:
@@ -33,7 +35,16 @@ body {
     url("../images/background.jpg") center / cover no-repeat fixed;
 }
 
-/* Prevent media overflow */
+/* Force all sections to respect viewport */
+main,
+section,
+article,
+.container {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* Media safety */
 img,
 canvas,
 iframe,
@@ -93,20 +104,22 @@ video {
 
 /* Hero */
 .hero {
-  padding: 80px 0 64px;
+  padding: 72px 0 56px;
   text-align: center;
 }
 
 .hero h1 {
-  font-size: 2.8rem;
+  font-size: 2.4rem;
   margin-bottom: 16px;
+  word-wrap: break-word;
 }
 
 .subhead {
   max-width: 720px;
   margin: 0 auto;
   color: var(--muted);
-  font-size: 1.15rem;
+  font-size: 1.05rem;
+  padding: 0 12px;
 }
 
 /* Buttons */
@@ -121,14 +134,24 @@ video {
 }
 
 /* ===============================
-   INFO TOOLTIP (MOBILE SAFE)
+   MARKET BOX + TOOLTIP (LOCKED)
    =============================== */
 
-.info-tooltip {
+.market-box {
   position: relative;
-  display: inline-flex;
-  align-items: center;
-  margin-left: 6px;
+}
+
+/* Lock icon position relative to card */
+.market-box h2 {
+  position: relative;
+  padding-right: 28px;
+}
+
+.info-tooltip {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
   cursor: pointer;
 }
 
@@ -137,29 +160,25 @@ video {
   opacity: 0.85;
 }
 
+/* Tooltip */
 .tooltip-content {
   display: none;
   position: absolute;
-  top: 130%;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 120%;
+  right: 0;
   background: #0f172a;
   color: #e5e7eb;
   padding: 10px 12px;
   border-radius: 8px;
-  width: 260px;
+  width: min(90vw, 300px);
   font-size: 0.85rem;
   line-height: 1.4;
-  z-index: 50;
+  z-index: 100;
   border: 1px solid var(--line);
 }
 
-/* Desktop hover */
-.info-tooltip:hover .tooltip-content {
-  display: block;
-}
-
-/* Mobile tap + keyboard */
+/* Show states */
+.info-tooltip:hover .tooltip-content,
 .info-tooltip:focus .tooltip-content,
 .info-tooltip:active .tooltip-content {
   display: block;
@@ -174,48 +193,8 @@ video {
   margin-top: 64px;
 }
 
-.site-footer .footer-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
-  text-align: center;
-}
-
-.footer-nav {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 22px;
-}
-
-.footer-nav a {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: #e5e7eb;
-  text-decoration: none;
-}
-
-.footer-nav a:hover {
-  text-decoration: underline;
-}
-
-.footer-disclaimer {
-  max-width: 900px;
-  margin: 0 auto;
-  font-size: 0.85rem;
-  line-height: 1.6;
-  color: #cbd5e1;
-}
-
-.footer-meta {
-  font-size: 0.75rem;
-  color: #94a3b8;
-}
-
 /* ===============================
-   MOBILE HARDENING
+   MOBILE CORRECTIONS
    =============================== */
 
 @media (max-width: 768px) {
@@ -224,18 +203,14 @@ video {
     background-attachment: scroll;
   }
 
-  .container,
-  .market-box,
-  .news-item {
-    overflow-x: hidden;
+  /* Prevent overscroll bounce */
+  body,
+  main {
+    overscroll-behavior-x: none;
   }
 
-  /* Tooltip stays on screen */
-  .tooltip-content {
-    left: 0;
-    transform: none;
-    width: min(90vw, 320px);
-    max-width: 100%;
+  .container {
+    padding: 0 14px;
   }
 
   .header-inner {
@@ -264,9 +239,6 @@ video {
 
   .nav a {
     padding: 10px 14px;
-    border-radius: 8px;
-    background: var(--panel);
-    border: 1px solid var(--line);
     margin: 0;
   }
 
@@ -275,7 +247,7 @@ video {
   }
 
   .hero h1 {
-    font-size: 2rem;
+    font-size: 1.9rem;
   }
 
   html {
