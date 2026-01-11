@@ -274,3 +274,23 @@ body {
     padding: 0 12px;
   }
 }
+@media (max-width: 768px) {
+
+  /* Keep icon where it is */
+  .info-tooltip {
+    position: absolute;
+  }
+
+  /* Force tooltip fully inside viewport */
+  .info-tooltip .tooltip-content {
+    position: fixed;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    bottom: auto;
+    top: auto;
+    margin-top: 12px;
+    width: calc(100vw - 32px);
+    max-width: 360px;
+  }
+}
