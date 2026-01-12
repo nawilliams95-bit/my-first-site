@@ -319,3 +319,23 @@ body {
     line-height: 1.5;
   }
 }
+/* ===============================
+   FINAL MOBILE FOOTER FIX
+   =============================== */
+
+@media (max-width: 768px) {
+
+  footer.site-footer .footer-nav {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+
+  footer.site-footer .footer-nav a {
+    display: block;
+    width: 100%;
+    text-align: center;
+    font-size: 0.9rem;
+    padding: 8px 0;
+  }
+}
