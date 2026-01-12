@@ -54,7 +54,7 @@ body {
 }
 
 /* ===============================
-   HEADER
+   HEADER (DESKTOP)
    =============================== */
 
 .site-header {
@@ -80,6 +80,8 @@ body {
 .brand-logo {
   max-height: 72px;
   width: auto;
+  display: block;
+  max-width: 100%;
 }
 
 .brand-name {
@@ -149,57 +151,7 @@ body {
 }
 
 /* ===============================
-   MOBILE HEADER + NAV FIX
-   =============================== */
-
-@media (max-width: 768px) {
-
-  .header-inner {
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .brand {
-    justify-content: center;
-    gap: 10px;
-  }
-
-  .brand-logo {
-    max-height: 40px;
-  }
-
-  .brand-name {
-    font-size: 1.1rem;
-    text-align: center;
-    white-space: normal;
-  }
-
-  .nav {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-  }
-
-  .nav a {
-    font-size: 0.85rem;
-    padding: 6px 10px;
-  }
-
-  .hero {
-    padding: 48px 0 40px;
-  }
-
-  .hero h1 {
-    font-size: 2rem;
-  }
-
-  .subhead {
-    font-size: 1rem;
-  }
-}
-/* ===============================
-   FOOTER
+   FOOTER (DESKTOP)
    =============================== */
 
 .site-footer {
@@ -233,10 +185,6 @@ body {
   color: var(--text);
 }
 
-.footer-text {
-  max-width: 720px;
-}
-
 .footer-disclaimer p {
   margin: 0 0 6px;
   font-size: 0.75rem;
@@ -251,91 +199,97 @@ body {
 }
 
 /* ===============================
-   FOOTER MOBILE LOCK
+   MOBILE HEADER (FINAL)
+   =============================== */
+
+@media (max-width: 768px) {
+
+  .header-inner {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 12px 0;
+  }
+
+  .brand {
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-align: center;
+    max-width: 100%;
+  }
+
+  .brand-logo {
+    max-height: 36px;
+  }
+
+  .brand-name {
+    font-size: 1.05rem;
+    line-height: 1.25;
+    white-space: normal;
+  }
+
+  .nav {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .nav a {
+    font-size: 0.85rem;
+    padding: 6px 10px;
+    white-space: nowrap;
+  }
+
+  .hero {
+    padding: 48px 0 40px;
+  }
+
+  .hero h1 {
+    font-size: 2rem;
+  }
+
+  .subhead {
+    font-size: 1rem;
+  }
+}
+
+/* ===============================
+   MOBILE FOOTER (FINAL)
    =============================== */
 
 @media (max-width: 768px) {
 
   .site-footer {
-    padding: 28px 16px;
-  }
-
-  .footer-nav {
-    gap: 12px;
-  }
-
-  .footer-nav a {
-    font-size: 0.85rem;
-  }
-}
-/* ===============================
-   HARD MOBILE FOOTER OVERRIDE
-   =============================== */
-
-@media (max-width: 768px) {
-
-  footer.site-footer {
     width: 100%;
     padding: 24px 16px;
   }
 
-  footer.site-footer .container {
-    padding-left: 0;
-    padding-right: 0;
+  .footer-inner {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 16px;
   }
 
-  footer.site-footer .footer-inner {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    text-align: center !important;
-    gap: 16px !important;
+  .footer-nav {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
     width: 100%;
   }
 
-  footer.site-footer .footer-nav {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    justify-content: center !important;
-    align-items: center !important;
-    gap: 10px !important;
-    width: 100%;
+  .footer-nav a {
+    font-size: 0.9rem;
+    padding: 6px 0;
   }
 
-  footer.site-footer .footer-nav a {
-    display: inline-block;
-    font-size: 0.85rem !important;
-    padding: 6px 8px;
-    white-space: nowrap;
-  }
-
-  footer.site-footer .footer-disclaimer,
-  footer.site-footer .footer-meta {
+  .footer-disclaimer,
+  .footer-meta {
     max-width: 90%;
-    margin-left: auto;
-    margin-right: auto;
     font-size: 0.75rem;
     line-height: 1.5;
-  }
-}
-/* ===============================
-   FINAL MOBILE FOOTER FIX
-   =============================== */
-
-@media (max-width: 768px) {
-
-  footer.site-footer .footer-nav {
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 8px !important;
-  }
-
-  footer.site-footer .footer-nav a {
-    display: block;
-    width: 100%;
-    text-align: center;
-    font-size: 0.9rem;
-    padding: 8px 0;
   }
 }
