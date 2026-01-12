@@ -153,7 +153,7 @@
 }
 
 /* ======================================
-   TREASURY CHART (STABLE FIX)
+   TREASURY CHART
    ====================================== */
 
 .treasury-chart-wrap {
@@ -170,7 +170,7 @@
 }
 
 /* ======================================
-   INFO TOOLTIP (FINAL CLEAN VERSION)
+   INFO TOOLTIP
    ====================================== */
 
 .info-tooltip {
@@ -220,15 +220,47 @@
 }
 
 /* ======================================
-   MOBILE
+   MOBILE FIXES
    ====================================== */
 
 @media (max-width: 900px) {
-  .home-intelligence .market-section {
-    grid-template-columns: 1fr;
+
+  /* NEWS STACK */
+  .home-intelligence .news-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
   }
 
-  .home-intelligence .news-item {
-    align-items: flex-start;
+  .home-intelligence .news-thumb {
+    width: 100%;
+    height: 160px;
+    border-radius: 10px;
+  }
+
+  .home-intelligence .news-section h2 {
+    font-size: 1.6rem;
+  }
+
+  /* MARKET STACK */
+  .home-intelligence .market-section {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .home-intelligence .market-box {
+    padding: 20px;
+  }
+
+  .home-intelligence .market-box h2 {
+    font-size: 1.3rem;
+  }
+
+  .home-intelligence .treasury-value {
+    font-size: 2rem;
+  }
+
+  .treasury-chart-wrap {
+    height: 140px;
   }
 }
