@@ -2,7 +2,13 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- CRITICAL MOBILE FIX -->
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+
     <title>Realty Data Labs | Real Estate Intelligence</title>
 
     <!-- GLOBAL + HOME CSS -->
@@ -13,25 +19,26 @@
   <body>
     <!-- HEADER -->
     <header class="site-header">
-  <div class="container header-inner">
-    <a class="brand" href="index.html">
-      <img
-        class="brand-logo"
-        src="images/logo.jpg"
-        alt="Realty Data Labs logo"
-      />
-      <span class="brand-name">Realty Data Labs</span>
-    </a>
+      <div class="container header-inner">
+        <a class="brand" href="index.html">
+          <img
+            class="brand-logo"
+            src="images/logo.jpg"
+            alt="Realty Data Labs logo"
+          />
+          <span class="brand-name">Realty Data Labs</span>
+        </a>
 
-    <nav class="nav">
-      <a href="index.html" class="active">Home</a>
-      <a href="auth.html" class="nav-cta">Sign In</a>
-      <a href="analyzer.html">Property Analyzer</a>
-      <a href="about.html">About</a>
-      <a href="contact.html">Contact</a>
-    </nav>
-  </div>
-</header>
+        <nav class="nav" aria-label="Primary navigation">
+          <a href="index.html" class="active">Home</a>
+          <a href="auth.html">Sign In</a>
+          <a href="analyzer.html">Property Analyzer</a>
+          <a href="about.html">About</a>
+          <a href="contact.html">Contact</a>
+        </nav>
+      </div>
+    </header>
+
     <main>
       <!-- HERO -->
       <section class="hero">
@@ -47,13 +54,11 @@
       <!-- INTELLIGENCE -->
       <section class="home-intelligence">
         <div class="container">
-
           <!-- NEWS -->
           <div class="news-section">
             <h2>Today’s Real Estate and Economic News</h2>
 
             <div class="news-feed">
-              <!-- Placeholder item populated by news.js -->
               <article class="news-item">
                 <img
                   class="news-thumb"
@@ -71,7 +76,6 @@
 
           <!-- MARKET DATA -->
           <div class="market-section">
-
             <!-- MORTGAGE RATES -->
             <div class="market-box">
               <h2>National Mortgage Rate Averages</h2>
@@ -118,7 +122,6 @@
                 30 day yield trend. Source: U.S. Treasury via FRED.
               </p>
             </div>
-
           </div>
         </div>
       </section>
@@ -127,7 +130,7 @@
     <!-- FOOTER -->
     <footer class="site-footer">
       <div class="container footer-inner">
-        <nav class="footer-nav">
+        <nav class="footer-nav" aria-label="Footer navigation">
           <a href="index.html">Home</a>
           <a href="auth.html">Sign In</a>
           <a href="analyzer.html">Property Analyzer</a>
@@ -141,7 +144,8 @@
             and economic information for educational purposes only.
           </p>
           <p>
-            The author of this site is a licensed real estate agent in the State of Georgia.
+            The author of this site is a licensed real estate agent in the State
+            of Georgia.
           </p>
         </div>
 
