@@ -1,4 +1,6 @@
-/* CONTACT PAGE ONLY */
+/* ===============================
+   CONTACT PAGE ONLY
+   =============================== */
 
 /* Page-level centering */
 .contact-page {
@@ -14,6 +16,21 @@
   max-width: 700px;
 }
 
+/* Page header */
+.page-center {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.page-center h1 {
+  margin-bottom: 0.4rem;
+}
+
+.subhead {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
 /* Wrapper */
 .contact-wrap {
   width: 100%;
@@ -24,39 +41,59 @@
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  padding: 32px;
+  padding: 2rem;
 }
 
 /* Headings */
 .contact-card h2 {
   text-align: center;
-  margin-bottom: 24px;
+  margin-bottom: 1.5rem;
 }
 
 /* Fields */
 .contact-card .field {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  margin-bottom: 16px;
+  gap: 0.35rem;
+  margin-bottom: 1.25rem;
 }
 
-.contact-card label {
-  font-size: 14px;
+.contact-card .label {
+  font-size: 0.85rem;
   color: var(--muted);
 }
 
 /* Inputs */
 .contact-card input,
 .contact-card textarea {
-  padding: 12px 14px;
+  padding: 0.75rem 0.85rem;
   border-radius: 10px;
   border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.06);
   color: var(--text);
 }
 
 .contact-card textarea {
   min-height: 180px;
   resize: vertical;
+}
+
+/* Button row */
+.form-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.form-row .btn {
+  width: 100%;
+  max-width: 260px;
+}
+
+.muted {
+  font-size: 0.8rem;
+  color: var(--muted);
+  text-align: center;
 }
