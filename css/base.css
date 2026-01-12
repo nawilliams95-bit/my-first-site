@@ -202,3 +202,53 @@ body {
     gap: 16px;
   }
 }
+/* ===============================
+   MOBILE NAV STRUCTURE
+   =============================== */
+
+.nav-toggle {
+  display: block;
+  width: 100%;
+  text-align: center;
+  margin-top: 8px;
+}
+
+.nav-toggle summary {
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--text);
+  list-style: none;
+}
+
+.nav-toggle summary::-webkit-details-marker {
+  display: none;
+}
+
+.nav-mobile {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+/* Hide desktop nav on mobile */
+.nav-desktop {
+  display: none;
+}
+
+/* ===============================
+   DESKTOP NAV RESTORE
+   =============================== */
+
+@media (min-width: 900px) {
+
+  .nav-toggle {
+    display: none;
+  }
+
+  .nav-desktop {
+    display: flex;
+    gap: 16px;
+  }
+
+}

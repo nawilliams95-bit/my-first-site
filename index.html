@@ -18,26 +18,44 @@
 
   <body>
     <!-- HEADER -->
-    <header class="site-header">
-      <div class="container header-inner">
-        <a class="brand" href="index.html">
-          <img
-            class="brand-logo"
-            src="images/logo.jpg"
-            alt="Realty Data Labs logo"
-          />
-          <span class="brand-name">Realty Data Labs</span>
-        </a>
+   <header class="site-header">
+  <div class="container header-inner">
 
-        <nav class="nav" aria-label="Primary navigation">
-          <a href="index.html" class="active">Home</a>
-          <a href="auth.html">Sign In</a>
-          <a href="analyzer.html">Property Analyzer</a>
-          <a href="about.html">About</a>
-          <a href="contact.html">Contact</a>
-        </nav>
-      </div>
-    </header>
+    <!-- BRAND -->
+    <a class="brand" href="index.html">
+      <img
+        class="brand-logo"
+        src="images/logo.jpg"
+        alt="Realty Data Labs logo"
+      />
+      <span class="brand-name">Realty Data Labs</span>
+    </a>
+
+    <!-- MOBILE NAV (NO JS) -->
+    <details class="nav-toggle">
+      <summary aria-label="Open navigation menu">Menu</summary>
+
+      <nav class="nav nav-mobile">
+        <a href="index.html" class="active">Home</a>
+        <a href="auth.html">Sign In</a>
+        <a href="analyzer.html">Property Analyzer</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+    </details>
+
+    <!-- DESKTOP NAV -->
+    <nav class="nav nav-desktop">
+      <a href="index.html" class="active">Home</a>
+      <a href="auth.html">Sign In</a>
+      <a href="analyzer.html">Property Analyzer</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+
+  </div>
+</header>
+
 
     <main>
       <!-- HERO -->
