@@ -1,3 +1,58 @@
+:root {
+  --bg: #0b1220;
+  --panel: rgba(255, 255, 255, 0.06);
+  --panel-strong: rgba(255, 255, 255, 0.1);
+  --text: rgba(255, 255, 255, 0.92);
+  --muted: rgba(255, 255, 255, 0.7);
+  --line: rgba(255, 255, 255, 0.14);
+  --radius: 14px;
+  --max: 1280px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* ===============================
+   GLOBAL WIDTH LOCK
+   =============================== */
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+img,
+canvas,
+iframe,
+video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+body {
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color: var(--text);
+  background:
+    linear-gradient(rgba(11, 18, 32, 0.85), rgba(11, 18, 32, 0.85)),
+    url("../images/background.jpg") center / cover no-repeat fixed;
+}
+
+/* ===============================
+   LAYOUT
+   =============================== */
+
+.container {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
 /* ===============================
    HEADER (DESKTOP)
    =============================== */
@@ -14,10 +69,13 @@
   padding: 16px 0;
 }
 
-.header-brand,
-.header-nav {
+/* Critical flex safety */
+.header-inner > .brand,
+.header-inner > .nav {
   min-width: 0;
 }
+
+/* Brand */
 
 .brand {
   display: flex;
@@ -31,6 +89,7 @@
   max-height: 72px;
   width: auto;
   display: block;
+  max-width: 100%;
 }
 
 .brand-name {
@@ -39,6 +98,8 @@
   line-height: 1.2;
   white-space: nowrap;
 }
+
+/* Nav */
 
 .nav {
   display: flex;
@@ -57,21 +118,104 @@
 }
 
 /* ===============================
-   MOBILE HEADER (LOCKED)
+   HERO
+   =============================== */
+
+.hero {
+  padding: 80px 0 64px;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: 2.8rem;
+  margin-bottom: 16px;
+}
+
+.subhead {
+  max-width: 720px;
+  margin: 0 auto;
+  color: var(--muted);
+  font-size: 1.15rem;
+  padding: 0 12px;
+}
+
+/* ===============================
+   MARKET BOX
+   =============================== */
+
+.market-box {
+  position: relative;
+}
+
+.market-box h2 {
+  margin-bottom: 6px;
+}
+
+.data-disclaimer {
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--muted);
+  max-width: 560px;
+  margin-bottom: 10px;
+}
+
+/* ===============================
+   FOOTER (DESKTOP)
+   =============================== */
+
+.site-footer {
+  border-top: 1px solid var(--line);
+  background: rgba(11, 18, 32, 0.85);
+  padding: 32px 0;
+}
+
+.footer-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+  text-align: center;
+}
+
+.footer-nav {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.footer-nav a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.footer-nav a:hover {
+  color: var(--text);
+}
+
+.footer-disclaimer p {
+  margin: 0 0 6px;
+  font-size: 0.75rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.footer-meta {
+  margin-top: 8px;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+/* ===============================
+   MOBILE HEADER (FINAL, LOCKED)
    =============================== */
 
 @media (max-width: 900px) {
 
   .header-inner {
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .header-brand {
-    width: 100%;
-    display: flex;
-    justify-content: center;
+    display: block;
+    padding: 12px 0;
   }
 
   .brand {
@@ -79,6 +223,7 @@
     align-items: center;
     gap: 6px;
     text-align: center;
+    margin-bottom: 10px;
   }
 
   .brand-logo {
@@ -87,17 +232,14 @@
 
   .brand-name {
     font-size: 1.05rem;
+    line-height: 1.25;
     white-space: normal;
   }
 
-  .header-nav {
-    width: 100%;
-  }
-
   .nav {
-    width: 100%;
-    justify-content: center;
+    display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     gap: 8px;
   }
 
@@ -105,5 +247,55 @@
     font-size: 0.85rem;
     padding: 6px 10px;
     white-space: nowrap;
+  }
+
+  .hero {
+    padding: 48px 0 40px;
+  }
+
+  .hero h1 {
+    font-size: 2rem;
+  }
+
+  .subhead {
+    font-size: 1rem;
+  }
+}
+
+/* ===============================
+   MOBILE FOOTER
+   =============================== */
+
+@media (max-width: 768px) {
+
+  .site-footer {
+    width: 100%;
+    padding: 24px 16px;
+  }
+
+  .footer-inner {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 16px;
+  }
+
+  .footer-nav {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .footer-nav a {
+    font-size: 0.9rem;
+    padding: 6px 0;
+  }
+
+  .footer-disclaimer,
+  .footer-meta {
+    max-width: 90%;
+    font-size: 0.75rem;
+    line-height: 1.5;
   }
 }
