@@ -52,11 +52,20 @@
           <!-- NEWS -->
           <div class="news-section">
             <h2>Today’s Real Estate and Economic News</h2>
+
             <div class="news-feed">
+              <!-- Placeholder item populated by news.js -->
               <article class="news-item">
-                <span class="news-source">Loading</span>
-                <h3>Fetching the latest housing and economic headlines…</h3>
-                <time>—</time>
+                <img
+                  class="news-thumb"
+                  src="images/placeholder-news.jpg"
+                  alt=""
+                />
+                <div class="news-content">
+                  <span class="news-source">Loading</span>
+                  <h3>Fetching the latest housing and economic headlines…</h3>
+                  <time>Updating</time>
+                </div>
               </article>
             </div>
           </div>
@@ -70,26 +79,23 @@
 
               <p class="data-disclaimer">
                 Rates shown are Freddie Mac Primary Mortgage Market Survey (PMMS)
-                national averages. PMMS reflects lender-reported pricing trends
+                national averages. PMMS reflects lender reported pricing trends
                 and is published weekly. Rates are benchmarks only and not loan
                 offers.
               </p>
 
               <p class="data-note">
-                Freddie Mac PMMS national averages. Updated weekly.
-              </p>
-              <p class="data-note">
-                As of <span id="pmmsAsOf">—</span>. Next update expected
-                <span id="pmmsNext">—</span>.
+                As of <span id="pmmsAsOf">Loading</span>.
+                Next update expected <span id="pmmsNext">Loading</span>.
               </p>
 
               <table class="rates-table">
                 <tr>
-                  <td>30-Year Fixed</td>
+                  <td>30 Year Fixed</td>
                   <td id="rate30">—</td>
                 </tr>
                 <tr>
-                  <td>15-Year Fixed</td>
+                  <td>15 Year Fixed</td>
                   <td id="rate15">—</td>
                 </tr>
                 <tr>
@@ -101,7 +107,7 @@
 
             <!-- TREASURY -->
             <div class="market-box">
-              <h2>10-Year Treasury Yield</h2>
+              <h2>10 Year Treasury Yield</h2>
 
               <div class="treasury-value" id="treasury10">—</div>
 
@@ -110,7 +116,7 @@
               </div>
 
               <p class="data-note">
-                30-day yield trend. Source: U.S. Treasury via FRED.
+                30 day yield trend. Source: U.S. Treasury via FRED.
               </p>
             </div>
 
@@ -148,7 +154,8 @@
 
     <!-- FOOTER YEAR -->
     <script>
-      document.getElementById("year").textContent = new Date().getFullYear();
+      document.getElementById("year").textContent =
+        new Date().getFullYear();
     </script>
 
     <!-- PMMS DATE LOGIC -->
