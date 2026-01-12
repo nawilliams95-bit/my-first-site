@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thank You | Realty Data Labs</title>
+
+    <link rel="stylesheet" href="css/base.css" />
+  </head>
+
+  <body>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="index.html">
+          <img class="brand-logo" src="images/logo.jpg" alt="Realty Data Labs logo" />
+          <span class="brand-name">Realty Data Labs</span>
+        </a>
+      </div>
+    </header>
+
+    <main style="padding: 6rem 1.5rem; text-align: center;">
+      <h1>Message received</h1>
+      <p style="max-width: 520px; margin: 1rem auto;">
+        Thanks for reaching out. Your message has been delivered and will be reviewed.
+      </p>
+
+      <a href="index.html" class="btn" style="margin-top: 2rem;">
+        Back to home
+      </a>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <p>© <span id="year"></span> Realty Data Labs</p>
+      </div>
+    </footer>
+
+    <script>
+      document.getElementById("year").textContent =
+        new Date().getFullYear();
+    </script>
+  </body>
+</html>
