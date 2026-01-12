@@ -11,6 +11,7 @@
 </head>
 <body>
 
+<!-- HEADER -->
 <header class="site-header">
   <div class="container header-inner">
     <a class="brand" href="index.html">
@@ -24,27 +25,27 @@
 
     <nav class="nav">
       <a href="index.html">Home</a>
-      <a href="auth.html" class="active">Sign In</a>
       <a href="analyzer.html">Property Analyzer</a>
       <a href="about.html">About</a>
       <a href="contact.html">Contact</a>
+      <a href="auth.html" class="nav-cta active">Sign In / Sign Up</a>
     </nav>
   </div>
 </header>
 
-<!-- CENTERED AUTH PAGE -->
+<!-- AUTH PAGE -->
 <main class="auth-page">
   <div class="auth-center">
 
     <div class="page-center">
-      <h1>Sign in / Sign up</h1>
+      <h1>Sign In / Sign Up</h1>
       <p class="subhead">Account features coming soon.</p>
     </div>
 
     <div class="card auth-wrap">
       <div class="auth-tabs">
-        <button class="auth-tab is-active" data-tab="signin">Sign in</button>
-        <button class="auth-tab" data-tab="signup">Sign up</button>
+        <button class="auth-tab is-active" data-tab="signin">Sign In</button>
+        <button class="auth-tab" data-tab="signup">Sign Up</button>
       </div>
 
       <!-- SIGN IN -->
@@ -59,7 +60,7 @@
           <input class="auth-input" type="password" />
         </label>
 
-        <button class="btn">Sign in</button>
+        <button class="btn">Sign In</button>
       </div>
 
       <!-- SIGN UP -->
@@ -79,26 +80,25 @@
           <input class="auth-input" type="password" />
         </label>
 
-        <button class="btn">Create account</button>
+        <button class="btn">Create Account</button>
       </div>
     </div>
 
   </div>
 </main>
 
+<!-- FOOTER -->
 <footer class="site-footer">
   <div class="container footer-inner">
 
-    <!-- FOOTER NAV -->
     <nav class="footer-nav">
       <a href="index.html">Home</a>
-      <a href="auth.html">Sign In</a>
+      <a href="auth.html">Sign In / Sign Up</a>
       <a href="analyzer.html">Property Analyzer</a>
       <a href="about.html">About</a>
       <a href="contact.html">Contact</a>
     </nav>
 
-    <!-- DISCLAIMER -->
     <div class="footer-disclaimer">
       <p>
         Realty Data Labs provides general real estate, housing market, and economic
@@ -109,7 +109,6 @@
       </p>
     </div>
 
-    <!-- META -->
     <div class="footer-meta">
       <p>© <span id="year"></span> Realty Data Labs</p>
     </div>
@@ -120,17 +119,17 @@
 <script>
   document.getElementById("year").textContent = new Date().getFullYear();
 
-  document.querySelectorAll(".auth-tab").forEach(btn => {
-    btn.onclick = () => {
-      document.querySelectorAll(".auth-tab").forEach(b =>
-        b.classList.remove("is-active")
-      );
-      document.querySelectorAll(".auth-panel").forEach(p =>
-        p.classList.remove("is-active")
-      );
+  document.querySelectorAll(".auth-tab").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      document.querySelectorAll(".auth-tab").forEach(function (b) {
+        b.classList.remove("is-active");
+      });
+      document.querySelectorAll(".auth-panel").forEach(function (p) {
+        p.classList.remove("is-active");
+      });
       btn.classList.add("is-active");
       document.getElementById(btn.dataset.tab).classList.add("is-active");
-    };
+    });
   });
 </script>
 

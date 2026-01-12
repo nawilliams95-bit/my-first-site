@@ -1,49 +1,76 @@
-/* AUTH PAGE ONLY */
+/* ===============================
+   AUTH PAGE ONLY
+   =============================== */
 
 /* Page-level centering */
 .auth-page {
-  min-height: calc(100vh - 80px); /* header height safety */
+  min-height: calc(100vh - 80px);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  padding: 2rem 1rem;
 }
 
 /* Constrain auth content width */
 .auth-center {
   width: 100%;
-  max-width: 520px;
+  max-width: 460px;
 }
 
-/* Auth card wrapper */
+/* Page header above card */
+.page-center {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.page-center h1 {
+  margin-bottom: 0.25rem;
+}
+
+.subhead {
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+/* ===============================
+   AUTH CARD
+   =============================== */
+
 .auth-wrap {
   width: 100%;
+  padding: 1.75rem;
 }
 
-/* Tabs */
+/* ===============================
+   TABS
+   =============================== */
+
 .auth-tabs {
   display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--line);
 }
 
 .auth-tab {
   flex: 1;
-  padding: 10px;
-  border-radius: 10px;
-  border: 1px solid var(--line);
-  background: var(--panel);
+  padding: 0.75rem;
+  background: none;
+  border: none;
   color: var(--muted);
+  font-weight: 600;
   cursor: pointer;
   text-align: center;
 }
 
 .auth-tab.is-active {
   color: var(--text);
-  background: var(--panel-strong);
+  border-bottom: 2px solid var(--text);
 }
 
-/* Panels */
+/* ===============================
+   PANELS
+   =============================== */
+
 .auth-panel {
   display: none;
 }
@@ -52,13 +79,36 @@
   display: block;
 }
 
-/* Inputs */
+/* ===============================
+   FIELDS
+   =============================== */
+
+.field {
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 0.25rem;
+}
+
 .auth-input {
   width: 100%;
-  padding: 12px 14px;
-  border-radius: 10px;
+  padding: 0.65rem 0.75rem;
+  border-radius: 8px;
   border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.06);
   color: var(--text);
-  margin-bottom: 14px;
+}
+
+/* ===============================
+   BUTTON
+   =============================== */
+
+.btn {
+  width: 100%;
+  margin-top: 1rem;
 }
