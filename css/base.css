@@ -67,6 +67,15 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 16px 0;
+
+  /* CRITICAL FIX */
+  flex-wrap: wrap;
+}
+
+.brand,
+.nav {
+  /* CRITICAL FIX */
+  min-width: 0;
 }
 
 .brand {
@@ -199,7 +208,7 @@ body {
 }
 
 /* ===============================
-   MOBILE HEADER (FINAL)
+   MOBILE HEADER
    =============================== */
 
 @media (max-width: 768px) {
@@ -257,7 +266,7 @@ body {
 }
 
 /* ===============================
-   MOBILE FOOTER (FINAL)
+   MOBILE FOOTER
    =============================== */
 
 @media (max-width: 768px) {
