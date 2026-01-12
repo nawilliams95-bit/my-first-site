@@ -1,48 +1,52 @@
 /* ======================================
    HOME PAGE ONLY
+   AUTHORITATIVE MOBILE SAFE VERSION
+   ====================================== */
+
+/* ======================================
+   SECTION WRAPPER
    ====================================== */
 
 .home-intelligence {
   padding: 2.5rem 0 4rem;
 }
 
+/* Never override container width or padding */
 .home-intelligence .container {
-  max-width: none;
-  padding-left: 0;
-  padding-right: 0;
+  width: 100%;
 }
 
 /* ======================================
    NEWS SECTION
    ====================================== */
 
-.home-intelligence .news-section {
+.news-section {
   max-width: 900px;
   margin: 0 auto 3rem;
   text-align: center;
 }
 
-.home-intelligence .news-section h2 {
+.news-section h2 {
   font-size: 2.2rem;
-  margin: 0 0 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
-.home-intelligence .news-feed {
+.news-feed {
   display: grid;
   gap: 20px;
 }
 
-.home-intelligence .news-item {
+.news-item {
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 20px;
   display: flex;
   gap: 16px;
-  align-items: center;
+  align-items: flex-start;
 }
 
-.home-intelligence .news-thumb {
+.news-thumb {
   width: 96px;
   height: 72px;
   object-fit: cover;
@@ -50,35 +54,35 @@
   flex-shrink: 0;
 }
 
-.home-intelligence .news-content {
+.news-content {
   display: flex;
   flex-direction: column;
   gap: 6px;
   text-align: left;
 }
 
-.home-intelligence .news-source {
+.news-source {
   font-size: 0.75rem;
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
 
-.home-intelligence .news-content h3 {
+.news-item h3 {
   margin: 0;
   line-height: 1.35;
 }
 
-.home-intelligence .news-item a {
+.news-item a {
   color: rgba(255, 255, 255, 0.9);
   text-decoration: none;
 }
 
-.home-intelligence .news-item a:hover {
+.news-item a:hover {
   text-decoration: underline;
 }
 
-.home-intelligence .news-item time {
+.news-item time {
   font-size: 0.75rem;
   color: var(--muted);
 }
@@ -87,7 +91,7 @@
    MARKET DATA SECTION
    ====================================== */
 
-.home-intelligence .market-section {
+.market-section {
   max-width: 1000px;
   margin: 0 auto;
   display: grid;
@@ -95,7 +99,7 @@
   gap: 32px;
 }
 
-.home-intelligence .market-box {
+.market-box {
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -106,15 +110,16 @@
 
 /* HEADINGS */
 
-.home-intelligence .market-box h2 {
+.market-box h2 {
   text-align: center;
   font-size: 1.5rem;
-  margin: 0 0 12px;
+  margin-bottom: 12px;
 }
 
 /* DATA NOTES */
 
-.home-intelligence .data-note {
+.data-note,
+.data-disclaimer {
   font-size: 0.8rem;
   color: var(--muted);
   text-align: center;
@@ -123,29 +128,29 @@
 
 /* RATES TABLE */
 
-.home-intelligence .rates-table {
+.rates-table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 12px;
 }
 
-.home-intelligence .rates-table td {
+.rates-table td {
   padding: 10px 0;
   font-size: 0.95rem;
 }
 
-.home-intelligence .rates-table td:first-child {
+.rates-table td:first-child {
   text-align: left;
 }
 
-.home-intelligence .rates-table td:last-child {
+.rates-table td:last-child {
   text-align: right;
   font-weight: 600;
 }
 
 /* TREASURY VALUE */
 
-.home-intelligence .treasury-value {
+.treasury-value {
   font-size: 2.4rem;
   font-weight: 700;
   text-align: center;
@@ -170,7 +175,7 @@
 }
 
 /* ======================================
-   INFO TOOLTIP
+   TOOLTIP
    ====================================== */
 
 .info-tooltip {
@@ -179,7 +184,6 @@
   align-items: center;
   margin-left: 0.4rem;
   font-size: 0.85rem;
-  line-height: 1;
   color: var(--muted);
   cursor: pointer;
 }
@@ -194,7 +198,6 @@
   padding: 0.55rem 0.7rem;
   border-radius: 6px;
   font-size: 0.7rem;
-  line-height: 1.35;
   width: 240px;
   opacity: 0;
   visibility: hidden;
@@ -220,43 +223,43 @@
 }
 
 /* ======================================
-   MOBILE FIXES
+   MOBILE BREAKPOINT
+   ALIGNED WITH BASE.CSS
    ====================================== */
 
-@media (max-width: 900px) {
+@media (max-width: 768px) {
 
   /* NEWS STACK */
-  .home-intelligence .news-item {
+  .news-item {
     flex-direction: column;
-    align-items: stretch;
     gap: 12px;
   }
 
-  .home-intelligence .news-thumb {
+  .news-thumb {
     width: 100%;
     height: 160px;
     border-radius: 10px;
   }
 
-  .home-intelligence .news-section h2 {
+  .news-section h2 {
     font-size: 1.6rem;
   }
 
   /* MARKET STACK */
-  .home-intelligence .market-section {
+  .market-section {
     grid-template-columns: 1fr;
     gap: 20px;
   }
 
-  .home-intelligence .market-box {
+  .market-box {
     padding: 20px;
   }
 
-  .home-intelligence .market-box h2 {
+  .market-box h2 {
     font-size: 1.3rem;
   }
 
-  .home-intelligence .treasury-value {
+  .treasury-value {
     font-size: 2rem;
   }
 
