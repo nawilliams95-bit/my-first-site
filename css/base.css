@@ -85,6 +85,7 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 16px 0;
+  flex-wrap: nowrap;
 }
 
 .brand {
@@ -93,6 +94,7 @@ body {
   gap: 12px;
   text-decoration: none;
   color: var(--text);
+  white-space: nowrap;
 }
 
 .brand-logo {
@@ -109,7 +111,7 @@ body {
   display: flex;
   align-items: center;
   gap: 16px;
-  flex-wrap: wrap;
+  white-space: nowrap;
 }
 
 .nav a {
@@ -200,7 +202,7 @@ body {
 }
 
 /* ======================================
-   MOBILE – DESKTOP-LIKE SCALING
+   MOBILE – DESKTOP-LIKE, NO OVERLAP
    ====================================== */
 
 @media (max-width: 768px) {
@@ -209,25 +211,35 @@ body {
     background-attachment: scroll;
   }
 
-  /* HEADER: SCALE, DO NOT STACK */
+  /* Allow wrap instead of overlap */
   .header-inner {
+    flex-wrap: wrap;
+    row-gap: 8px;
     padding: 10px 0;
   }
 
+  /* Brand stays first row */
+  .brand {
+    flex: 1 1 auto;
+  }
+
   .brand-logo {
-    max-height: 48px;
+    max-height: 46px;
   }
 
   .brand-name {
-    font-size: 1.35rem;
+    font-size: 1.3rem;
   }
 
+  /* Nav moves to next line only if needed */
   .nav {
+    flex: 1 1 100%;
+    justify-content: center;
     gap: 12px;
   }
 
   .nav a {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
   }
 
   /* HERO SCALE */
@@ -251,14 +263,14 @@ body {
 
 @media (max-width: 480px) {
   .brand-logo {
-    max-height: 44px;
+    max-height: 42px;
   }
 
   .brand-name {
-    font-size: 1.25rem;
+    font-size: 1.2rem;
   }
 
   .nav a {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
   }
 }
