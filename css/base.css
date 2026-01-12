@@ -207,15 +207,25 @@ body {
     background-attachment: scroll;
   }
 
-  /* HEADER STACK */
+  /* HEADER STACK – MOBILE FIX */
   .header-inner {
     flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 0;
   }
 
   .brand {
     justify-content: center;
+  }
+
+  .brand-logo {
+    max-height: 44px;
+  }
+
+  .brand-name {
+    font-size: 1.25rem;
+    line-height: 1.2;
   }
 
   .nav {
@@ -226,12 +236,12 @@ body {
   .nav a {
     width: 100%;
     text-align: center;
-    padding: 12px 0;
+    padding: 10px 0;
   }
 
   /* HERO SCALE */
   .hero {
-    padding: 56px 0 48px;
+    padding: 48px 0 40px;
   }
 
   .hero h1 {
@@ -252,5 +262,13 @@ body {
   .container {
     padding-left: 12px;
     padding-right: 12px;
+  }
+
+  .brand-logo {
+    max-height: 40px;
+  }
+
+  .brand-name {
+    font-size: 1.15rem;
   }
 }
