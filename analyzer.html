@@ -25,8 +25,8 @@
 
         <nav class="nav">
           <a href="index.html">Home</a>
-          <a href="auth.html" class="nav-cta">Sign In</a>
-          <a href="analyzer.html" class="active">Property Analyzer</a>
+          <a href="auth.html" class="nav-cta">Sign In / Sign Up</a>
+	  <a href="analyzer.html" class="active">Property Analyzer</a>
           <a href="about.html">About</a>
           <a href="contact.html">Contact</a>
         </nav>
@@ -89,102 +89,3 @@
           <div class="report-card">
             <h2>Property Intelligence Score</h2>
             <div class="score-display">
-              <span class="score-number" id="intelligenceScore">—</span>
-              <span class="score-label" id="scoreLabel">—</span>
-            </div>
-            <p id="scoreExplanation"></p>
-          </div>
-
-          <!-- MARKET CONTEXT -->
-          <div class="report-card">
-            <h2>Market Context</h2>
-            <ul class="context-list">
-              <li><strong>Market Exposure:</strong> <span id="domTrend">—</span></li>
-              <li><strong>Inventory Pressure:</strong> <span id="inventory">—</span></li>
-              <li><strong>Buyer Demand:</strong> <span id="buyerDemand">—</span></li>
-            </ul>
-          </div>
-
-          <!-- RISK & OPPORTUNITY -->
-          <div class="report-card">
-            <h2>Risk & Opportunity Signals</h2>
-
-            <!-- FINANCING DISCLOSURE -->
-            <div class="analyzer-disclosure">
-              <p class="data-note" id="analyzerRateDisclosure">
-                Mortgage assumptions are based on national rate benchmarks.
-              </p>
-            </div>
-
-            <div class="signals-grid">
-              <div><strong>Market Risk:</strong> <span id="marketRisk">—</span></div>
-              <div><strong>Liquidity Risk:</strong> <span id="liquidityRisk">—</span></div>
-              <div><strong>Financing Friction:</strong> <span id="financingRisk">—</span></div>
-              <div><strong>Condition Sensitivity:</strong> <span id="conditionRisk">—</span></div>
-            </div>
-          </div>
-        </section>
-      </div>
-    </main>
-
-    <!-- FOOTER -->
-    <footer class="site-footer">
-      <div class="container footer-inner">
-
-        <!-- FOOTER NAV -->
-        <nav class="footer-nav">
-          <a href="index.html">Home</a>
-          <a href="auth.html">Sign In</a>
-          <a href="analyzer.html">Property Analyzer</a>
-          <a href="about.html">About</a>
-          <a href="contact.html">Contact</a>
-        </nav>
-
-        <!-- DISCLAIMER -->
-        <div class="footer-disclaimer">
-          <p>
-            Realty Data Labs provides general real estate, housing market, and economic
-            information for educational purposes only.
-          </p>
-          <p>
-            The author of this site is a licensed real estate agent in the State of Georgia.
-          </p>
-        </div>
-
-        <!-- META -->
-        <div class="footer-meta">
-          <p>© <span id="year"></span> Realty Data Labs</p>
-        </div>
-
-      </div>
-    </footer>
-
-    <!-- YEAR -->
-    <script>
-      document.getElementById("year").textContent =
-        new Date().getFullYear();
-    </script>
-
-    <!-- PMMS DISCLOSURE + PREFILL LOGIC -->
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const pmmsAsOf = localStorage.getItem("pmmsAsOf");
-        const disclosureEl = document.getElementById("analyzerRateDisclosure");
-
-        if (pmmsAsOf && disclosureEl) {
-          disclosureEl.textContent =
-            "Mortgage assumptions are based on Freddie Mac PMMS national averages as of " +
-            pmmsAsOf +
-            ".";
-        }
-
-        const DEFAULT_PMMS_RATE = 6.62;
-        const rateInput = document.getElementById("interestRate");
-
-        if (rateInput && !rateInput.value) {
-          rateInput.value = DEFAULT_PMMS_RATE;
-        }
-      });
-    </script>
-  </body>
-</html>
