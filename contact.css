@@ -107,11 +107,11 @@
 .contact-card iframe {
   width: 100%; /* Makes the iframe responsive */
   max-width: 800px; /* Optional: Max width */
-  height: 2000px; /* Adjusted height to ensure form fits on desktop */
+  height: 3000px; /* Set height large enough to fit all questions */
   border: none;
   margin: 0 auto;
   display: block;
-  overflow: hidden;
+  overflow: hidden; /* Ensure no scrolling */
 }
 
 /* ===============================
@@ -147,7 +147,7 @@
 
   /* Adjust the iframe height for smaller screens */
   .contact-card iframe {
-    height: 1800px; /* Reduced height for mobile */
+    height: 2500px; /* Reduced height for mobile */
   }
 
   /* Make form input fields more compact */
@@ -184,7 +184,7 @@
 
   /* Make the iframe smaller */
   .contact-card iframe {
-    height: 1600px; /* Further reduced height */
+    height: 2200px; /* Further reduced height */
   }
 
   .muted {
