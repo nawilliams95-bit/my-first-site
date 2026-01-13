@@ -8,12 +8,18 @@
   display: flex;
   justify-content: center;
   padding: 4rem 1.5rem;
+  flex-direction: column; /* Stack content on small screens */
+  align-items: center;
+  box-sizing: border-box;
 }
 
 /* Centered content column */
 .contact-page .container {
   width: 100%;
   max-width: 700px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 /* Page header */
@@ -34,6 +40,9 @@
 /* Wrapper */
 .contact-wrap {
   width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: center;
 }
 
 /* Card */
@@ -42,12 +51,18 @@
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 2rem;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 /* Headings */
 .contact-card h2 {
   text-align: center;
   margin-bottom: 1.5rem;
+  font-size: 1.25rem;
 }
 
 /* Fields */
@@ -102,9 +117,83 @@
 .contact-card iframe {
   width: 100%; /* Makes the iframe responsive */
   max-width: 800px; /* Optional: Max width */
-  height: 600px; /* Fixed height for the iframe */
+  height: 100%; /* Make sure iframe fills the height of the parent container */
+  min-height: 1000px; /* Sets a minimum height for the iframe */
   border: none;
   margin: 0 auto;
   display: block;
-  overflow: hidden; /* Ensure no scrolling */
+  overflow: auto; /* Allows scrolling */
 }
+
+/* ===============================
+   MOBILE VIEW ADJUSTMENTS
+   =============================== */
+
+/* For mobile screens */
+@media (max-width: 768px) {
+
+  /* Adjust container for smaller screens */
+  .contact-page {
+    padding: 2rem 1rem;
+  }
+
+  .contact-page .container {
+    max-width: 100%;
+    padding: 1rem;
+  }
+
+  /* Smaller font sizes for mobile */
+  .page-center h1 {
+    font-size: 1.8rem; /* Adjust header size */
+  }
+
+  .subhead {
+    font-size: 0.85rem;
+  }
+
+  /* Card padding */
+  .contact-card {
+    padding: 1.5rem;
+  }
+
+  /* Adjust the iframe height for smaller screens */
+  .contact-card iframe {
+    height: 80vh; /* Make iframe 80% of the viewport height */
+    max-width: 100%; /* Full width on mobile */
+    overflow: auto; /* Allow scrolling on mobile */
+  }
+
+  /* Make form input fields more compact */
+  .contact-card .field {
+    margin-bottom: 1rem; /* Reduced space between fields */
+  }
+
+  /* Button style */
+  .form-row .btn {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .muted {
+    font-size: 0.75rem; /* Smaller font size for mobile */
+  }
+}
+
+/* For smaller mobile screens (below 480px) */
+@media (max-width: 480px) {
+
+  .contact-page {
+    padding: 1.5rem 1rem;
+  }
+
+  .page-center h1 {
+    font-size: 1.5rem; /* Smaller font size for mobile */
+  }
+
+  /* Adjust form card width */
+  .contact-card {
+    padding: 1rem;
+  }
+
+  /* Make the iframe larger */
+  .contact-card if

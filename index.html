@@ -16,11 +16,7 @@
   <header class="site-header">
     <div class="container header-inner">
       <a class="brand" href="index.html">
-        <img
-          class="brand-logo"
-          src="images/logo.jpg"
-          alt="Realty Data Labs logo"
-        />
+        <img class="brand-logo" src="images/logo.jpg" alt="Realty Data Labs logo" />
         <span class="brand-name">Realty Data Labs</span>
       </a>
 
@@ -194,6 +190,97 @@
   <script src="js/news.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="js/rates.js"></script>
+
+  <!-- Updated JS for Dynamic Treasury Yield and Chart -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+      // Mortgage Rates Snapshot (static example for now)
+      const PMMS_SNAPSHOT = {
+        rate30: "6.62%",
+        rate15: "5.89%",
+        rateARM: "6.10%"
+      };
+
+      const r30 = document.getElementById("rate30");
+      const r15 = document.getElementById("rate15");
+      const rARM = document.getElementById("rateARM");
+
+      if (r30) r30.textContent = PMMS_SNAPSHOT.rate30;
+      if (r15) r15.textContent = PMMS_SNAPSHOT.rate15;
+      if (rARM) rARM.textContent = PMMS_SNAPSHOT.rateARM;
+
+      // 10-Year Treasury Yield (dynamic value)
+      const treasuryValue = document.getElementById("treasury10");
+      const treasuryCanvas = document.getElementById("treasuryChart");
+
+      if (!treasuryValue || !treasuryCanvas || typeof Chart === "undefined") return;
+
+      // Fetch latest Treasury Yield from a dynamic source
+      function fetchTreasuryData() {
+        const apiKey = 'dcc865cd79fab774a29ff8469d345622';  // Replace with your actual FRED API key
+        const url = `https://api.stlouisfed.org/fred/series/observations?series_id=DGS10&api_key=${apiKey}&file_type=json`;
+
+        fetch(url)
+          .then(response => response.json())
+          .then(data => {
+            const latestTreasuryYield = data.observations[0].value;  // Get the latest 10-year yield from the response
+
+            // Update the displayed yield
+            if (treasuryValue) treasuryValue.textContent = `${latestTreasuryYield}%`;  // Display the yield value
+
+            // Example data for chart (should be updated based on the latest data)
+            const dataPoints = data.observations.slice(0, 30).map(obs => parseFloat(obs.value));  // Get the last 30 data points
+
+            // Update the chart with the new data
+            updateTreasuryChart(dataPoints);
+          })
+          .catch(error => console.error('Error fetching Treasury data:', error));
+      }
+
+      // Update the Treasury Yield Chart
+      function updateTreasuryChart(data) {
+        const ctx = treasuryCanvas.getContext("2d");
+
+        // Destroy the old chart if it exists
+        if (window.myChart) {
+          window.myChart.destroy();  // Destroy existing chart instance
+        }
+
+        // Create a new chart instance with updated data
+        window.myChart = new Chart(ctx, {
+          type: "line",
+          data: {
+            labels: data.map((_, i) => `Day ${i + 1}`),  // Example labels: Day 1, Day 2, etc.
+            datasets: [{
+              data,
+              borderWidth: 2,
+              tension: 0.35,
+              pointRadius: 0
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              x: { display: false },
+              y: {
+                ticks: { callback: v => v + "%" }
+              }
+            }
+          }
+        });
+      }
+
+      // Initial fetch of Treasury Yield data
+      fetchTreasuryData();
+
+      // Update every hour (3600000 milliseconds = 1 hour)
+      setInterval(fetchTreasuryData, 3600000);  // Update every hour
+
+    });
+  </script>
 
 </body>
 </html>
