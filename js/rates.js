@@ -8,22 +8,23 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     try {
       const res = await fetch(proxy, { cache: "no-store" });
-      if (!res.ok) throw new Error(`Fetch failed for ${seriesId}: ${res.statusText}`);
-
+      if (!res.ok) throw new Error(`Fetch failed for ${seriesId}`);
+      
       const data = await res.json();
+      console.log(`Data for ${seriesId}:`, data); // Log the raw data to see the structure
       return Array.isArray(data.observations) ? data.observations : [];
     } catch (error) {
-      console.error("Error fetching data:", error);
-      return []; // Return an empty array in case of error
+      console.error(`Error fetching ${seriesId}:`, error);
+      return []; // Return an empty array in case of an error
     }
   }
 
   // Extract the latest numeric value from the observations
   function latestNumericValue(observations) {
+    console.log("Observations:", observations); // Log observations for debugging
     for (const obs of observations) {
       const v = Number(obs.value);
       console.log(`Raw value: ${obs.value}, Parsed value: ${v}`); // Log raw and parsed values
-      // Check if the value is valid, i.e., it's a number and not a placeholder (like ".")
       if (obs.value !== "." && !isNaN(v)) {
         console.log(`Valid value found: ${v} for date: ${obs.date}`);
         return v;
@@ -44,17 +45,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Update the treasury chart with the data points
   function updateTreasuryChart(points) {
     const canvas = document.getElementById("treasuryChart");
-    if (!canvas || typeof Chart === "undefined") return;
-
     const ctx = canvas.getContext("2d");
-    if (!ctx) return;
 
-    // Destroy the previous chart instance if it exists
     if (window.treasuryChartInstance) {
       window.treasuryChartInstance.destroy();
     }
 
-    // Create a new chart instance with the fetched data
     window.treasuryChartInstance = new Chart(ctx, {
       type: "line",
       data: {
@@ -98,14 +94,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       fetchFredSeries("DGS10")
     ]);
 
-    // Log the raw data for debugging
-    console.log("Data for 30-Year Mortgage:", obs30);
-    console.log("Data for 15-Year Mortgage:", obs15);
-    console.log("Data for Conforming:", obsConf);
-    console.log("Data for Jumbo:", obsJumbo);
-    console.log("Data for FHA:", obsFHA);
-    console.log("Data for Treasury:", obsTreasury);
-
     // Weekly PMMS Rates
     const rate30 = latestNumericValue(obs30);
     const rate15 = latestNumericValue(obs15);
@@ -114,10 +102,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const rateFHA = latestNumericValue(obsFHA);
     const treasuryLatest = latestNumericValue(obsTreasury);
 
-    console.log(`rate30: ${rate30}, rate15: ${rate15}, rateConf: ${rateConf}, rateJumbo: ${rateJumbo}, rateFHA: ${rateFHA}`);
-    console.log(`Treasury 10-year rate: ${treasuryLatest}`);
-
-    // Update the page with these rates
+    // Update Rates on the page
     document.getElementById("rate30").textContent = pct(rate30);
     document.getElementById("rate15").textContent = pct(rate15);
     document.getElementById("rateConforming").textContent = pct(rateConf);

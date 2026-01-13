@@ -8,6 +8,19 @@
   <!-- GLOBAL + HOME CSS -->
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/home.css" />
+  
+  <!-- Add optional error message styling -->
+  <style>
+    .error-message {
+      color: red;
+      font-size: 16px;
+      padding: 10px;
+      background-color: #fdd;
+      border: 1px solid red;
+      border-radius: 4px;
+      margin-top: 20px;
+    }
+  </style>
 </head>
 
 <body>
@@ -82,25 +95,25 @@
                 <!-- Weekly Benchmarks -->
                 <tr>
                   <td>30-Year Fixed (PMMS)</td>
-                  <td id="rate30">—</td>
+                  <td id="rate30">Loading...</td>
                 </tr>
                 <tr>
                   <td>15-Year Fixed (PMMS)</td>
-                  <td id="rate15">—</td>
+                  <td id="rate15">Loading...</td>
                 </tr>
 
                 <!-- Daily Market Rates -->
                 <tr>
                   <td>30-Year Fixed (Conforming, Daily)</td>
-                  <td id="rateConforming">—</td>
+                  <td id="rateConforming">Loading...</td>
                 </tr>
                 <tr>
                   <td>30-Year Fixed (Jumbo, Daily)</td>
-                  <td id="rateJumbo">—</td>
+                  <td id="rateJumbo">Loading...</td>
                 </tr>
                 <tr>
                   <td>30-Year Fixed (FHA, Daily)</td>
-                  <td id="rateFHA">—</td>
+                  <td id="rateFHA">Loading...</td>
                 </tr>
               </tbody>
             </table>
@@ -110,7 +123,7 @@
           <div class="market-box">
             <h2>10-Year Treasury Yield</h2>
 
-            <div class="treasury-value" id="treasury10">—</div>
+            <div class="treasury-value" id="treasury10">Loading...</div>
 
             <div class="treasury-chart-wrap">
               <canvas id="treasuryChart"></canvas>
@@ -125,6 +138,9 @@
 
       </div>
     </section>
+
+    <!-- Error Message -->
+    <div id="dataError" class="error-message"></div>
 
   </main>
 
@@ -162,12 +178,6 @@
     document.getElementById("year").textContent = new Date().getFullYear();
   </script>
 
-  <!-- Loading message (optional) -->
-  <div id="loadingMessage" style="display: block;">Loading Data...</div>
-
-  <!-- Data Error message (optional) -->
-  <div id="dataError" style="color: red; font-size: 14px;"></div>
-
   <!-- SCRIPTS -->
   <script src="js/news.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -175,8 +185,11 @@
   <!-- Live Data Script -->
   <script>
     document.addEventListener("DOMContentLoaded", async () => {
+      console.log("Script is running...");
+
       const API_KEY = "dcc865cd79fab774a29ff8469d345622";
 
+      // Fetch data from the FRED API
       async function fetchFredSeries(seriesId, limit = 180) {
         const url = `https://api.stlouisfed.org/fred/series/observations?series_id=${seriesId}&api_key=${API_KEY}&file_type=json&sort_order=desc&limit=${limit}`;
         const proxy = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
@@ -184,12 +197,13 @@
         try {
           const res = await fetch(proxy, { cache: "no-store" });
           if (!res.ok) throw new Error(`Fetch failed for ${seriesId}`);
-
+          
           const data = await res.json();
           return Array.isArray(data.observations) ? data.observations : [];
         } catch (error) {
-          console.error("Error fetching data:", error);
-          return []; // Return an empty array in case of error
+          console.error(`Error fetching ${seriesId}:`, error);
+          document.getElementById("dataError").textContent = "Sorry, we couldn't load the latest data at the moment. Please try again later.";
+          return []; // Return an empty array in case of an error
         }
       }
 
@@ -200,19 +214,16 @@
             return v;
           }
         }
-        return null; // If no valid value is found, return null
+        return null;
       }
 
       function pct(v) {
-        return Number.isFinite(v) ? `${v.toFixed(2)}%` : "N/A";
+        return v !== null ? `${v.toFixed(2)}%` : "N/A";
       }
 
       function updateTreasuryChart(points) {
         const canvas = document.getElementById("treasuryChart");
-        if (!canvas || typeof Chart === "undefined") return;
-
         const ctx = canvas.getContext("2d");
-        if (!ctx) return;
 
         if (window.treasuryChartInstance) {
           window.treasuryChartInstance.destroy();
@@ -244,6 +255,8 @@
       }
 
       try {
+        console.log("Fetching data...");
+
         const [
           obs30,
           obs15,
@@ -260,13 +273,21 @@
           fetchFredSeries("DGS10")
         ]);
 
-        document.getElementById("rate30").textContent = pct(latestNumericValue(obs30));
-        document.getElementById("rate15").textContent = pct(latestNumericValue(obs15));
-        document.getElementById("rateConforming").textContent = pct(latestNumericValue(obsConf));
-        document.getElementById("rateJumbo").textContent = pct(latestNumericValue(obsJumbo));
-        document.getElementById("rateFHA").textContent = pct(latestNumericValue(obsFHA));
+        console.log("Data fetched successfully");
 
+        const rate30 = latestNumericValue(obs30);
+        const rate15 = latestNumericValue(obs15);
+        const rateConf = latestNumericValue(obsConf);
+        const rateJumbo = latestNumericValue(obsJumbo);
+        const rateFHA = latestNumericValue(obsFHA);
         const treasuryLatest = latestNumericValue(obsTreasury);
+
+        // Update Rates
+        document.getElementById("rate30").textContent = pct(rate30);
+        document.getElementById("rate15").textContent = pct(rate15);
+        document.getElementById("rateConforming").textContent = pct(rateConf);
+        document.getElementById("rateJumbo").textContent = pct(rateJumbo);
+        document.getElementById("rateFHA").textContent = pct(rateFHA);
         document.getElementById("treasury10").textContent = pct(treasuryLatest);
 
         const treasuryPoints = obsTreasury
@@ -277,15 +298,14 @@
 
         if (treasuryPoints.length) {
           updateTreasuryChart(treasuryPoints);
+        } else {
+          console.error("No valid treasury data points available");
         }
 
       } catch (e) {
         console.error("Rates JS failed:", e);
         document.getElementById("dataError").textContent = "Sorry, we couldn't load the latest data at the moment. Please try again later.";
       }
-
-      // Hide the loading message once the data is fetched
-      document.getElementById("loadingMessage").style.display = "none";
     });
   </script>
 
