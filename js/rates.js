@@ -2,13 +2,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Mortgage Rates Snapshot (Dynamic fetching)
   function fetchMortgageRates() {
-    const apiKey = 'dcc865cd79fab774a29ff8469d345622';  // Replace with your FRED API key or another API key
-    const url = `https://api.stlouisfed.org/fred/series/observations?series_id=IR14290&api_key=${apiKey}&file_type=json`;
+    const apiKey = 'dcc865cd79fab774a29ff8469d345622';  // Replace with your FRED API key
+    const corsProxy = 'https://cors-anywhere.herokuapp.com/'; // Using CORS proxy for FRED API
+    const url = `${corsProxy}https://api.stlouisfed.org/fred/series/observations?series_id=IR14290&api_key=${apiKey}&file_type=json`;
 
     fetch(url)
       .then(response => response.json())
       .then(data => {
-        console.log("Mortgage Rates API Response:", data); // Log the API response
+        console.log("Mortgage Rates API Response:", data);  // Log the API response
 
         // Check if data exists and has the expected structure
         if (data && data.observations && data.observations.length > 0) {
@@ -38,7 +39,8 @@ document.addEventListener("DOMContentLoaded", function () {
   // Fetch the 10-Year Treasury Yield Data
   function fetchTreasuryData() {
     const apiKey = 'dcc865cd79fab774a29ff8469d345622';  // FRED API key
-    const url = `https://api.stlouisfed.org/fred/series/observations?series_id=DGS10&api_key=${apiKey}&file_type=json`;
+    const corsProxy = 'https://cors-anywhere.herokuapp.com/';  // Using CORS proxy for FRED API
+    const url = `${corsProxy}https://api.stlouisfed.org/fred/series/observations?series_id=DGS10&api_key=${apiKey}&file_type=json`;
 
     fetch(url)
       .then(response => response.json())

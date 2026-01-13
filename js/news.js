@@ -185,7 +185,7 @@ function loadMarketFeed() {
         const source = resolveSource(item, item._sourceLabel);
 
         article.innerHTML = `
-          ${image ? `
+          ${image ? ` 
             <img
               src="${image}"
               alt=""

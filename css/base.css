@@ -148,129 +148,185 @@ body {
 }
 
 /* ======================================
-   FOOTER
+   MARKET DATA SECTION (Rates + Treasury)
    ====================================== */
 
-.site-footer {
-  width: 100%;
-  background-color: #0f172a;
-  color: #cbd5e1;
-  padding: 48px 0;
-  margin-top: 64px;
+.market-section {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
 }
 
-.footer-inner {
+.market-box {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 32px;
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* HEADINGS */
+
+.market-box h2 {
   text-align: center;
+  font-size: 1.5rem;
+  margin-bottom: 12px;
+  color: var(--text);
 }
 
-.footer-nav {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 22px;
+/* DATA NOTES */
+
+.data-note,
+.data-disclaimer {
+  font-size: 0.8rem;
+  color: var(--muted);
+  text-align: center;
+  margin-bottom: 12px;
 }
 
-.footer-nav a {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: #e5e7eb;
-  text-decoration: none;
+/* RATES TABLE */
+
+.rates-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
 }
 
-.footer-nav a:hover {
-  text-decoration: underline;
+.rates-table td {
+  padding: 10px 0;
+  font-size: 0.95rem;
 }
 
-.footer-disclaimer {
-  max-width: 900px;
-  margin: 0 auto;
-  font-size: 0.85rem;
-  line-height: 1.6;
-  color: #cbd5e1;
+.rates-table td:first-child {
+  text-align: left;
 }
 
-.footer-disclaimer p {
-  margin-bottom: 10px;
+.rates-table td:last-child {
+  text-align: right;
+  font-weight: 600;
 }
 
-.footer-meta {
-  font-size: 0.75rem;
-  color: #94a3b8;
+/* TREASURY VALUE */
+
+.treasury-value {
+  font-size: 2.4rem;
+  font-weight: 700;
+  text-align: center;
+  margin: 1.5rem 0 0.75rem;
+  color: var(--text);
 }
 
 /* ======================================
-   MOBILE – DESKTOP-LIKE, NO OVERLAP
+   TREASURY CHART
+   ====================================== */
+
+.treasury-chart-wrap {
+  width: 100%;
+  height: 160px;
+  position: relative;
+  margin-top: 8px;
+}
+
+#treasuryChart {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ======================================
+   TOOLTIP
+   ====================================== */
+
+.info-tooltip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 0.4rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.info-tooltip .tooltip-content {
+  position: absolute;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #222;
+  color: #fff;
+  padding: 0.55rem 0.7rem;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  width: 240px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 10;
+}
+
+.info-tooltip:hover .tooltip-content {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(-2px);
+}
+
+.info-tooltip .tooltip-content::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: #222 transparent transparent transparent;
+}
+
+/* ======================================
+   MOBILE BREAKPOINT
+   ALIGNED WITH BASE.CSS
    ====================================== */
 
 @media (max-width: 768px) {
 
-  body {
-    background-attachment: scroll;
-  }
-
-  /* Allow wrap instead of overlap */
-  .header-inner {
-    flex-wrap: wrap;
-    row-gap: 8px;
-    padding: 10px 0;
-  }
-
-  /* Brand stays first row */
-  .brand {
-    flex: 1 1 auto;
-  }
-
-  .brand-logo {
-    max-height: 46px;
-  }
-
-  .brand-name {
-    font-size: 1.3rem;
-  }
-
-  /* Nav moves to next line only if needed */
-  .nav {
-    flex: 1 1 100%;
-    justify-content: center;
+  /* NEWS STACK */
+  .news-item {
+    flex-direction: column;
     gap: 12px;
   }
 
-  .nav a {
-    font-size: 0.9rem;
+  .news-thumb {
+    width: 100%;
+    height: 160px;
+    border-radius: 10px;
   }
 
-  /* HERO SCALE */
-  .hero {
-    padding: 48px 0 40px;
+  .news-section h2 {
+    font-size: 1.6rem;
   }
 
-  .hero h1 {
-    font-size: 1.9rem;
+  /* MARKET STACK */
+  .market-section {
+    grid-template-columns: 1fr;
+    gap: 20px;
   }
 
-  body {
-    font-size: 16px;
-    line-height: 1.5;
-  }
-}
-
-/* ======================================
-   SMALL MOBILE TIGHTENING
-   ====================================== */
-
-@media (max-width: 480px) {
-  .brand-logo {
-    max-height: 42px;
+  .market-box {
+    padding: 20px;
   }
 
-  .brand-name {
-    font-size: 1.2rem;
+  .market-box h2 {
+    font-size: 1.3rem;
   }
 
-  .nav a {
-    font-size: 0.85rem;
+  .treasury-value {
+    font-size: 2rem;
+  }
+
+  .treasury-chart-wrap {
+    height: 140px;
   }
 }
