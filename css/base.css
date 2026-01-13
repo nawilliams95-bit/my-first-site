@@ -119,24 +119,29 @@ body {
   color: var(--muted);
   white-space: nowrap;
   font-size: 0.98rem;
+  padding: 10px 14px;
+  border-radius: 999px; /* Ensures all nav items have the same rounded corners */
+  border: 1px solid var(--line); /* Uniform border for all nav items */
+  background: rgba(255, 255, 255, 0.06);
+  transition: background 0.15s ease, border-color 0.15s ease;
 }
 
 .nav a:hover,
 .nav a.active {
   color: var(--text);
+  background: rgba(255, 255, 255, 0.12); /* Slightly lighter background on hover */
+  border-color: rgba(255, 255, 255, 0.25); /* Consistent hover border */
 }
 
 /* Optional CTA styling if you want it consistent across pages */
 .nav .nav-cta {
+  background: rgba(255, 255, 255, 0.1); /* Ensure uniform background */
+  border-radius: 999px; /* Make sure CTA has the same pill shape */
   padding: 10px 12px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  color: var(--text);
-  background: rgba(255, 255, 255, 0.06);
 }
 
 .nav .nav-cta:hover {
-  background: rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.14); /* Consistent hover background */
 }
 
 /* ======================================
@@ -224,7 +229,6 @@ footer {
     white-space: nowrap;
   }
 
-  /* Key: keep nav like desktop, just centered and wrapping */
   .nav {
     width: 100%;
     justify-content: center;
