@@ -1,76 +1,4 @@
 /* ======================================
-   GLOBAL DESIGN TOKENS
-   ====================================== */
-
-:root {
-  --bg: #0b1220;
-  --panel: rgba(255, 255, 255, 0.06);
-  --panel-strong: rgba(255, 255, 255, 0.1);
-  --text: rgba(255, 255, 255, 0.92);
-  --muted: rgba(255, 255, 255, 0.7);
-  --line: rgba(255, 255, 255, 0.14);
-  --radius: 14px;
-  --max: 1280px;
-}
-
-/* ======================================
-   GLOBAL RESET
-   ====================================== */
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-/* ======================================
-   GLOBAL WIDTH LOCK
-   ====================================== */
-
-html,
-body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-/* Media safety */
-img,
-video,
-iframe,
-canvas {
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
-
-/* ======================================
-   BODY
-   ====================================== */
-
-body {
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  color: var(--text);
-  background:
-    linear-gradient(rgba(11, 18, 32, 0.85), rgba(11, 18, 32, 0.85)),
-    url("../images/background.jpg") center / cover no-repeat fixed;
-}
-
-/* ======================================
-   LAYOUT CONTAINER
-   ====================================== */
-
-.container {
-  width: 100%;
-  max-width: var(--max);
-  margin: 0 auto;
-  padding-left: 16px;
-  padding-right: 16px;
-}
-
-/* ======================================
    HEADER
    ====================================== */
 
@@ -85,7 +13,7 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 16px 0;
-  flex-wrap: nowrap;
+  flex-wrap: nowrap; /* No wrapping by default */
 }
 
 .brand {
@@ -99,6 +27,7 @@ body {
 
 .brand-logo {
   max-height: 72px;
+  transition: max-height 0.3s ease-in-out; /* Smooth resizing */
 }
 
 .brand-name {
@@ -126,188 +55,21 @@ body {
 }
 
 /* ======================================
-   HERO
-   ====================================== */
-
-.hero {
-  padding: 80px 0 64px;
-  text-align: center;
-}
-
-.hero h1 {
-  font-size: 2.8rem;
-  margin-bottom: 16px;
-}
-
-.subhead {
-  max-width: 720px;
-  margin: 0 auto;
-  color: var(--muted);
-  font-size: 1.15rem;
-  padding: 0 12px;
-}
-
-/* ======================================
-   MARKET DATA SECTION (Rates + Treasury)
-   ====================================== */
-
-.market-section {
-  max-width: 1000px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 32px;
-}
-
-.market-box {
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 32px;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-/* HEADINGS */
-
-.market-box h2 {
-  text-align: center;
-  font-size: 1.5rem;
-  margin-bottom: 12px;
-  color: var(--text);
-}
-
-/* DATA NOTES */
-
-.data-note,
-.data-disclaimer {
-  font-size: 0.8rem;
-  color: var(--muted);
-  text-align: center;
-  margin-bottom: 12px;
-}
-
-/* RATES TABLE */
-
-.rates-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 12px;
-}
-
-.rates-table td {
-  padding: 10px 0;
-  font-size: 0.95rem;
-}
-
-.rates-table td:first-child {
-  text-align: left;
-}
-
-.rates-table td:last-child {
-  text-align: right;
-  font-weight: 600;
-}
-
-/* TREASURY VALUE */
-
-.treasury-value {
-  font-size: 2.4rem;
-  font-weight: 700;
-  text-align: center;
-  margin: 1.5rem 0 0.75rem;
-  color: var(--text);
-}
-
-/* ======================================
-   TREASURY CHART
-   ====================================== */
-
-.treasury-chart-wrap {
-  width: 100%;
-  height: 160px;
-  position: relative;
-  margin-top: 8px;
-}
-
-#treasuryChart {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-/* ======================================
-   TOOLTIP
-   ====================================== */
-
-.info-tooltip {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  margin-left: 0.4rem;
-  font-size: 0.85rem;
-  color: var(--muted);
-  cursor: pointer;
-}
-
-.info-tooltip .tooltip-content {
-  position: absolute;
-  bottom: 125%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #222;
-  color: #fff;
-  padding: 0.55rem 0.7rem;
-  border-radius: 6px;
-  font-size: 0.7rem;
-  width: 240px;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.15s ease, transform 0.15s ease;
-  z-index: 10;
-}
-
-.info-tooltip:hover .tooltip-content {
-  opacity: 1;
-  visibility: visible;
-  transform: translateX(-50%) translateY(-2px);
-}
-
-.info-tooltip .tooltip-content::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  border-width: 6px;
-  border-style: solid;
-  border-color: #222 transparent transparent transparent;
-}
-
-/* ======================================
-   MOBILE BREAKPOINT
-   ALIGNED WITH BASE.CSS
+   MOBILE BREAKPOINT (max-width: 768px)
    ====================================== */
 
 @media (max-width: 768px) {
 
-  /* HEADER MOBILE FIX (prevents mashed header) */
+  /* Ensure proper mobile layout */
   .header-inner {
-    flex-wrap: wrap;
+    flex-wrap: wrap; /* Allow wrapping on mobile */
     justify-content: center;
-    gap: 12px;
+    gap: 12px; /* Adjust the space between elements */
   }
 
-  .brand {
-    width: 100%;
-    justify-content: center;
-    white-space: normal;
-    text-align: center;
-  }
-
+  /* Adjust logo size on mobile */
   .brand-logo {
-    max-height: 54px;
+    max-height: 54px; /* Smaller logo on mobile */
   }
 
   .brand-name {
@@ -316,35 +78,31 @@ body {
     text-align: center;
   }
 
+  /* Mobile navigation fix */
   .nav {
-    width: 100%;
+    width: 100%; /* Full width */
     justify-content: center;
     flex-wrap: wrap;
-    white-space: normal;
     gap: 12px;
   }
 
   .nav a {
-    white-space: nowrap;
+    text-align: center;
+    width: 100%; /* Stack navigation links vertically */
+    padding: 8px 0; /* Space out links */
   }
 
-  /* NEWS STACK */
-  .news-item {
-    flex-direction: column;
-    gap: 12px;
+  /* Make the hero text more readable */
+  .hero h1 {
+    font-size: 2rem; /* Smaller font for mobile */
   }
 
-  .news-thumb {
-    width: 100%;
-    height: 160px;
-    border-radius: 10px;
+  .subhead {
+    font-size: 1rem;
+    padding: 0 12px;
   }
 
-  .news-section h2 {
-    font-size: 1.6rem;
-  }
-
-  /* MARKET STACK */
+  /* Adjust layout of the market section for mobile */
   .market-section {
     grid-template-columns: 1fr;
     gap: 20px;
@@ -378,16 +136,14 @@ footer {
   background: rgba(11, 18, 32, 0.85);
 }
 
-/* Center footer content (fix off-center) */
 .footer-inner {
   display: flex;
+  flex-direction: column; /* Stack footer content vertically */
   align-items: center;
-  justify-content: center; /* changed from space-between */
   gap: 16px;
-  padding: 18px 0;
-  flex-wrap: wrap;
   text-align: center;
   width: 100%;
+  padding: 18px 0;
 }
 
 .footer-nav,
@@ -418,32 +174,7 @@ footer a {
 footer a:hover {
   color: var(--text);
 }
-/* ======================================
-   FOOTER TEXT LAYOUT FIX
-   ====================================== */
 
-.footer-inner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  text-align: center;
-}
-
-/* Disclaimer block */
-.footer-disclaimer {
-  max-width: 720px;
-  font-size: 0.85rem;
-  line-height: 1.5;
-  color: var(--muted);
-}
-
-/* Ensure disclaimer paragraphs stack cleanly */
-.footer-disclaimer p {
-  margin: 0.25rem 0;
-}
-
-/* Footer meta line */
 .footer-meta {
   font-size: 0.8rem;
   color: var(--muted);

@@ -162,10 +162,128 @@
     document.getElementById("year").textContent = new Date().getFullYear();
   </script>
 
+  <!-- Loading message (optional) -->
+  <div id="loadingMessage" style="display: block;">Loading Data...</div>
+
+  <!-- Data Error message (optional) -->
+  <div id="dataError" style="color: red; font-size: 14px;"></div>
+
   <!-- SCRIPTS -->
   <script src="js/news.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  <script src="js/rates.js"></script>
+
+  <!-- Live Data Script -->
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const API_KEY = "dcc865cd79fab774a29ff8469d345622";
+
+      async function fetchFredSeries(seriesId, limit = 180) {
+        const url = `https://api.stlouisfed.org/fred/series/observations?series_id=${seriesId}&api_key=${API_KEY}&file_type=json&sort_order=desc&limit=${limit}`;
+        const proxy = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+
+        const res = await fetch(proxy, { cache: "no-store" });
+        if (!res.ok) throw new Error(`Fetch failed for ${seriesId}`);
+
+        const data = await res.json();
+
+        return Array.isArray(data.observations) ? data.observations : [];
+      }
+
+      function latestNumericValue(observations) {
+        for (const obs of observations) {
+          const v = Number(obs.value);
+          if (obs.value !== "." && Number.isFinite(v)) {
+            return v;
+          }
+        }
+        return null;
+      }
+
+      function pct(v) {
+        return Number.isFinite(v) ? `${v.toFixed(2)}%` : "N/A";
+      }
+
+      function updateTreasuryChart(points) {
+        const canvas = document.getElementById("treasuryChart");
+        if (!canvas || typeof Chart === "undefined") return;
+
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
+
+        if (window.treasuryChartInstance) {
+          window.treasuryChartInstance.destroy();
+        }
+
+        window.treasuryChartInstance = new Chart(ctx, {
+          type: "line",
+          data: {
+            labels: points.map(p => p.date),
+            datasets: [{
+              data: points.map(p => p.value),
+              borderWidth: 2,
+              tension: 0.35,
+              pointRadius: 0
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              x: { display: false },
+              y: {
+                ticks: { callback: v => `${v}%` }
+              }
+            }
+          }
+        });
+      }
+
+      try {
+        const [
+          obs30,
+          obs15,
+          obsConf,
+          obsJumbo,
+          obsFHA,
+          obsTreasury
+        ] = await Promise.all([
+          fetchFredSeries("MORTGAGE30US"),
+          fetchFredSeries("MORTGAGE15US"),
+          fetchFredSeries("OBMMI30YF"),
+          fetchFredSeries("OBMMI30YJ"),
+          fetchFredSeries("OBMMI30YFHA"),
+          fetchFredSeries("DGS10")
+        ]);
+
+        document.getElementById("rate30").textContent = pct(latestNumericValue(obs30));
+        document.getElementById("rate15").textContent = pct(latestNumericValue(obs15));
+        document.getElementById("rateConforming").textContent = pct(latestNumericValue(obsConf));
+        document.getElementById("rateJumbo").textContent = pct(latestNumericValue(obsJumbo));
+        document.getElementById("rateFHA").textContent = pct(latestNumericValue(obsFHA));
+
+        const treasuryLatest = latestNumericValue(obsTreasury);
+        document.getElementById("treasury10").textContent = pct(treasuryLatest);
+
+        const treasuryPoints = obsTreasury
+          .filter(o => o && o.value !== "." && Number.isFinite(Number(o.value)))
+          .slice(0, 30)
+          .reverse()
+          .map(o => ({ date: o.date, value: Number(o.value) }));
+
+        if (treasuryPoints.length) {
+          updateTreasuryChart(treasuryPoints);
+        }
+
+      } catch (e) {
+        console.error("Rates JS failed:", e);
+        document.getElementById("dataError").textContent = "Sorry, we couldn't load the latest data at the moment. Please try again later.";
+      }
+
+      // Hide the loading message once the data is fetched
+      document.getElementById("loadingMessage").style.display = "none";
+    });
+  </script>
 
 </body>
 </html>
