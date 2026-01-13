@@ -148,6 +148,7 @@
   /* Adjust the iframe height for smaller screens */
   .contact-card iframe {
     height: 2500px; /* Reduced height for mobile */
+    max-width: 95%; /* Make the iframe a bit wider on mobile */
   }
 
   /* Make form input fields more compact */
@@ -185,6 +186,7 @@
   /* Make the iframe smaller */
   .contact-card iframe {
     height: 2200px; /* Further reduced height */
+    max-width: 98%; /* Increase width for very small screens */
   }
 
   .muted {
