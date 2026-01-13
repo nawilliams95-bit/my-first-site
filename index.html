@@ -12,7 +12,7 @@
   <!-- Error message styling -->
   <style>
     .error-message {
-      display: none;
+      display: none;  /* Hidden by default */
       color: red;
       font-size: 16px;
       padding: 10px;
@@ -141,7 +141,7 @@
     </section>
 
     <!-- Error Message -->
-    <div id="dataError" class="error-message"></div>
+    <div id="dataError" class="error-message"></div> <!-- Hidden by default -->
 
   </main>
 
@@ -186,8 +186,6 @@
   <!-- Live Data Script -->
   <script>
     document.addEventListener("DOMContentLoaded", async () => {
-      console.log("Script is running...");
-
       const API_KEY = "dcc865cd79fab774a29ff8469d345622";
 
       // Fetch data from the FRED API
@@ -200,6 +198,7 @@
           if (!res.ok) throw new Error(`Fetch failed for ${seriesId}`);
           
           const data = await res.json();
+          console.log(`Data for ${seriesId}:`, data); // Log data for debugging
           return Array.isArray(data.observations) ? data.observations : [];
         } catch (error) {
           console.error(`Error fetching ${seriesId}:`, error);
