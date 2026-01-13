@@ -181,12 +181,16 @@
         const url = `https://api.stlouisfed.org/fred/series/observations?series_id=${seriesId}&api_key=${API_KEY}&file_type=json&sort_order=desc&limit=${limit}`;
         const proxy = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
 
-        const res = await fetch(proxy, { cache: "no-store" });
-        if (!res.ok) throw new Error(`Fetch failed for ${seriesId}`);
+        try {
+          const res = await fetch(proxy, { cache: "no-store" });
+          if (!res.ok) throw new Error(`Fetch failed for ${seriesId}`);
 
-        const data = await res.json();
-
-        return Array.isArray(data.observations) ? data.observations : [];
+          const data = await res.json();
+          return Array.isArray(data.observations) ? data.observations : [];
+        } catch (error) {
+          console.error("Error fetching data:", error);
+          return []; // Return an empty array in case of error
+        }
       }
 
       function latestNumericValue(observations) {
@@ -196,7 +200,7 @@
             return v;
           }
         }
-        return null;
+        return null; // If no valid value is found, return null
       }
 
       function pct(v) {
