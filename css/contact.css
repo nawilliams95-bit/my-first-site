@@ -97,3 +97,14 @@
   color: var(--muted);
   text-align: center;
 }
+
+/* Styling the iframe for Google Form */
+.contact-card iframe {
+  width: 100%; /* Makes the iframe responsive */
+  max-width: 800px; /* Optional: Max width */
+  height: 600px; /* Fixed height for the iframe */
+  border: none;
+  margin: 0 auto;
+  display: block;
+  overflow: hidden; /* Ensure no scrolling */
+}

@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -5,9 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Thank You | Realty Data Labs</title>
 
-    <!-- GLOBAL + CONTACT CSS -->
+    <!-- Linking the correct CSS files -->
     <link rel="stylesheet" href="css/base.css" />
     <link rel="stylesheet" href="css/contact.css" />
+    <link rel="stylesheet" href="css/thank-you.css" /> <!-- Specific CSS for thank-you page -->
   </head>
 
   <body>
@@ -15,11 +17,7 @@
     <header class="site-header">
       <div class="container header-inner">
         <a class="brand" href="index.html">
-          <img
-            class="brand-logo"
-            src="images/logo.jpg"
-            alt="Realty Data Labs logo"
-          />
+          <img class="brand-logo" src="images/logo.jpg" alt="Realty Data Labs logo" />
           <span class="brand-name">Realty Data Labs</span>
         </a>
       </div>
@@ -31,12 +29,10 @@
         <h2>Thank you!</h2>
         <p>Your message has been sent successfully. We'll get back to you soon.</p>
 
-        <!-- Center the button and ensure proper spacing -->
+        <!-- Center the "Back to Home" Button -->
         <div style="margin-top: 2rem; display: flex; justify-content: center;">
-          <!-- Apply the "btn" class to match other buttons -->
-          <a href="index.html" class="btn" style="max-width: 250px;">
-            Back to Home
-          </a>
+          <!-- Ensuring the btn class is applied to the link -->
+          <a href="index.html" class="btn">Back to Home</a>
         </div>
       </div>
     </main>
@@ -57,21 +53,17 @@
             Realty Data Labs provides general real estate, housing market, and economic
             information for educational purposes only.
           </p>
-          <p>
-            The author of this site is a licensed real estate agent in the State of Georgia.
-          </p>
+          <p>The author of this site is a licensed real estate agent in the State of Georgia.</p>
         </div>
 
         <div class="footer-meta">
           <p>© <span id="year"></span> Realty Data Labs</p>
         </div>
-
       </div>
     </footer>
 
     <script>
-      document.getElementById("year").textContent =
-        new Date().getFullYear();
+      document.getElementById("year").textContent = new Date().getFullYear();
     </script>
   </body>
 </html>
