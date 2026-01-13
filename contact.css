@@ -113,12 +113,13 @@
 /* Styling the iframe for Google Form */
 .contact-card iframe {
   width: 100%; /* Makes the iframe responsive */
-  max-width: 100%; /* Ensures it doesn’t exceed the container width */
-  height: 210vh; /* Increased height by 50% more */
+  max-width: 800px; /* Optional: Max width */
+  height: 100%; /* Use full height available in container */
+  min-height: 1000px; /* Ensures iframe has a minimum height to display content */
   border: none;
   margin: 0 auto;
   display: block;
-  overflow: hidden; /* Ensure no scrolling */
+  overflow: auto; /* Enables scrolling */
 }
 
 /* ===============================
@@ -154,8 +155,9 @@
 
   /* Adjust the iframe height for smaller screens */
   .contact-card iframe {
-    height: 120vh; /* Increased iframe height for mobile */
+    height: 70vh; /* Ensure iframe fits within viewport on mobile */
     max-width: 100%; /* Full width on mobile */
+    overflow: auto; /* Scrollable on mobile */
   }
 
   /* Make form input fields more compact */
@@ -171,3 +173,32 @@
 
   .muted {
     font-size: 0.75rem; /* Smaller font size for mobile */
+  }
+}
+
+/* For smaller mobile screens (below 480px) */
+@media (max-width: 480px) {
+
+  .contact-page {
+    padding: 1.5rem 1rem;
+  }
+
+  .page-center h1 {
+    font-size: 1.5rem; /* Smaller font size for mobile */
+  }
+
+  /* Adjust form card width */
+  .contact-card {
+    padding: 1rem;
+  }
+
+  /* Make the iframe larger */
+  .contact-card iframe {
+    height: 70vh; /* Further increase height for small screens */
+    max-width: 100%; /* Full width */
+  }
+
+  .muted {
+    font-size: 0.7rem; /* Even smaller font size for ultra-small screens */
+  }
+}
