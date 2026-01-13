@@ -1,4 +1,56 @@
 /* ======================================
+   GLOBAL DESIGN TOKENS
+   ====================================== */
+
+:root {
+  --bg: #0b1220;
+  --panel: rgba(255, 255, 255, 0.06);
+  --panel-strong: rgba(255, 255, 255, 0.1);
+  --text: rgba(255, 255, 255, 0.92);
+  --muted: rgba(255, 255, 255, 0.7);
+  --line: rgba(255, 255, 255, 0.14);
+  --radius: 14px;
+  --max: 1280px;
+}
+
+/* ======================================
+   GLOBAL RESET
+   ====================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* ======================================
+   BODY
+   ====================================== */
+
+body {
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color: var(--text);
+  background:
+    linear-gradient(rgba(11, 18, 32, 0.85), rgba(11, 18, 32, 0.85)),
+    url("../images/background.jpg") center / cover no-repeat fixed;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* ======================================
+   LAYOUT CONTAINER
+   ====================================== */
+
+.container {
+  width: 100%;
+  max-width: var(--max);
+  margin: 0 auto;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+/* ======================================
    HEADER
    ====================================== */
 
@@ -13,7 +65,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 16px 0;
-  flex-wrap: nowrap; /* Default: No wrapping */
+  flex-wrap: nowrap;
 }
 
 .brand {
@@ -27,7 +79,6 @@
 
 .brand-logo {
   max-height: 72px;
-  transition: max-height 0.3s ease; /* Smooth resizing */
 }
 
 .brand-name {
@@ -40,13 +91,11 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  white-space: nowrap;
 }
 
 .nav a {
   text-decoration: none;
   color: var(--muted);
-  white-space: nowrap;
 }
 
 .nav a:hover,
@@ -55,47 +104,93 @@
 }
 
 /* ======================================
-   MOBILE BREAKPOINT (max-width: 768px)
+   HERO
+   ====================================== */
+
+.hero {
+  padding: 80px 0 64px;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: 2.8rem;
+  margin-bottom: 16px;
+}
+
+.subhead {
+  max-width: 720px;
+  margin: 0 auto;
+  color: var(--muted);
+  font-size: 1.15rem;
+  padding: 0 12px;
+}
+
+/* ======================================
+   MARKET DATA SECTION (Rates + Treasury)
+   ====================================== */
+
+.market-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+.market-box {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.market-box h2 {
+  text-align: center;
+  font-size: 1.5rem;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+
+/* ======================================
+   RESPONSIVE MOBILE FIX
    ====================================== */
 
 @media (max-width: 768px) {
 
-  /* Make header stack on mobile */
+  /* HEADER */
   .header-inner {
-    flex-wrap: wrap; /* Allow header items to wrap */
+    flex-wrap: wrap;
     justify-content: center;
-    gap: 12px; /* Adjust space between items */
+    gap: 12px;
   }
 
-  /* Adjust logo size on mobile */
   .brand-logo {
-    max-height: 54px; /* Smaller logo on mobile */
+    max-height: 54px; /* Adjust logo size on mobile */
   }
 
-  /* Center the brand name text */
   .brand-name {
     font-size: 1.35rem;
-    white-space: normal;
     text-align: center;
+    white-space: normal;
   }
 
-  /* Make navigation links stack vertically */
   .nav {
     width: 100%;
     justify-content: center;
-    flex-wrap: wrap; /* Allow navigation to stack */
-    gap: 12px; /* Add space between links */
+    flex-wrap: wrap;
+    gap: 12px;
   }
 
   .nav a {
-    width: 100%; /* Make each link take full width */
-    padding: 8px 0; /* Add space between links */
-    text-align: center; /* Center the text */
+    width: 100%; /* Make navigation links take full width */
+    padding: 8px 0;
+    text-align: center;
   }
 
-  /* Adjust hero text for mobile */
+  /* HERO */
   .hero h1 {
-    font-size: 2rem; /* Smaller font for mobile */
+    font-size: 2rem;
   }
 
   .subhead {
@@ -103,9 +198,9 @@
     padding: 0 12px;
   }
 
-  /* Adjust layout of market section */
+  /* MARKET SECTION */
   .market-section {
-    grid-template-columns: 1fr; /* Single column layout */
+    grid-template-columns: 1fr; /* Stack market data on mobile */
     gap: 20px;
   }
 
