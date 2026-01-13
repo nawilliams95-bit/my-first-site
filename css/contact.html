@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact | Realty Data Labs</title>
+
+    <!-- GLOBAL + CONTACT CSS -->
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/contact.css" />
+  </head>
+
+  <body>
+    <!-- SITE HEADER -->
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="index.html">
+          <img
+            class="brand-logo"
+            src="images/logo.jpg"
+            alt="Realty Data Labs logo"
+          />
+          <span class="brand-name">Realty Data Labs</span>
+        </a>
+
+        <nav class="nav">
+          <a href="index.html">Home</a>
+          <a href="auth.html" class="nav-cta">Sign In / Sign Up</a>
+          <a href="analyzer.html">Property Analyzer</a>
+          <a href="about.html">About</a>
+          <a href="contact.html" class="active">Contact</a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="contact-page">
+      <div class="container">
+
+        <!-- PAGE HEADER -->
+        <div class="page-center">
+          <h1>Contact Us</h1>
+          <p class="subhead">
+            Use this form to request a resource, suggest a tool, or ask a
+            question. I read every message.
+          </p>
+        </div>
+
+        <!-- CONTACT FORM -->
+        <div class="contact-wrap">
+          <section class="contact-card">
+            <h2>Send us a message</h2>
+
+            <!-- Google Form Embed (non-scrollable) -->
+            <iframe 
+              src="https://docs.google.com/forms/d/e/1FAIpQLScImSv7dUtXccovU9q302WcZ8SssAUhdGhy1Lak3kVsRLo1zw/viewform?embedded=true" 
+              width="100%" 
+              height="2000" <!-- Increased height -->
+              frameborder="0" 
+              marginheight="0" 
+              marginwidth="0" 
+              scrolling="no">Loading…</iframe>
+          </section>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+      <div class="container footer-inner">
+
+        <nav class="footer-nav">
+          <a href="index.html">Home</a>
+          <a href="auth.html">Sign In / Sign Up</a>
+          <a href="analyzer.html">Property Analyzer</a>
+          <a href="about.html">About</a>
+          <a href="contact.html">Contact</a>
+        </nav>
+
+        <div class="footer-disclaimer">
+          <p>
+            Realty Data Labs provides general real estate, housing market, and economic
+            information for educational purposes only.
+          </p>
+          <p>
+            The author of this site is a licensed real estate agent in the State of Georgia.
+          </p>
+        </div>
+
+        <div class="footer-meta">
+          <p>© <span id="year"></span> Realty Data Labs</p>
+        </div>
+
+      </div>
+    </footer>
+
+    <script>
+      document.getElementById("year").textContent =
+        new Date().getFullYear();
+    </script>
+  </body>
+</html>
