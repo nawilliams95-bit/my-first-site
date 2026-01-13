@@ -9,9 +9,10 @@
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/home.css" />
   
-  <!-- Add optional error message styling -->
+  <!-- Error message styling -->
   <style>
     .error-message {
+      display: none;
       color: red;
       font-size: 16px;
       padding: 10px;
@@ -203,6 +204,7 @@
         } catch (error) {
           console.error(`Error fetching ${seriesId}:`, error);
           document.getElementById("dataError").textContent = "Sorry, we couldn't load the latest data at the moment. Please try again later.";
+          document.getElementById("dataError").style.display = "block"; // Show error message
           return []; // Return an empty array in case of an error
         }
       }
@@ -265,15 +267,23 @@
           obsFHA,
           obsTreasury
         ] = await Promise.all([
-          fetchFredSeries("MORTGAGE30US"),
-          fetchFredSeries("MORTGAGE15US"),
-          fetchFredSeries("OBMMI30YF"),
-          fetchFredSeries("OBMMI30YJ"),
-          fetchFredSeries("OBMMI30YFHA"),
-          fetchFredSeries("DGS10")
+          fetchFredSeries("MORTGAGE30US"), // 30-Year Fixed
+          fetchFredSeries("MORTGAGE15US"), // 15-Year Fixed
+          fetchFredSeries("OBMMI30YF"),    // 30-Year Fixed Conforming
+          fetchFredSeries("OBMMI30YJ"),    // 30-Year Fixed Jumbo
+          fetchFredSeries("OBMMI30YFHA"),  // 30-Year Fixed FHA
+          fetchFredSeries("DGS10")         // 10-Year Treasury
         ]);
 
         console.log("Data fetched successfully");
+
+        // Log the fetched data to check what was returned
+        console.log("30-Year Fixed Data:", obs30);
+        console.log("15-Year Fixed Data:", obs15);
+        console.log("Conforming Data:", obsConf);
+        console.log("Jumbo Data:", obsJumbo);
+        console.log("FHA Data:", obsFHA);
+        console.log("Treasury Data:", obsTreasury);
 
         const rate30 = latestNumericValue(obs30);
         const rate15 = latestNumericValue(obs15);
@@ -305,6 +315,7 @@
       } catch (e) {
         console.error("Rates JS failed:", e);
         document.getElementById("dataError").textContent = "Sorry, we couldn't load the latest data at the moment. Please try again later.";
+        document.getElementById("dataError").style.display = "block"; // Show error message
       }
     });
   </script>

@@ -254,6 +254,22 @@
 }
 
 /* ======================================
+   ERROR MESSAGE DISPLAY
+   ====================================== */
+
+/* Ensure the error message is hidden by default */
+.error-message {
+  display: none;
+  color: red;
+  font-size: 16px;
+  padding: 10px;
+  background-color: #fdd;
+  border: 1px solid red;
+  border-radius: 4px;
+  margin-top: 20px;
+}
+
+/* ======================================
    MOBILE BREAKPOINT
    ALIGNED WITH BASE.CSS
    ====================================== */
