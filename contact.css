@@ -36,6 +36,7 @@
 /* Wrapper */
 .contact-wrap {
   width: 100%;
+  height: 100%; /* Ensures it takes full height available */
 }
 
 /* Card */
@@ -45,6 +46,7 @@
   border-radius: var(--radius);
   padding: 2rem;
   width: 100%;
+  height: 100%;
   box-sizing: border-box;
 }
 
@@ -105,9 +107,8 @@
 
 /* Styling the iframe for Google Form */
 .contact-card iframe {
-  width: 100%; /* Makes the iframe responsive */
-  max-width: 800px; /* Optional: Max width */
-  height: 3000px; /* Set height large enough to fit all questions */
+  width: 100%; /* Ensures the iframe uses full available width */
+  height: 100%; /* Takes full height of the parent container */
   border: none;
   margin: 0 auto;
   display: block;
@@ -147,8 +148,8 @@
 
   /* Adjust the iframe height for smaller screens */
   .contact-card iframe {
-    height: 2500px; /* Reduced height for mobile */
-    max-width: 95%; /* Make the iframe a bit wider on mobile */
+    height: 100%; /* Full height on mobile */
+    max-width: 100%; /* Full width on mobile */
   }
 
   /* Make form input fields more compact */
@@ -185,8 +186,8 @@
 
   /* Make the iframe smaller */
   .contact-card iframe {
-    height: 2200px; /* Further reduced height */
-    max-width: 98%; /* Increase width for very small screens */
+    height: 100%; /* Fill the entire container */
+    max-width: 100%; /* Ensure the iframe fills the screen width */
   }
 
   .muted {
