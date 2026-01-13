@@ -113,12 +113,13 @@
 /* Styling the iframe for Google Form */
 .contact-card iframe {
   width: 100%; /* Makes the iframe responsive */
-  max-width: 100%; /* Ensures it doesn’t exceed the container width */
-  height: 80vh; /* Set the iframe height to 80% of the viewport height */
+  max-width: 800px; /* Optional: Max width */
+  height: auto; /* Makes the iframe height adjust based on content */
+  max-height: 80vh; /* Prevents the iframe from becoming too long */
   border: none;
   margin: 0 auto;
   display: block;
-  overflow: hidden;
+  overflow: hidden; /* Ensure no scrolling */
 }
 
 /* ===============================
@@ -154,7 +155,8 @@
 
   /* Adjust the iframe height for smaller screens */
   .contact-card iframe {
-    height: 70vh; /* Set the iframe to 70% of the viewport height */
+    height: auto; /* Adjusts based on content */
+    max-height: 70vh; /* Limits the height on smaller screens */
   }
 
   /* Make form input fields more compact */
@@ -191,7 +193,8 @@
 
   /* Make the iframe smaller */
   .contact-card iframe {
-    height: 60vh; /* Reduce the height for small screens */
+    height: auto; /* Adjust height to fit content */
+    max-height: 60vh; /* Further reduce height for small screens */
   }
 
   .muted {
