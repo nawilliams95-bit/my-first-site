@@ -40,6 +40,9 @@
 /* Wrapper */
 .contact-wrap {
   width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: center;
 }
 
 /* Card */
@@ -114,12 +117,12 @@
 .contact-card iframe {
   width: 100%; /* Makes the iframe responsive */
   max-width: 800px; /* Optional: Max width */
-  height: 100%; /* Use full height available in container */
-  min-height: 1000px; /* Ensures iframe has a minimum height to display content */
+  height: 100%; /* Make sure iframe fills the height of the parent container */
+  min-height: 1000px; /* Sets a minimum height for the iframe */
   border: none;
   margin: 0 auto;
   display: block;
-  overflow: auto; /* Enables scrolling */
+  overflow: auto; /* Allows scrolling */
 }
 
 /* ===============================
@@ -155,9 +158,9 @@
 
   /* Adjust the iframe height for smaller screens */
   .contact-card iframe {
-    height: 70vh; /* Ensure iframe fits within viewport on mobile */
+    height: 80vh; /* Make iframe 80% of the viewport height */
     max-width: 100%; /* Full width on mobile */
-    overflow: auto; /* Scrollable on mobile */
+    overflow: auto; /* Allow scrolling on mobile */
   }
 
   /* Make form input fields more compact */
@@ -193,12 +196,4 @@
   }
 
   /* Make the iframe larger */
-  .contact-card iframe {
-    height: 70vh; /* Further increase height for small screens */
-    max-width: 100%; /* Full width */
-  }
-
-  .muted {
-    font-size: 0.7rem; /* Even smaller font size for ultra-small screens */
-  }
-}
+  .contact-card if
