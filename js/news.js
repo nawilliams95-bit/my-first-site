@@ -12,13 +12,13 @@ const AUTO_REFRESH_INTERVAL = 1000 * 60 * 15;
 // PUBLIC, NON-PAYWALLED, DATA-FIRST SOURCES ONLY
 const RSS_FEEDS = [
   { url: "https://www.federalreserve.gov/feeds/press_all.xml", label: "Federal Reserve" },
-  { url: "https://www.bls.gov/feed/bls_latest.rss", label: "BLS" },
-  { url: "https://www.census.gov/economic-indicators/rss.xml", label: "U.S. Census Bureau" },
-  { url: "https://www.freddiemac.com/blog/rss.xml", label: "Freddie Mac" },
-  { url: "https://www.fanniemae.com/rss.xml", label: "Fannie Mae" },
-  { url: "https://www.redfin.com/news/feed/", label: "Redfin Research" },
+  { url: "https://www.bls.gov/feed/bls_latest.rss", label: "Bureau of Labor Statistics" },
+  { url: "https://www.census.gov/newsroom/rss.xml", label: "U.S. Census Bureau" },
+  { url: "https://www.fhfa.gov/rss", label: "FHFA" },
+  { url: "https://www.nar.realtor/rss", label: "National Association of Realtors" },
+  { url: "https://www.redfin.com/blog/feed/", label: "Redfin Research" },
   { url: "https://www.zillow.com/research/feed/", label: "Zillow Research" },
-  { url: "https://www.housingwire.com/feed/", label: "HousingWire" }
+  { url: "https://www.realtor.com/news/feed/", label: "Realtor.com Research" }
 ];
 
 // Target container
@@ -29,39 +29,45 @@ const newsFeed = document.querySelector(".news-feed");
 // ===============================
 
 const DATA_SIGNALS = [
-  "basis point",
-  "bps",
-  "rate hike",
-  "rate cut",
-  "interest rate",
-  "mortgage rate",
+  // Rates & policy
+  "rate",
+  "rates",
+  "interest",
+  "mortgage",
+  "yield",
   "fomc",
   "federal reserve",
-  "monetary policy",
-  "cpi",
+  "policy",
+
+  // Inflation & labor
   "inflation",
-  "jobs report",
-  "employment report",
-  "nonfarm payrolls",
-  "unemployment rate",
-  "gdp",
-  "housing starts",
-  "building permits",
-  "existing home sales",
-  "new home sales",
-  "home price index",
-  "case-shiller",
+  "cpi",
+  "employment",
+  "jobs",
+  "unemployment",
+  "payroll",
+
+  // Housing market data
+  "housing",
+  "real estate",
+  "home",
+  "prices",
+  "price",
+  "values",
   "inventory",
-  "months of supply",
-  "rose",
-  "fell",
-  "declined",
-  "increased",
-  "decreased",
-  "jumped",
-  "dropped",
-  "surged",
-  "slowed"
+  "supply",
+  "demand",
+  "sales",
+  "listings",
+  "market",
+  "market update",
+  "market report",
+  "index",
+  "report",
+  "survey",
+  "data",
+  "trend",
+  "forecast"
 ];
 
 const LIFESTYLE_BLOCKERS = [
@@ -93,15 +99,28 @@ function isNotLifestyle(item) {
 function isSourceAllowed(item) {
   const source = item._sourceLabel.toLowerCase();
 
+  // Always allow primary government & housing authorities
   if (
     source.includes("federal") ||
-    source.includes("bls") ||
-    source.includes("census")
+    source.includes("labor") ||
+    source.includes("census") ||
+    source.includes("fhfa")
   ) {
     return true;
   }
 
-  return /data|report|index|survey|rates|prices|inventory|sales/i.test(item.title);
+  // Always allow trusted housing research publishers
+  if (
+    source.includes("redfin") ||
+    source.includes("zillow") ||
+    source.includes("realtor") ||
+    source.includes("association")
+  ) {
+    return true;
+  }
+
+  // Soft fallback for anything else
+  return /market|data|report|index|prices|rates|inventory|sales/i.test(item.title);
 }
 
 // ===============================
@@ -185,7 +204,7 @@ function loadMarketFeed() {
         const source = resolveSource(item, item._sourceLabel);
 
         article.innerHTML = `
-          ${image ? ` 
+          ${image ? `
             <img
               src="${image}"
               alt=""
@@ -224,5 +243,4 @@ function loadMarketFeed() {
 // ===============================
 
 loadMarketFeed();
-
 setInterval(loadMarketFeed, AUTO_REFRESH_INTERVAL);
