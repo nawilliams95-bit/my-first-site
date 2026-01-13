@@ -292,6 +292,42 @@ body {
 
 @media (max-width: 768px) {
 
+  /* HEADER MOBILE FIX (prevents mashed header) */
+  .header-inner {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .brand {
+    width: 100%;
+    justify-content: center;
+    white-space: normal;
+    text-align: center;
+  }
+
+  .brand-logo {
+    max-height: 54px;
+  }
+
+  .brand-name {
+    font-size: 1.35rem;
+    white-space: normal;
+    text-align: center;
+  }
+
+  .nav {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    white-space: normal;
+    gap: 12px;
+  }
+
+  .nav a {
+    white-space: nowrap;
+  }
+
   /* NEWS STACK */
   .news-item {
     flex-direction: column;
@@ -330,6 +366,7 @@ body {
     height: 140px;
   }
 }
+
 /* ======================================
    FOOTER (SAFE GLOBAL)
    ====================================== */
@@ -341,13 +378,16 @@ footer {
   background: rgba(11, 18, 32, 0.85);
 }
 
+/* Center footer content (fix off-center) */
 .footer-inner {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center; /* changed from space-between */
   gap: 16px;
   padding: 18px 0;
   flex-wrap: wrap;
+  text-align: center;
+  width: 100%;
 }
 
 .footer-nav,
@@ -356,11 +396,13 @@ footer nav,
 footer ul {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 14px;
   flex-wrap: wrap;
   margin: 0;
   padding: 0;
   list-style: none;
+  width: 100%;
 }
 
 .footer-nav a,
@@ -376,17 +418,34 @@ footer a {
 footer a:hover {
   color: var(--text);
 }
+/* ======================================
+   FOOTER TEXT LAYOUT FIX
+   ====================================== */
 
-@media (max-width: 768px) {
-  .footer-inner {
-    justify-content: center;
-    text-align: center;
-  }
+.footer-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+}
 
-  .footer-nav,
-  .footer-menu,
-  footer nav,
-  footer ul {
-    justify-content: center;
-  }
+/* Disclaimer block */
+.footer-disclaimer {
+  max-width: 720px;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+/* Ensure disclaimer paragraphs stack cleanly */
+.footer-disclaimer p {
+  margin: 0.25rem 0;
+}
+
+/* Footer meta line */
+.footer-meta {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: 4px;
 }
