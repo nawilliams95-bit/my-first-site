@@ -10,12 +10,16 @@
   padding: 4rem 1.5rem;
   flex-direction: column; /* Stack content on small screens */
   align-items: center;
+  box-sizing: border-box;
 }
 
 /* Centered content column */
 .contact-page .container {
   width: 100%;
   max-width: 700px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 /* Page header */
@@ -36,7 +40,6 @@
 /* Wrapper */
 .contact-wrap {
   width: 100%;
-  height: 100%; /* Ensures it takes full height available */
 }
 
 /* Card */
@@ -46,15 +49,17 @@
   border-radius: var(--radius);
   padding: 2rem;
   width: 100%;
-  height: 100%;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 /* Headings */
 .contact-card h2 {
   text-align: center;
   margin-bottom: 1.5rem;
-  font-size: 1.25rem; /* Adjust heading size */
+  font-size: 1.25rem;
 }
 
 /* Fields */
@@ -107,12 +112,13 @@
 
 /* Styling the iframe for Google Form */
 .contact-card iframe {
-  width: 100%; /* Ensures the iframe uses full available width */
-  height: 100%; /* Takes full height of the parent container */
+  width: 100%; /* Makes the iframe responsive */
+  max-width: 100%; /* Ensures it doesn’t exceed the container width */
+  height: 80vh; /* Set the iframe height to 80% of the viewport height */
   border: none;
   margin: 0 auto;
   display: block;
-  overflow: hidden; /* Ensure no scrolling */
+  overflow: hidden;
 }
 
 /* ===============================
@@ -148,8 +154,7 @@
 
   /* Adjust the iframe height for smaller screens */
   .contact-card iframe {
-    height: 100%; /* Full height on mobile */
-    max-width: 100%; /* Full width on mobile */
+    height: 70vh; /* Set the iframe to 70% of the viewport height */
   }
 
   /* Make form input fields more compact */
@@ -186,8 +191,7 @@
 
   /* Make the iframe smaller */
   .contact-card iframe {
-    height: 100%; /* Fill the entire container */
-    max-width: 100%; /* Ensure the iframe fills the screen width */
+    height: 60vh; /* Reduce the height for small screens */
   }
 
   .muted {
