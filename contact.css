@@ -114,7 +114,7 @@
 .contact-card iframe {
   width: 100%; /* Makes the iframe responsive */
   max-width: 100%; /* Ensures it doesn’t exceed the container width */
-  height: 140vh; /* Set height to be 75% larger than before */
+  height: 210vh; /* Increased height by 50% more */
   border: none;
   margin: 0 auto;
   display: block;
@@ -171,32 +171,3 @@
 
   .muted {
     font-size: 0.75rem; /* Smaller font size for mobile */
-  }
-}
-
-/* For smaller mobile screens (below 480px) */
-@media (max-width: 480px) {
-
-  .contact-page {
-    padding: 1.5rem 1rem;
-  }
-
-  .page-center h1 {
-    font-size: 1.5rem; /* Smaller font size for mobile */
-  }
-
-  /* Adjust form card width */
-  .contact-card {
-    padding: 1rem;
-  }
-
-  /* Make the iframe larger */
-  .contact-card iframe {
-    height: 110vh; /* Further increase height for small screens */
-    max-width: 100%; /* Full width */
-  }
-
-  .muted {
-    font-size: 0.7rem; /* Even smaller font size for ultra-small screens */
-  }
-}
