@@ -6,7 +6,7 @@ const TICKER_CACHE_TTL = 60 * 60 * 1000; // 1 hour
 
 // FRED API key
 const FRED_API_KEY = 'dcc865cd79fab774a29ff8469d345622';
-const FRED_PROXY = 'https://api.allorigins.win/raw?url=';
+const FRED_PROXY = 'https://corsproxy.io/?';
 
 function fredUrl(seriesId) {
   const base = `https://api.stlouisfed.org/fred/series/observations?series_id=${seriesId}&api_key=${FRED_API_KEY}&file_type=json&sort_order=desc&limit=2`;
