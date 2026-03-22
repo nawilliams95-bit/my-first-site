@@ -1,128 +1,382 @@
-/* =============================================================
-   mobile.css — RealtyDataLabs Responsive Breakpoints
-   Media queries only — base styles live in other CSS files
-   Depends on: base.css (CSS custom properties)
-   ============================================================= */
+/* ==========================================================================
+   RealtyDataLabs — Mobile & Responsive Styles
+   Task 3 — Complete mobile layout fix
+   Breakpoints: 1024px (laptop), 768px (tablet), 480px (mobile), 360px (small)
+   ========================================================================== */
 
-/* ============================================================
-   LAPTOP — 1024px
-   ============================================================ */
+/* ── Global overflow guard ─────────────────────────────────────────────── */
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+/* ── Mobile Menu Overlay ───────────────────────────────────────────────── */
+.mobile-menu {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: rgba(10, 10, 15, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 80px 32px 40px;
+  gap: 4px;
+  overflow-y: auto;
+}
+
+.mobile-menu.open {
+  display: flex;
+}
+
+.mobile-menu a {
+  display: block;
+  padding: 14px 0;
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  width: 100%;
+  min-height: 44px;
+  transition: color 0.2s ease;
+}
+
+.mobile-menu a:hover,
+.mobile-menu a.active {
+  color: var(--accent-teal);
+}
+
+.mobile-menu a.btn-primary.mobile-cta {
+  margin-top: 24px;
+  text-align: center;
+  border-radius: var(--radius-full);
+  border-bottom: none;
+  padding: 14px 24px;
+}
+
+.mobile-menu-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 10px;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  transition: background 0.2s ease;
+}
+
+.mobile-menu-close:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+/* ── Hamburger button ──────────────────────────────────────────────────── */
+.header-hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  min-width: 44px;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--text-primary);
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.header-hamburger.open span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.header-hamburger.open span:nth-child(2) {
+  opacity: 0;
+}
+.header-hamburger.open span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* ── Laptop (≤ 1024px) ─────────────────────────────────────────────────── */
 @media (max-width: 1024px) {
-  :root {
-    --size-hero: 2.2rem;
-    --size-h1: 1.75rem;
+  .hero-section .container {
+    padding-top: 40px;
+    padding-bottom: 40px;
   }
 
-  .hero-bottom {
+  .lead-inner {
+    padding: 48px 32px;
+  }
+
+  .grid-3 {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .article-card.card-featured {
+    grid-column: span 2;
   }
 }
 
-/* ============================================================
-   TABLET — 768px
-   ============================================================ */
+/* ── Tablet (≤ 768px) ──────────────────────────────────────────────────── */
 @media (max-width: 768px) {
-  :root {
-    --size-hero: 1.9rem;
-    --size-h1: 1.6rem;
-    --size-h2: 1.35rem;
-    --size-h3: 1.1rem;
+
+  /* Header */
+  .header-nav,
+  .header-cta {
+    display: none;
   }
 
-  body {
-    padding-top: calc(var(--header-h) + var(--ticker-h));
+  .header-hamburger {
+    display: flex;
   }
 
-  /* Cards grid */
-  .hero-bottom        { grid-template-columns: 1fr; }
-  .grid-3             { grid-template-columns: repeat(2, 1fr); }
-  .articles-grid      { grid-template-columns: repeat(2, 1fr); }
+  .header-inner {
+    padding: 0 16px;
+  }
 
-  /* Featured card stacks */
-  .card-featured      { grid-template-columns: 1fr; }
+  /* Typography */
+  .hero-headline  { font-size: 1.9rem; }
+  h1              { font-size: 1.6rem; }
+  h2              { font-size: 1.35rem; }
+  h3              { font-size: 1.1rem; }
+
+  /* Grids */
+  .grid-3,
+  .grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .article-card.card-featured {
+    grid-column: span 2;
+    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
+  }
+
   .card-featured .card-image-wrap {
-    min-height: 200px;
     border-radius: 12px 12px 0 0;
+    min-height: 200px;
+    height: auto;
+    aspect-ratio: 16 / 9;
   }
 
   /* Lead form */
-  .lead-inner         { text-align: left; }
-  .form-grid-2        { grid-template-columns: 1fr; }
-
-  /* Page hero */
-  .page-hero          { padding: 40px 0 28px; }
-  .page-hero h1       { font-size: 1.75rem; }
-
-  /* Media page */
-  .media-grid-3       { grid-template-columns: repeat(2, 1fr); }
-}
-
-/* ============================================================
-   MOBILE — 480px
-   ============================================================ */
-@media (max-width: 480px) {
-  :root {
-    --size-hero: 1.65rem;
-    --size-h1: 1.45rem;
-    --size-h2: 1.2rem;
-    --size-h3: 1.05rem;
+  .lead-inner {
+    padding: 40px 20px;
   }
 
+  .form-grid-2 {
+    grid-template-columns: 1fr;
+  }
+
+  /* Rates strip */
+  .rates-strip {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .rate-divider {
+    display: none;
+  }
+
+  /* Affiliate banners */
+  .affiliate-banner {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+
+  /* Footer */
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+}
+
+/* ── Mobile (≤ 480px) ──────────────────────────────────────────────────── */
+@media (max-width: 480px) {
+
+  /* Typography */
+  .hero-headline  { font-size: 1.65rem; line-height: 1.25; }
+  h1              { font-size: 1.45rem; }
+  h2              { font-size: 1.2rem; }
+  h3              { font-size: 1.05rem; }
+
+  /* Container */
   .container {
     padding: 0 16px;
   }
 
-  /* Grids all single column */
-  .grid-2,
+  /* All grids single column */
   .grid-3,
   .grid-4,
-  .hero-bottom,
-  .articles-grid      { grid-template-columns: 1fr; }
+  .form-grid-2 {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
 
-  /* Ticker slower */
-  .ticker-track       { animation-duration: 90s !important; }
+  .article-card.card-featured {
+    grid-column: span 1;
+  }
+
+  /* Cards */
+  .card-body {
+    padding: 14px;
+  }
+
+  .card-headline {
+    font-size: 0.9rem;
+  }
+
+  /* Ticker — slow animation, smaller text */
+  .ticker-track {
+    animation-duration: 100s;
+  }
+
+  .ticker-label {
+    font-size: 0.6rem;
+  }
+
+  .ticker-value {
+    font-size: 0.72rem;
+  }
 
   /* Buttons full width */
   .btn-primary,
-  .btn-outline        { width: 100%; justify-content: center; }
-
-  /* Forms */
-  .form-grid-2        { grid-template-columns: 1fr; }
-  .lead-form-wrap     { padding: 20px 16px; }
-  .newsletter-form    { flex-direction: column; }
-  .newsletter-form button { width: 100%; }
-
-  /* Rates strip */
-  .rates-strip        { flex-direction: column; gap: 20px; }
-  .rate-divider       { display: none; }
-  .rate-value         { font-size: 1.6rem; }
-
-  /* Footer bottom */
-  .footer-bottom      { flex-direction: column; text-align: center; gap: 8px; }
-
-  /* Section spacing */
-  .home-section,
-  .section            { padding: 36px 0; }
-  .section-lg         { padding: 48px 0; }
-
-  /* Category hero */
-  .category-hero      { padding: 32px 0 28px; margin-bottom: 28px; }
-  .filter-bar         { padding: 12px 14px; gap: 12px; }
-}
-
-/* ============================================================
-   SMALL MOBILE — 360px
-   ============================================================ */
-@media (max-width: 360px) {
-  :root {
-    --size-hero: 1.45rem;
-    --size-h1: 1.3rem;
+  .btn-outline {
+    width: 100%;
+    text-align: center;
   }
 
-  .container    { padding: 0 12px; }
+  /* Affiliate banner buttons */
+  .affiliate-banner > div[style*="display:flex"] {
+    flex-direction: column;
+  }
 
-  /* Ticker text smaller */
+  /* Lead form */
+  .lead-inner {
+    padding: 32px 16px;
+  }
+
+  .lead-inner h2 {
+    font-size: 1.3rem;
+  }
+
+  .form-submit {
+    width: 100%;
+  }
+
+  /* Newsletter */
+  .newsletter-form {
+    flex-direction: column;
+  }
+
+  .newsletter-form input {
+    width: 100%;
+  }
+
+  .newsletter-form button {
+    width: 100%;
+  }
+
+  /* Footer */
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    text-align: center;
+  }
+
+  .footer-nav-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px 16px;
+  }
+
+  .footer-nav-list li a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .footer-social {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .footer-social-link {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .footer-bottom {
+    padding: 20px 16px;
+    flex-direction: column;
+    gap: 6px;
+    text-align: center;
+  }
+
+  /* Section headers */
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  /* Media page */
+  .media-grid-3,
+  .tiktok-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .instagram-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ── Small Mobile (≤ 360px) ────────────────────────────────────────────── */
+@media (max-width: 360px) {
+
+  .container {
+    padding: 0 12px;
+  }
+
+  .hero-headline { font-size: 1.4rem; }
+  h1             { font-size: 1.3rem; }
+  h2             { font-size: 1.1rem; }
+
   .ticker-label { font-size: 0.58rem; }
-  .ticker-value { font-size: 0.72rem; }
-  .ticker-item  { padding: 0 12px; }
+  .ticker-value { font-size: 0.7rem; }
+
+  .card-body {
+    padding: 12px;
+  }
+
+  .card-headline {
+    font-size: 0.85rem;
+  }
+
+  .instagram-grid {
+    grid-template-columns: 1fr;
+  }
 }

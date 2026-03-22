@@ -1,5 +1,6 @@
 // RealtyDataLabs — Ticker Bar
 // Fetches live market data, builds ticker HTML, handles animation
+// Freshness dot CSS is in css/ticker.css — classes: .ticker-fresh.fresh-green, .fresh-yellow, .fresh-gray, .fresh-unknown
 
 const TICKER_CACHE_KEY = 'rdl_ticker_cache';
 const TICKER_CACHE_TTL = 60 * 60 * 1000; // 1 hour
@@ -8,78 +9,175 @@ const TICKER_CACHE_TTL = 60 * 60 * 1000; // 1 hour
 const FRED_API_KEY = 'dcc865cd79fab774a29ff8469d345622';
 const FRED_PROXY = 'https://corsproxy.io/?';
 
-function fredUrl(seriesId) {
-  const base = `https://api.stlouisfed.org/fred/series/observations?series_id=${seriesId}&api_key=${FRED_API_KEY}&file_type=json&sort_order=desc&limit=2`;
+function fredUrl(seriesId, limit) {
+  const base = `https://api.stlouisfed.org/fred/series/observations?series_id=${seriesId}&api_key=${FRED_API_KEY}&file_type=json&sort_order=desc&limit=${limit}`;
   return FRED_PROXY + encodeURIComponent(base);
 }
 
-// Data points to display
-// Each has: label, seriesId (FRED), format function, change direction logic
-const TICKER_POINTS = [
-  { label: '30YR FIXED',        series: 'MORTGAGE30US', format: v => v + '%',                             changeKey: 'mortgage30' },
-  { label: '15YR FIXED',        series: 'MORTGAGE15US', format: v => v + '%',                             changeKey: 'mortgage15' },
-  { label: '10YR TREASURY',     series: 'DGS10',        format: v => v + '%',                             changeKey: 'dgs10'      },
-  { label: 'FED FUNDS',         series: 'FEDFUNDS',     format: v => v + '%',                             changeKey: 'fedfunds'   },
-  { label: 'MEDIAN HOME PRICE', series: 'MSPUS',        format: v => '$' + Number(v).toLocaleString(),    changeKey: 'mspus'      },
-];
+// Returns a CSS class based on how recently the data was published
+function freshnessClass(dateStr) {
+  if (!dateStr) return 'fresh-unknown';
+  const ageDays = (Date.now() - new Date(dateStr).getTime()) / (1000 * 60 * 60 * 24);
+  if (ageDays <= 1)  return 'fresh-green';   // updated within 24h
+  if (ageDays <= 7)  return 'fresh-yellow';  // 1-7 days old
+  return 'fresh-gray';                        // older or unavailable
+}
 
-// For data we can't get from FRED easily, use static/cached values
-const STATIC_POINTS = [
-  { label: 'HOUSING INV YOY',   value: 'N/A', changeClass: 'neutral' },
-  { label: 'MORTGAGE APPS WOW', value: 'N/A', changeClass: 'neutral' },
+// seriesId, label, format, limit — limit=14 allows YoY calculations
+const TICKER_POINTS = [
+  {
+    label:  '30YR FIXED',
+    series: 'MORTGAGE30US',
+    limit:  2,
+    format: (obs) => {
+      const latest   = parseFloat(obs[0]?.value);
+      const previous = parseFloat(obs[1]?.value);
+      return {
+        value:       isNaN(latest)   ? 'N/A' : latest.toFixed(2) + '%',
+        changeClass: isNaN(latest) || isNaN(previous) ? 'neutral'
+                     : latest > previous ? 'positive'
+                     : latest < previous ? 'negative' : 'neutral',
+        timestamp:   obs[0]?.date
+      };
+    }
+  },
+  {
+    label:  '15YR FIXED',
+    series: 'MORTGAGE15US',
+    limit:  2,
+    format: (obs) => {
+      const latest   = parseFloat(obs[0]?.value);
+      const previous = parseFloat(obs[1]?.value);
+      return {
+        value:       isNaN(latest)   ? 'N/A' : latest.toFixed(2) + '%',
+        changeClass: isNaN(latest) || isNaN(previous) ? 'neutral'
+                     : latest > previous ? 'positive'
+                     : latest < previous ? 'negative' : 'neutral',
+        timestamp:   obs[0]?.date
+      };
+    }
+  },
+  {
+    label:  '10YR TREASURY',
+    series: 'DGS10',
+    limit:  2,
+    format: (obs) => {
+      const latest   = parseFloat(obs[0]?.value);
+      const previous = parseFloat(obs[1]?.value);
+      return {
+        value:       isNaN(latest)   ? 'N/A' : latest.toFixed(2) + '%',
+        changeClass: isNaN(latest) || isNaN(previous) ? 'neutral'
+                     : latest > previous ? 'positive'
+                     : latest < previous ? 'negative' : 'neutral',
+        timestamp:   obs[0]?.date
+      };
+    }
+  },
+  {
+    label:  'FED FUNDS',
+    series: 'FEDFUNDS',
+    limit:  2,
+    format: (obs) => {
+      const latest   = parseFloat(obs[0]?.value);
+      const previous = parseFloat(obs[1]?.value);
+      return {
+        value:       isNaN(latest)   ? 'N/A' : latest.toFixed(2) + '%',
+        changeClass: isNaN(latest) || isNaN(previous) ? 'neutral'
+                     : latest > previous ? 'positive'
+                     : latest < previous ? 'negative' : 'neutral',
+        timestamp:   obs[0]?.date
+      };
+    }
+  },
+  {
+    label:  'MEDIAN HOME PRICE',
+    series: 'MSPUS',
+    limit:  2,
+    format: (obs) => {
+      const latest   = parseFloat(obs[0]?.value);
+      const previous = parseFloat(obs[1]?.value);
+      return {
+        value:       isNaN(latest)   ? 'N/A' : '$' + Math.round(latest).toLocaleString(),
+        changeClass: isNaN(latest) || isNaN(previous) ? 'neutral'
+                     : latest > previous ? 'positive'
+                     : latest < previous ? 'negative' : 'neutral',
+        timestamp:   obs[0]?.date
+      };
+    }
+  },
+  {
+    label:  'HOUSING SUPPLY',
+    series: 'MSACSR',      // Monthly Supply of Houses — use YoY comparison
+    limit:  14,
+    format: (obs) => {
+      // obs is sorted desc (newest first); obs[0] = latest, obs[12] = ~12 months ago
+      const latest  = parseFloat(obs[0]?.value);
+      const yearAgo = parseFloat(obs[Math.min(12, obs.length - 1)]?.value);
+      if (isNaN(latest)) return { value: 'N/A', changeClass: 'neutral', timestamp: obs[0]?.date };
+      const yoy = isNaN(yearAgo) ? null : ((latest - yearAgo) / yearAgo * 100);
+      return {
+        value:       latest.toFixed(1) + 'mo' + (yoy !== null ? ' (' + (yoy >= 0 ? '+' : '') + yoy.toFixed(1) + '% YoY)' : ''),
+        changeClass: yoy === null ? 'neutral' : yoy > 0 ? 'positive' : yoy < 0 ? 'negative' : 'neutral',
+        timestamp:   obs[0]?.date
+      };
+    }
+  },
+  {
+    label:  'MORT RATE WoW',
+    series: 'MORTGAGE30US',   // Weekly — WoW change in the 30yr rate
+    limit:  3,
+    format: (obs) => {
+      const latest  = parseFloat(obs[0]?.value);
+      const prev    = parseFloat(obs[1]?.value);
+      if (isNaN(latest)) return { value: 'N/A', changeClass: 'neutral', timestamp: obs[0]?.date };
+      const wow = isNaN(prev) ? null : (latest - prev);
+      return {
+        value:       latest.toFixed(2) + '%' + (wow !== null ? ' (' + (wow >= 0 ? '+' : '') + wow.toFixed(2) + ' WoW)' : ''),
+        changeClass: wow === null ? 'neutral' : wow > 0 ? 'positive' : wow < 0 ? 'negative' : 'neutral',
+        timestamp:   obs[0]?.date
+      };
+    }
+  }
 ];
 
 async function fetchTickerData() {
-  // Check cache first
+  // Check cache
   try {
     const cached = localStorage.getItem(TICKER_CACHE_KEY);
     if (cached) {
       const { data, timestamp } = JSON.parse(cached);
-      if (Date.now() - timestamp < TICKER_CACHE_TTL) {
-        return data;
-      }
+      if (Date.now() - timestamp < TICKER_CACHE_TTL) return data;
     }
-  } catch (e) { /* cache miss */ }
+  } catch (e) {}
 
-  // Fetch all FRED series in parallel
   const results = await Promise.all(
     TICKER_POINTS.map(point =>
-      fetch(fredUrl(point.series))
+      fetch(fredUrl(point.series, point.limit))
         .then(r => r.json())
         .then(data => {
-          const obs      = data.observations || [];
-          const latest   = obs[0] ? parseFloat(obs[0].value)  : null;
-          const previous = obs[1] ? parseFloat(obs[1].value)  : null;
-          let changeClass = 'neutral';
-          if (latest !== null && previous !== null) {
-            if (latest > previous)      changeClass = 'positive';
-            else if (latest < previous) changeClass = 'negative';
-          }
+          const obs = (data.observations || []).filter(o => o.value !== '.');
+          const formatted = obs.length ? point.format(obs) : { value: 'N/A', changeClass: 'neutral', timestamp: null };
           return {
-            label: point.label,
-            value: latest !== null ? point.format(latest.toFixed(2)) : 'N/A',
-            changeClass,
+            label:          point.label,
+            value:          formatted.value,
+            changeClass:    formatted.changeClass,
+            freshnessClass: freshnessClass(formatted.timestamp)
           };
         })
         .catch(() => ({
-          label: point.label,
-          value: 'N/A',
-          changeClass: 'neutral',
+          label:          point.label,
+          value:          'N/A',
+          changeClass:    'neutral',
+          freshnessClass: 'fresh-unknown'
         }))
     )
   );
 
-  const allPoints = [...results, ...STATIC_POINTS];
-
-  // Cache results
   try {
-    localStorage.setItem(TICKER_CACHE_KEY, JSON.stringify({
-      data:      allPoints,
-      timestamp: Date.now(),
-    }));
-  } catch (e) { /* storage full */ }
+    localStorage.setItem(TICKER_CACHE_KEY, JSON.stringify({ data: results, timestamp: Date.now() }));
+  } catch (e) {}
 
-  return allPoints;
+  return results;
 }
 
 function buildTickerHTML(points) {
@@ -90,10 +188,10 @@ function buildTickerHTML(points) {
     <span class="ticker-item">
       <span class="ticker-label">${p.label}</span>
       <span class="ticker-value ${p.changeClass}">${p.value}</span>
+      <span class="ticker-fresh ${p.freshnessClass || 'fresh-unknown'}" title="Data freshness"></span>
     </span>
     <span class="ticker-separator" aria-hidden="true"></span>
   `).join('');
-
   return buildItems() + buildItems();
 }
 
@@ -117,10 +215,12 @@ async function initTicker() {
     track.innerHTML = buildTickerHTML(points);
   } catch (e) {
     // On total failure, show N/A values
-    const fallback = [
-      ...TICKER_POINTS.map(p => ({ label: p.label, value: 'N/A', changeClass: 'neutral' })),
-      ...STATIC_POINTS,
-    ];
+    const fallback = TICKER_POINTS.map(p => ({
+      label:          p.label,
+      value:          'N/A',
+      changeClass:    'neutral',
+      freshnessClass: 'fresh-unknown'
+    }));
     track.innerHTML = buildTickerHTML(fallback);
   }
 

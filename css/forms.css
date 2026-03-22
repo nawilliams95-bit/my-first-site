@@ -94,8 +94,11 @@
    VALIDATION STATES
 --------------------------------------------------------------- */
 .form-input.error,
+.form-input.input-error,
 .form-select.error,
-.form-textarea.error {
+.form-select.input-error,
+.form-textarea.error,
+.form-textarea.input-error {
   border-color: #FF4D4D;
   box-shadow: 0 0 0 3px rgba(255,77,77,0.1);
 }
@@ -112,6 +115,45 @@
   font-size: var(--size-tiny);
   color: #FF4D4D;
   margin-top: 6px;
+}
+
+/* ---------------------------------------------------------------
+   FORM SUCCESS STATE
+--------------------------------------------------------------- */
+.form-success-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 16px;
+  text-align: center;
+}
+
+.form-success-icon {
+  width: 48px;
+  height: 48px;
+  background: rgba(0, 212, 170, 0.15);
+  border: 2px solid var(--accent-teal);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  color: var(--accent-teal);
+  flex-shrink: 0;
+}
+
+.form-success-state h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.form-success-state p {
+  font-size: var(--size-small);
+  color: var(--text-secondary);
+  margin: 0;
 }
 
 /* ---------------------------------------------------------------

@@ -108,80 +108,197 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('img[data-src]').forEach(img => imgObserver.observe(img));
   }
 
-  // ============================================================
-  // DYNAMIC FOOTER YEAR
-  // ============================================================
-  const yearEl = document.getElementById('footer-year');
-  if (yearEl) yearEl.textContent = new Date().getFullYear();
+  // ── Dynamic copyright year (supports both id and class) ──
+  const yearById = document.getElementById('footer-year');
+  if (yearById) yearById.textContent = new Date().getFullYear();
+  document.querySelectorAll('.copyright-year').forEach(el => {
+    el.textContent = new Date().getFullYear();
+  });
 
   // ============================================================
-  // LEAD CAPTURE FORM — ZAPIER WEBHOOK
+  // LEAD CAPTURE FORM — Formspree endpoint
+  // PENDING CREDENTIALS: Replace REPLACE_WITH_LEAD_FORM_ID with
+  // your Formspree form ID from formspree.io/f/XXXXXXXX
+  // Once KW Command webhook is ready, swap this URL for the KW endpoint.
   // ============================================================
+  const LEAD_FORM_ENDPOINT = 'https://formspree.io/f/REPLACE_WITH_LEAD_FORM_ID';
+
   const leadForm = document.getElementById('lead-form');
   if (leadForm) {
-    const submitBtn  = leadForm.querySelector('[type="submit"]');
-    const statusMsg  = document.getElementById('form-status');
+    const submitBtn = leadForm.querySelector('[type="submit"]');
+    const btnText   = leadForm.querySelector('.btn-text');
+    const spinner   = leadForm.querySelector('.spinner');
+    const statusMsg = document.getElementById('form-status');
 
+    // ── Inline validation helpers ──────────────────────────────
+    function setFieldError(input, msg) {
+      input.classList.add('input-error');
+      let err = input.parentElement.querySelector('.field-error');
+      if (!err) {
+        err = document.createElement('span');
+        err.className = 'field-error';
+        input.parentElement.appendChild(err);
+      }
+      err.textContent = msg;
+    }
+
+    function clearFieldError(input) {
+      input.classList.remove('input-error');
+      const err = input.parentElement.querySelector('.field-error');
+      if (err) err.remove();
+    }
+
+    function validateEmail(val) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+    }
+
+    function validatePhone(val) {
+      // Optional — validate format if entered
+      if (!val) return true;
+      return /^[\d\s\(\)\-\+\.]{7,15}$/.test(val);
+    }
+
+    function validateField(input) {
+      const val  = input.value.trim();
+      const name = input.name;
+      clearFieldError(input);
+
+      if (input.required && !val) {
+        setFieldError(input, 'This field is required.');
+        return false;
+      }
+      if (name === 'fullName' && val && val.length < 2) {
+        setFieldError(input, 'Please enter your full name.');
+        return false;
+      }
+      if (name === 'email' && val && !validateEmail(val)) {
+        setFieldError(input, 'Please enter a valid email address.');
+        return false;
+      }
+      if (name === 'phone' && val && !validatePhone(val)) {
+        setFieldError(input, 'Please enter a valid phone number.');
+        return false;
+      }
+      return true;
+    }
+
+    // Validate on blur for each input/select/textarea
+    leadForm.querySelectorAll('input, select, textarea').forEach(field => {
+      field.addEventListener('blur', () => validateField(field));
+      field.addEventListener('input', () => {
+        if (field.classList.contains('input-error')) validateField(field);
+      });
+    });
+
+    // ── Submit handler ─────────────────────────────────────────
     leadForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      // Disable button / show loading state
-      if (submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Sending...';
+      // Run full validation
+      const fields = Array.from(leadForm.querySelectorAll('input, select, textarea'));
+      const valid  = fields.map(f => validateField(f)).every(Boolean);
+      if (!valid) {
+        const firstError = leadForm.querySelector('.input-error');
+        if (firstError) firstError.focus();
+        return;
       }
 
-      const formData = new FormData(leadForm);
-      const payload  = Object.fromEntries(formData.entries());
-
-      // WORTH VERIFYING: Replace this URL with your actual Zapier webhook URL
-      const ZAPIER_WEBHOOK = 'https://hooks.zapier.com/hooks/catch/REPLACE_WITH_YOUR_ZAPIER_HOOK_ID/';
+      // Loading state
+      if (submitBtn) submitBtn.disabled = true;
+      if (btnText)   btnText.style.display = 'none';
+      if (spinner)   spinner.style.display = 'inline-block';
 
       try {
-        await fetch(ZAPIER_WEBHOOK, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+        const response = await fetch(LEAD_FORM_ENDPOINT, {
+          method:  'POST',
+          body:    new FormData(leadForm),
+          headers: { 'Accept': 'application/json' }
         });
 
-        // Success state
-        if (statusMsg) {
-          statusMsg.textContent = 'Thank you! An agent will be in touch shortly.';
-          statusMsg.className = 'form-status form-status-success';
+        if (response.ok) {
+          // Success — hide form fields, show confirmation
+          const formGrid = leadForm.querySelector('.form-grid-2');
+          if (formGrid) formGrid.style.display = 'none';
+          if (submitBtn) submitBtn.style.display = 'none';
+          if (statusMsg) {
+            statusMsg.innerHTML = `
+              <div class="form-success-state">
+                <div class="form-success-icon">&#10003;</div>
+                <h3>Thank you!</h3>
+                <p>A licensed agent will contact you within 24 hours.</p>
+              </div>`;
+            statusMsg.className = 'form-status form-status-success';
+          }
+        } else {
+          throw new Error('Server error');
         }
-        leadForm.reset();
-
       } catch (err) {
-        // Error state
         if (statusMsg) {
-          statusMsg.textContent = 'Something went wrong. Please try again or call us directly.';
-          statusMsg.className = 'form-status form-status-error';
+          statusMsg.textContent = 'Something went wrong. Please try again or contact us directly.';
+          statusMsg.className   = 'form-status form-status-error';
         }
-      } finally {
-        if (submitBtn) {
-          submitBtn.disabled = false;
-          submitBtn.textContent = 'Connect With an Agent';
-        }
+        if (submitBtn) submitBtn.disabled = false;
+        if (btnText)   btnText.style.display = '';
+        if (spinner)   spinner.style.display = 'none';
       }
     });
   }
 
   // ============================================================
-  // NEWSLETTER SIGNUP
+  // NEWSLETTER SIGNUP — Formspree endpoint
+  // PENDING CREDENTIALS: Replace REPLACE_WITH_NEWSLETTER_FORM_ID
+  // with your Formspree newsletter form ID from formspree.io
   // ============================================================
-  const newsletterForm = document.getElementById('newsletter-form');
+  const NEWSLETTER_ENDPOINT = 'https://formspree.io/f/REPLACE_WITH_NEWSLETTER_FORM_ID';
+
+  const newsletterForm   = document.getElementById('newsletter-form');
+  const newsletterStatus = document.getElementById('newsletter-status');
+
   if (newsletterForm) {
-    const newsletterStatus = document.getElementById('newsletter-status');
     newsletterForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const email = newsletterForm.querySelector('[type="email"]').value;
-      // WORTH VERIFYING: Connect to your email service (Mailchimp, ConvertKit, etc.)
-      // For now, just shows success message
-      if (newsletterStatus) {
-        newsletterStatus.textContent = 'You\'re subscribed! Check your inbox.';
-        newsletterStatus.className = 'newsletter-status newsletter-success';
+      const emailInput = newsletterForm.querySelector('[type="email"]');
+      const submitBtn  = newsletterForm.querySelector('button[type="submit"]');
+      const email      = emailInput ? emailInput.value.trim() : '';
+
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        if (newsletterStatus) {
+          newsletterStatus.textContent = 'Please enter a valid email address.';
+          newsletterStatus.className   = 'newsletter-status newsletter-error';
+        }
+        return;
       }
-      newsletterForm.reset();
+
+      if (submitBtn) submitBtn.disabled = true;
+      if (submitBtn) submitBtn.textContent = 'Subscribing...';
+
+      try {
+        const response = await fetch(NEWSLETTER_ENDPOINT, {
+          method:  'POST',
+          body:    new FormData(newsletterForm),
+          headers: { 'Accept': 'application/json' }
+        });
+
+        if (response.ok) {
+          // Success — replace form with confirmation
+          newsletterForm.style.display = 'none';
+          if (newsletterStatus) {
+            newsletterStatus.textContent = 'You are subscribed. Welcome to the RealtyDataLabs weekly digest.';
+            newsletterStatus.className   = 'newsletter-status newsletter-success';
+          }
+        } else {
+          throw new Error('Server error');
+        }
+      } catch (err) {
+        if (newsletterStatus) {
+          newsletterStatus.textContent = 'Something went wrong. Please try again.';
+          newsletterStatus.className   = 'newsletter-status newsletter-error';
+        }
+        if (submitBtn) {
+          submitBtn.disabled   = false;
+          submitBtn.textContent = 'Subscribe';
+        }
+      }
     });
   }
 

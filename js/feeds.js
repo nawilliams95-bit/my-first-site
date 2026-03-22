@@ -220,68 +220,92 @@ function stripHtml(html) {
 
 // ============================================================
 // RSS FEEDS BY CATEGORY
-// housingwire.com and inman.com removed from industry feeds —
-// both are now in the blacklist. Keeping other sources only.
+// All paywalled sources removed — free/open sources only.
+// Each entry may include an optional backup URL.
 // ============================================================
 const CATEGORY_FEEDS = {
   'market': [
-    { url: 'https://www.zillow.com/research/feed/',                         label: 'Zillow Research' },
-    { url: 'https://www.redfin.com/blog/feed/',                            label: 'Redfin News' },
-    { url: 'https://www.realtor.com/news/feed/',                           label: 'Realtor.com' },
-    { url: 'https://www.fhfa.gov/rss',                                     label: 'FHFA' },
-    { url: 'https://www.calculatedriskblog.com/feeds/posts/default',       label: 'Calculated Risk' },
-    { url: 'https://www.nahb.org/news-and-economics/rss',                  label: 'NAHB' },
-    { url: 'https://www.census.gov/newsroom/rss.xml',                      label: 'Census Bureau' }
+    { url: 'https://www.zillow.com/research/feed/',                          backup: 'https://www.zillow.com/research/feed/',              label: 'Zillow Research' },
+    { url: 'https://www.redfin.com/news/feed/',                             backup: 'https://www.redfin.com/blog/feed/',                  label: 'Redfin News' },
+    { url: 'https://www.nar.realtor/blogs/economists-outlook/feed',         backup: 'https://www.nar.realtor/rss',                        label: 'NAR' },
+    { url: 'https://www.fhfa.gov/rss/news',                                 backup: 'https://www.fhfa.gov/rss',                           label: 'FHFA' },
+    { url: 'https://www.calculatedriskblog.com/feeds/posts/default',                                                                      label: 'Calculated Risk' },
+    { url: 'https://www.nahb.org/news-and-economics/press-releases/feed',   backup: 'https://www.nahb.org/news-and-economics/rss',        label: 'NAHB' },
+    { url: 'https://www.census.gov/construction/nrs/feed.xml',              backup: 'https://www.census.gov/newsroom/rss.xml',            label: 'Census Bureau' }
   ],
   'mortgage': [
-    { url: 'https://www.freddiemac.com/blog/feed',                         label: 'Freddie Mac' },
-    { url: 'https://www.mortgagenewsdaily.com/rss',                        label: 'Mortgage News Daily' },
-    { url: 'https://www.mba.org/news-and-research/newsroom/rss.xml',       label: 'MBA' },
-    { url: 'https://www.bankrate.com/rss/mortgage-rates/',                 label: 'Bankrate' },
-    { url: 'https://www.federalreserve.gov/feeds/press_all.xml',           label: 'Federal Reserve' }
+    { url: 'https://www.mortgagenewsdaily.com/feed/news',                   backup: 'https://www.mortgagenewsdaily.com/rss',              label: 'Mortgage News Daily' },
+    { url: 'https://www.mba.org/rss-feeds/news',                           backup: 'https://www.mba.org/news-and-research/newsroom/rss.xml', label: 'MBA' },
+    { url: 'https://www.bankrate.com/rss/mortgage/',                        backup: 'https://www.bankrate.com/rss/mortgage-rates/',       label: 'Bankrate' },
+    { url: 'https://www.nerdwallet.com/blog/mortgages/feed/',                                                                             label: 'NerdWallet' },
+    { url: 'https://www.federalreserve.gov/feeds/press_all.xml',                                                                          label: 'Federal Reserve' },
+    { url: 'https://www.freddiemac.com/blog/feed',                                                                                        label: 'Freddie Mac' }
   ],
   'economic': [
-    { url: 'https://fredblog.stlouisfed.org/feed/',                        label: 'FRED Blog' },
-    { url: 'https://www.bls.gov/feed/bls_latest.rss',                     label: 'BLS' },
-    { url: 'https://home.treasury.gov/news/press-releases/rss.xml',       label: 'U.S. Treasury' },
-    { url: 'https://www.calculatedriskblog.com/feeds/posts/default',       label: 'Calculated Risk' }
+    { url: 'https://www.calculatedriskblog.com/feeds/posts/default',                                                                      label: 'Calculated Risk' },
+    { url: 'https://feeds.reuters.com/reuters/businessNews',               backup: 'https://www.reuters.com/business/rss',               label: 'Reuters' },
+    { url: 'https://www.cnbc.com/id/10000664/device/rss/rss.html',                                                                        label: 'CNBC' },
+    { url: 'https://feeds.marketwatch.com/marketwatch/realtimeheadlines/',  backup: 'https://feeds.marketwatch.com/marketwatch/topstories/', label: 'MarketWatch' },
+    { url: 'https://fredblog.stlouisfed.org/feed/',                                                                                       label: 'FRED Blog' },
+    { url: 'https://www.bls.gov/feed/bls_latest.rss',                                                                                     label: 'BLS' },
+    { url: 'https://home.treasury.gov/news/press-releases/rss.xml',                                                                       label: 'U.S. Treasury' }
   ],
   'investment': [
-    { url: 'https://www.biggerpockets.com/blog/feed/',                     label: 'BiggerPockets' },
-    { url: 'https://www.apartmentlist.com/research/rss.xml',              label: 'Apartment List' },
-    { url: 'https://www.rentcafe.com/blog/feed/',                         label: 'RentCafe' }
+    { url: 'https://www.biggerpockets.com/blog/feed',                       backup: 'https://www.biggerpockets.com/blog/feed/',           label: 'BiggerPockets' },
+    { url: 'https://www.apartmentlist.com/research/rss.xml',               backup: 'https://www.apartmentlist.com/research/feed',        label: 'Apartment List' },
+    { url: 'https://www.rentcafe.com/blog/feed/',                                                                                         label: 'RentCafe' },
+    { url: 'https://www.cnbc.com/id/10000664/device/rss/rss.html',                                                                        label: 'CNBC' }
   ],
   'industry': [
-    // housingwire.com and inman.com removed — confirmed soft paywall
-    { url: 'https://www.nar.realtor/rss',                                  label: 'NAR' },
-    { url: 'https://www.nahb.org/news-and-economics/rss',                  label: 'NAHB' },
-    { url: 'https://www.federalreserve.gov/feeds/press_all.xml',           label: 'Federal Reserve' }
+    // All paywalled industry sources removed — using free alternatives only
+    { url: 'https://www.nar.realtor/rss',                                   backup: 'https://www.nar.realtor/blogs/economists-outlook/feed', label: 'NAR' },
+    { url: 'https://www.nahb.org/news-and-economics/rss',                                                                                 label: 'NAHB' },
+    { url: 'https://www.federalreserve.gov/feeds/press_all.xml',                                                                          label: 'Federal Reserve' },
+    { url: 'https://www.propublica.org/feeds/propublica/main',                                                                            label: 'ProPublica' },
+    { url: 'https://www.mba.org/rss-feeds/news',                                                                                          label: 'MBA' }
   ],
   'regional': [
-    { url: 'https://www.stlouisfed.org/on-the-economy/rss',               label: 'St. Louis Fed' },
-    { url: 'https://www.newyorkfed.org/research/rss',                     label: 'NY Fed' },
-    { url: 'https://www.frbatlanta.org/rss',                              label: 'Atlanta Fed' }
+    { url: 'https://www.stlouisfed.org/on-the-economy/rss',                 backup: 'https://fredblog.stlouisfed.org/feed/',              label: 'St. Louis Fed' },
+    { url: 'https://www.newyorkfed.org/research/rss',                                                                                     label: 'NY Fed' },
+    { url: 'https://www.frbatlanta.org/rss',                                                                                              label: 'Atlanta Fed' },
+    { url: 'https://www.census.gov/housing/hvs/feed.xml',                   backup: 'https://www.census.gov/newsroom/rss.xml',            label: 'Census (Housing)' },
+    { url: 'https://www.fhfa.gov/rss/news',                                                                                               label: 'FHFA' }
   ]
 };
 
 // ============================================================
 // FETCH A SINGLE RSS FEED
+// Tries primary URL first, then backup if provided.
+// Logs health check results to the console.
 // ============================================================
 async function fetchFeed(feedConfig) {
-  const url = RSS_PROXY + encodeURIComponent(feedConfig.url) + '&_=' + Date.now();
-  try {
-    const res = await fetch(url);
-    if (!res.ok) return [];
-    const data = await res.json();
-    if (!data.items) return [];
-    return data.items.map(item => ({
-      ...item,
-      _source:    feedConfig.label,
-      _sourceUrl: feedConfig.url
-    }));
-  } catch {
-    return [];
+  const urls = [feedConfig.url];
+  if (feedConfig.backup && feedConfig.backup !== feedConfig.url) urls.push(feedConfig.backup);
+
+  for (const rawUrl of urls) {
+    const proxyUrl = RSS_PROXY + encodeURIComponent(rawUrl) + '&_=' + Date.now();
+    try {
+      const res = await fetch(proxyUrl);
+      if (!res.ok) {
+        console.warn(`[RDL Feeds] FAIL — ${feedConfig.label} (${rawUrl}) HTTP ${res.status}`);
+        continue;
+      }
+      const data = await res.json();
+      if (!data.items || !data.items.length) {
+        console.warn(`[RDL Feeds] EMPTY — ${feedConfig.label} (${rawUrl})`);
+        continue;
+      }
+      console.log(`[RDL Feeds] OK — ${feedConfig.label}: ${data.items.length} items`);
+      return data.items.map(item => ({
+        ...item,
+        _source:    feedConfig.label,
+        _sourceUrl: rawUrl
+      }));
+    } catch (err) {
+      console.warn(`[RDL Feeds] ERROR — ${feedConfig.label} (${rawUrl}):`, err.message || err);
+    }
   }
+  return [];
 }
 
 // ============================================================
@@ -341,6 +365,10 @@ async function fetchCategory(category) {
       if (!a.verified && b.verified) return 1;
       return new Date(b.pubDate) - new Date(a.pubDate);
     });
+
+  if (!articles.length) {
+    console.warn(`[RDL Feeds] Category "${category}" returned 0 articles after all filters.`);
+  }
 
   // Cache
   try {

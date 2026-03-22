@@ -129,6 +129,32 @@
   }
 }
 
+/* ── Data Freshness Dot ────────────────────────────────────────────────── */
+/* Small dot after each ticker value indicating data recency */
+.ticker-fresh {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  opacity: 0.8;
+}
+
+.ticker-fresh.fresh-green {
+  background: #00C48C;
+  box-shadow: 0 0 4px rgba(0, 196, 140, 0.6);
+}
+
+.ticker-fresh.fresh-yellow {
+  background: #F5A623;
+  box-shadow: 0 0 4px rgba(245, 166, 35, 0.6);
+}
+
+.ticker-fresh.fresh-gray,
+.ticker-fresh.fresh-unknown {
+  background: rgba(160, 160, 176, 0.4);
+}
+
 /* ── Responsive ────────────────────────────────────────────────────────── */
 @media (max-width: 480px) {
   .ticker-track {
