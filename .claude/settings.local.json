@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -l \"search.js\" *.html)",
+      "Bash(grep -l \"category.css\" *.html)"
+    ]
+  }
+}

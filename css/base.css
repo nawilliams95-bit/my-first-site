@@ -1,245 +1,525 @@
-/* ======================================
-   GLOBAL DESIGN TOKENS
-   ====================================== */
+/* ============================================================
+   REALTY DATA LABS — BASE CSS
+   Global reset, design tokens, utilities
+   All other CSS files depend on these variables.
+   ============================================================ */
 
+/* ============================================================
+   GOOGLE FONTS
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+/* ============================================================
+   CSS DESIGN TOKENS
+   ============================================================ */
 :root {
-  --bg: #0b1220;
-  --panel: rgba(255, 255, 255, 0.06);
-  --panel-strong: rgba(255, 255, 255, 0.10);
-  --text: rgba(255, 255, 255, 0.92);
-  --muted: rgba(255, 255, 255, 0.70);
-  --line: rgba(255, 255, 255, 0.14);
-  --radius: 14px;
-  --max: 1280px;
+  /* Backgrounds */
+  --bg-primary:   #0A0A0F;
+  --bg-secondary: #12121A;
+  --bg-card:      #1A1A2E;
+
+  /* Accents */
+  --accent-blue:  #2D5BE3;
+  --accent-teal:  #00D4AA;
+
+  /* Text */
+  --text-primary:   #FFFFFF;
+  --text-secondary: #A0A0B0;
+
+  /* Borders */
+  --border-color: #2A2A3A;
+
+  /* Gradient */
+  --gradient: linear-gradient(135deg, #2D5BE3 0%, #00D4AA 100%);
+
+  /* Typography */
+  --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+
+  --size-hero:  2.5rem;
+  --size-h1:    2rem;
+  --size-h2:    1.5rem;
+  --size-h3:    1.25rem;
+  --size-body:  1rem;
+  --size-small: 0.875rem;
+  --size-tiny:  0.75rem;
+
+  /* Spacing */
+  --space-xs:  4px;
+  --space-sm:  8px;
+  --space-md:  16px;
+  --space-lg:  24px;
+  --space-xl:  48px;
+  --space-2xl: 80px;
+
+  /* Radius */
+  --radius-sm:   6px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-full: 999px;
+
+  /* Shadows */
+  --shadow-card:  0 8px 32px rgba(0, 0, 0, 0.4);
+  --shadow-hover: 0 8px 32px rgba(45, 91, 227, 0.15);
+
+  /* Transitions */
+  --transition: all 0.3s ease;
+
+  /* Header height — used for body padding offset */
+  --header-h: 64px;
+  --ticker-h: 40px;
 }
 
-/* ======================================
-   GLOBAL RESET + WIDTH LOCK
-   ====================================== */
-
+/* ============================================================
+   FULL RESET
+   ============================================================ */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
-}
-
-html,
-body {
   margin: 0;
   padding: 0;
-  width: 100%;
-  max-width: 100vw;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-main);
+  font-size: var(--size-body);
+  line-height: 1.6;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  /* Offset for fixed header + ticker */
+  padding-top: calc(var(--header-h) + var(--ticker-h));
   overflow-x: hidden;
+}
+
+/* ============================================================
+   SCROLLBAR — DARK MINIMAL
+   ============================================================ */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-teal);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) var(--bg-secondary);
+}
+
+/* ============================================================
+   TEXT SELECTION
+   ============================================================ */
+::selection {
+  background: rgba(0, 212, 170, 0.25);
+  color: var(--text-primary);
+}
+
+::-moz-selection {
+  background: rgba(0, 212, 170, 0.25);
+  color: var(--text-primary);
+}
+
+/* ============================================================
+   BASE ELEMENTS
+   ============================================================ */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-main);
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--text-primary);
+}
+
+h1 { font-size: var(--size-h1); }
+h2 { font-size: var(--size-h2); }
+h3 { font-size: var(--size-h3); }
+
+p {
+  color: var(--text-secondary);
+  margin-bottom: var(--space-md);
+}
+
+p:last-child {
+  margin-bottom: 0;
+}
+
+a {
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--accent-teal);
+}
+
+ul, ol {
+  list-style: none;
 }
 
 img,
 video,
-iframe,
-canvas {
+canvas,
+iframe {
   max-width: 100%;
-  height: auto;
   display: block;
 }
 
-/* ======================================
-   BODY
-   ====================================== */
-
-body {
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  color: var(--text);
-  background:
-    linear-gradient(rgba(11, 18, 32, 0.85), rgba(11, 18, 32, 0.85)),
-    url("../images/background.jpg") center / cover no-repeat fixed;
+img {
+  height: auto;
 }
 
-/* ======================================
-   CONTAINER
-   ====================================== */
+button,
+input,
+select,
+textarea {
+  font-family: var(--font-main);
+  font-size: var(--size-body);
+}
 
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+/* ============================================================
+   LAYOUT UTILITIES
+   ============================================================ */
+
+/* Centered content wrapper */
 .container {
   width: 100%;
-  max-width: var(--max);
+  max-width: 1280px;
   margin: 0 auto;
-  padding-left: 16px;
-  padding-right: 16px;
+  padding: 0 24px;
 }
 
-/* ======================================
-   HEADER
-   ====================================== */
-
-.site-header {
-  width: 100%;
-  background: rgba(11, 18, 32, 0.85);
-  border-bottom: 1px solid var(--line);
+/* Grid utilities */
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
 }
 
-.header-inner {
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+/* Flex utilities */
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 18px;
-  padding: 16px 0;
-  flex-wrap: nowrap;
 }
 
-.brand {
-  display: flex;
+/* ============================================================
+   TEXT UTILITIES
+   ============================================================ */
+.text-teal      { color: var(--accent-teal) !important; }
+.text-blue      { color: var(--accent-blue) !important; }
+.text-secondary { color: var(--text-secondary) !important; }
+.text-center    { text-align: center; }
+.text-small     { font-size: var(--size-small); }
+.text-tiny      { font-size: var(--size-tiny); }
+.font-mono      { font-family: var(--font-mono); }
+.font-bold      { font-weight: 700; }
+
+/* ============================================================
+   BADGE — SMALL PILL LABEL
+   ============================================================ */
+.badge {
+  display: inline-flex;
   align-items: center;
-  gap: 12px;
-  text-decoration: none;
-  color: var(--text);
-  white-space: nowrap;
-  min-width: 0;
-}
-
-.brand-logo {
-  max-height: 72px;
-  width: auto;
-}
-
-.brand-name {
-  font-size: 1.75rem;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-size: var(--size-tiny);
   font-weight: 600;
-  line-height: 1.1;
-  white-space: nowrap;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1.4;
 }
 
-.nav {
+/* Category color variants */
+.badge-market     { background: rgba(45, 91, 227, 0.2);  color: #6B8EF0; }
+.badge-mortgage   { background: rgba(0, 212, 170, 0.2);  color: #00D4AA; }
+.badge-economic   { background: rgba(245, 158, 11, 0.2); color: #F59E0B; }
+.badge-investment { background: rgba(16, 185, 129, 0.2); color: #10B981; }
+.badge-industry   { background: rgba(139, 92, 246, 0.2); color: #8B5CF6; }
+.badge-regional   { background: rgba(239, 68, 68, 0.2);  color: #EF4444; }
+
+/* ============================================================
+   DIVIDER
+   ============================================================ */
+.divider {
+  width: 100%;
+  height: 1px;
+  background: var(--border-color);
+  margin: var(--space-xl) 0;
+  border: none;
+}
+
+/* ============================================================
+   SECTION HEADER — TITLE WITH LEFT TEAL ACCENT LINE
+   ============================================================ */
+.section-header {
   display: flex;
   align-items: center;
-  gap: 16px;
-  flex-wrap: wrap; /* important: allows wrap when space is tight */
-  justify-content: flex-end;
+  justify-content: space-between;
+  margin-bottom: var(--space-lg);
+  gap: var(--space-md);
 }
 
-.nav a {
-  text-decoration: none;
-  color: var(--muted);
+.section-header h2 {
+  position: relative;
+  padding-left: 14px;
+  font-size: var(--size-h2);
+}
+
+.section-header h2::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 100%;
+  background: var(--gradient);
+  border-radius: var(--radius-full);
+}
+
+.section-header .view-all {
+  font-size: var(--size-small);
+  color: var(--accent-teal);
   white-space: nowrap;
-  font-size: 0.98rem;
-  padding: 10px 14px;
-  border-radius: 999px; /* Ensures all nav items have the same rounded corners */
-  border: 1px solid var(--line); /* Uniform border for all nav items */
-  background: rgba(255, 255, 255, 0.06);
-  transition: background 0.15s ease, border-color 0.15s ease;
-}
-
-.nav a:hover,
-.nav a.active {
-  color: var(--text);
-  background: rgba(255, 255, 255, 0.12); /* Slightly lighter background on hover */
-  border-color: rgba(255, 255, 255, 0.25); /* Consistent hover border */
-}
-
-/* Optional CTA styling if you want it consistent across pages */
-.nav .nav-cta {
-  background: rgba(255, 255, 255, 0.1); /* Ensure uniform background */
-  border-radius: 999px; /* Make sure CTA has the same pill shape */
-  padding: 10px 12px;
-}
-
-.nav .nav-cta:hover {
-  background: rgba(255, 255, 255, 0.14); /* Consistent hover background */
-}
-
-/* ======================================
-   FOOTER
-   ====================================== */
-
-.site-footer,
-footer {
-  width: 100%;
-  border-top: 1px solid var(--line);
-  background: rgba(11, 18, 32, 0.85);
-}
-
-.footer-inner {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  transition: var(--transition);
+}
+
+.section-header .view-all:hover {
+  gap: 8px;
+}
+
+.section-header .view-all::after {
+  content: '→';
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+
+/* Primary — blue gradient fill */
+.btn-primary {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
-  padding: 18px 0;
-  text-align: center;
-  width: 100%;
+  gap: 8px;
+  padding: 12px 28px;
+  background: var(--gradient);
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: var(--size-small);
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+  text-decoration: none;
+  letter-spacing: 0.02em;
 }
 
-.footer-nav {
-  display: flex;
+.btn-primary:hover {
+  color: var(--text-primary);
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(45, 91, 227, 0.4);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+/* Outline — teal border */
+.btn-outline {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 14px;
-  flex-wrap: wrap;
-  margin: 0;
-  padding: 0;
-  width: 100%;
-}
-
-.footer-nav a {
-  color: var(--muted);
-  text-decoration: none;
+  gap: 8px;
+  padding: 11px 28px;
+  background: transparent;
+  color: var(--accent-teal);
+  font-weight: 600;
+  font-size: var(--size-small);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--accent-teal);
+  cursor: pointer;
+  transition: var(--transition);
   white-space: nowrap;
+  text-decoration: none;
+  letter-spacing: 0.02em;
 }
 
-.footer-nav a:hover {
-  color: var(--text);
+.btn-outline:hover {
+  color: var(--bg-primary);
+  background: var(--accent-teal);
 }
 
-.footer-disclaimer {
-  max-width: 720px;
-  font-size: 0.85rem;
-  line-height: 1.5;
-  color: var(--muted);
+/* ============================================================
+   GLASSMORPHISM CARD
+   ============================================================ */
+.glassmorphism {
+  background: rgba(26, 26, 46, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  transition: var(--transition);
 }
 
-.footer-disclaimer p {
-  margin: 0.25rem 0;
+.glassmorphism:hover {
+  border-color: rgba(45, 91, 227, 0.5);
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
 }
 
-.footer-meta {
-  font-size: 0.8rem;
-  color: var(--muted);
-  margin: 0;
+/* ============================================================
+   FADE-IN ANIMATION
+   ============================================================ */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ======================================
-   MOBILE HEADER FIX (keeps desktop look)
-   ====================================== */
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 0.6s ease forwards;
+}
+
+/* Applied by JS observer when element enters viewport */
+.fade-in.visible {
+  opacity: 1;
+  animation: none;
+}
+
+/* Stagger delays for children */
+.fade-in:nth-child(1) { animation-delay: 0.0s; }
+.fade-in:nth-child(2) { animation-delay: 0.1s; }
+.fade-in:nth-child(3) { animation-delay: 0.2s; }
+.fade-in:nth-child(4) { animation-delay: 0.3s; }
+
+/* ============================================================
+   SKELETON LOADING ANIMATION
+   ============================================================ */
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--bg-secondary) 25%,
+    rgba(255, 255, 255, 0.05) 50%,
+    var(--bg-secondary) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-sm);
+}
+
+/* ============================================================
+   SECTION SPACING
+   ============================================================ */
+.section {
+  padding: var(--space-xl) 0;
+}
+
+.section-lg {
+  padding: var(--space-2xl) 0;
+}
+
+/* ============================================================
+   PAGE HERO (shared across category/legal pages)
+   ============================================================ */
+.page-hero {
+  padding: 56px 0 40px;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: var(--space-xl);
+}
+
+.page-hero h1 {
+  font-size: var(--size-hero);
+  margin-bottom: 12px;
+}
+
+.page-hero p {
+  font-size: var(--size-body);
+  color: var(--text-secondary);
+  max-width: 680px;
+}
+
+/* ============================================================
+   RESPONSIVE GRID FALLBACKS
+   (full mobile rules are in mobile.css)
+   ============================================================ */
+@media (max-width: 1024px) {
+  .grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
 
 @media (max-width: 768px) {
-  .header-inner {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 12px;
+  .grid-3,
+  .grid-2 {
+    grid-template-columns: repeat(2, 1fr);
   }
 
-  .brand {
-    width: 100%;
-    justify-content: center;
+  .grid-4 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .grid-3,
+  .grid-2 {
+    grid-template-columns: 1fr;
   }
 
-  .brand-logo {
-    max-height: 54px;
-  }
-
-  .brand-name {
-    font-size: 1.35rem;
-    white-space: nowrap;
-  }
-
-  .nav {
-    width: 100%;
-    justify-content: center;
-    gap: 12px;
-  }
-
-  .nav a {
-    font-size: 0.95rem;
-  }
-
-  .nav .nav-cta {
-    padding: 9px 11px;
+  .container {
+    padding: 0 16px;
   }
 }

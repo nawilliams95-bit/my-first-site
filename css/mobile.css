@@ -1,0 +1,128 @@
+/* =============================================================
+   mobile.css — RealtyDataLabs Responsive Breakpoints
+   Media queries only — base styles live in other CSS files
+   Depends on: base.css (CSS custom properties)
+   ============================================================= */
+
+/* ============================================================
+   LAPTOP — 1024px
+   ============================================================ */
+@media (max-width: 1024px) {
+  :root {
+    --size-hero: 2.2rem;
+    --size-h1: 1.75rem;
+  }
+
+  .hero-bottom {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ============================================================
+   TABLET — 768px
+   ============================================================ */
+@media (max-width: 768px) {
+  :root {
+    --size-hero: 1.9rem;
+    --size-h1: 1.6rem;
+    --size-h2: 1.35rem;
+    --size-h3: 1.1rem;
+  }
+
+  body {
+    padding-top: calc(var(--header-h) + var(--ticker-h));
+  }
+
+  /* Cards grid */
+  .hero-bottom        { grid-template-columns: 1fr; }
+  .grid-3             { grid-template-columns: repeat(2, 1fr); }
+  .articles-grid      { grid-template-columns: repeat(2, 1fr); }
+
+  /* Featured card stacks */
+  .card-featured      { grid-template-columns: 1fr; }
+  .card-featured .card-image-wrap {
+    min-height: 200px;
+    border-radius: 12px 12px 0 0;
+  }
+
+  /* Lead form */
+  .lead-inner         { text-align: left; }
+  .form-grid-2        { grid-template-columns: 1fr; }
+
+  /* Page hero */
+  .page-hero          { padding: 40px 0 28px; }
+  .page-hero h1       { font-size: 1.75rem; }
+
+  /* Media page */
+  .media-grid-3       { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ============================================================
+   MOBILE — 480px
+   ============================================================ */
+@media (max-width: 480px) {
+  :root {
+    --size-hero: 1.65rem;
+    --size-h1: 1.45rem;
+    --size-h2: 1.2rem;
+    --size-h3: 1.05rem;
+  }
+
+  .container {
+    padding: 0 16px;
+  }
+
+  /* Grids all single column */
+  .grid-2,
+  .grid-3,
+  .grid-4,
+  .hero-bottom,
+  .articles-grid      { grid-template-columns: 1fr; }
+
+  /* Ticker slower */
+  .ticker-track       { animation-duration: 90s !important; }
+
+  /* Buttons full width */
+  .btn-primary,
+  .btn-outline        { width: 100%; justify-content: center; }
+
+  /* Forms */
+  .form-grid-2        { grid-template-columns: 1fr; }
+  .lead-form-wrap     { padding: 20px 16px; }
+  .newsletter-form    { flex-direction: column; }
+  .newsletter-form button { width: 100%; }
+
+  /* Rates strip */
+  .rates-strip        { flex-direction: column; gap: 20px; }
+  .rate-divider       { display: none; }
+  .rate-value         { font-size: 1.6rem; }
+
+  /* Footer bottom */
+  .footer-bottom      { flex-direction: column; text-align: center; gap: 8px; }
+
+  /* Section spacing */
+  .home-section,
+  .section            { padding: 36px 0; }
+  .section-lg         { padding: 48px 0; }
+
+  /* Category hero */
+  .category-hero      { padding: 32px 0 28px; margin-bottom: 28px; }
+  .filter-bar         { padding: 12px 14px; gap: 12px; }
+}
+
+/* ============================================================
+   SMALL MOBILE — 360px
+   ============================================================ */
+@media (max-width: 360px) {
+  :root {
+    --size-hero: 1.45rem;
+    --size-h1: 1.3rem;
+  }
+
+  .container    { padding: 0 12px; }
+
+  /* Ticker text smaller */
+  .ticker-label { font-size: 0.58rem; }
+  .ticker-value { font-size: 0.72rem; }
+  .ticker-item  { padding: 0 12px; }
+}

@@ -1,176 +1,307 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>About | Realty Data Labs</title>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — RealtyDataLabs</title>
+  <meta name="description" content="RealtyDataLabs is an objective real estate intelligence platform providing free market data, mortgage rates, economic news, and investment analytics.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://realtydatalabs.com/about.html">
 
-    <!-- GLOBAL + PAGE CSS -->
-    <link rel="stylesheet" href="css/base.css" />
-    <link rel="stylesheet" href="css/about.css" />
-  </head>
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="About — RealtyDataLabs">
+  <meta property="og:description" content="RealtyDataLabs is an objective real estate intelligence platform providing free market data, mortgage rates, economic news, and investment analytics.">
+  <meta property="og:url" content="https://realtydatalabs.com/about.html">
+  <meta property="og:image" content="images/logo.jpg">
+  <meta property="og:site_name" content="RealtyDataLabs">
 
-  <body>
-    <!-- SITE HEADER -->
-    <header class="site-header">
-      <div class="container header-inner">
-        <a class="brand" href="index.html">
-          <img
-            class="brand-logo"
-            src="images/logo.jpg"
-            alt="Realty Data Labs logo"
-          />
-          <span class="brand-name">Realty Data Labs</span>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/header.css">
+  <link rel="stylesheet" href="css/ticker.css">
+  <link rel="stylesheet" href="css/footer.css">
+  <link rel="stylesheet" href="css/mobile.css">
+
+  <link rel="icon" type="image/jpeg" href="images/logo.jpg">
+
+  <style>
+    .about-content { max-width: 800px; margin: 0 auto; padding: 0 24px 80px; }
+    .about-content h2 { font-size: var(--size-h2); margin: 48px 0 16px; padding-left: 14px; position: relative; }
+    .about-content h2::before { content:''; position:absolute; left:0; top:50%; transform:translateY(-50%); width:4px; height:80%; background:var(--gradient); border-radius:999px; }
+    .about-content p { color: var(--text-secondary); line-height: 1.75; margin-bottom: 16px; }
+    .about-content ul { list-style: none; margin-bottom: 24px; }
+    .about-content ul li { color: var(--text-secondary); font-size: var(--size-body); padding: 8px 0 8px 24px; position: relative; border-bottom: 1px solid rgba(42,42,58,0.5); }
+    .about-content ul li::before { content: '→'; position: absolute; left: 0; color: var(--accent-teal); font-weight: 700; }
+    .about-content ul li:last-child { border-bottom: none; }
+    .sources-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-bottom: 32px; }
+    .source-group { background: rgba(26,26,46,0.6); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 20px; }
+    .source-group h4 { font-size: var(--size-small); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
+    .source-group h4.market-color { color: #6B8EF0; }
+    .source-group h4.mortgage-color { color: var(--accent-teal); }
+    .source-group h4.economic-color { color: #F59E0B; }
+    .source-group h4.investment-color { color: #10B981; }
+    .source-group h4.industry-color { color: #8B5CF6; }
+    .source-group h4.regional-color { color: #EF4444; }
+    .source-group ul { margin: 0; }
+    .source-group ul li { font-size: var(--size-small); border-bottom-color: rgba(42,42,58,0.3); }
+    .agent-bio-card { background: rgba(26,26,46,0.8); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 32px; display: flex; gap: 24px; align-items: flex-start; margin-bottom: 32px; }
+    .agent-bio-photo { width: 96px; height: 96px; border-radius: 50%; background: rgba(45,91,227,0.12); border: 2px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; flex-shrink: 0; overflow: hidden; }
+    .agent-bio-photo img { width: 100%; height: 100%; object-fit: cover; }
+    .agent-bio-info h3 { font-size: var(--size-h3); margin-bottom: 4px; }
+    .agent-bio-info p { margin-bottom: 8px; font-size: var(--size-small); }
+    .free-commitment { background: linear-gradient(135deg, rgba(45,91,227,0.1) 0%, rgba(0,212,170,0.1) 100%); border: 1px solid rgba(0,212,170,0.2); border-radius: var(--radius-lg); padding: 32px; text-align: center; margin-bottom: 48px; }
+    .free-commitment h3 { font-size: var(--size-h3); margin-bottom: 10px; }
+    .free-commitment p { font-size: var(--size-small); color: var(--text-secondary); margin: 0; }
+    @media (max-width: 640px) {
+      .sources-grid { grid-template-columns: 1fr; }
+      .agent-bio-card { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="header-logo">
+        <img src="images/logo.jpg" alt="RealtyDataLabs" width="36" height="36">
+        <span class="wordmark">Realty<span>Data</span>Labs</span>
+      </a>
+      <nav class="header-nav" aria-label="Main navigation">
+        <a href="market-data.html">Market Data</a>
+        <a href="mortgage-rates.html">Mortgage &amp; Rates</a>
+        <a href="economic-news.html">Economic News</a>
+        <a href="investment-rental.html">Investment &amp; Rental</a>
+        <a href="industry-news.html">Industry News</a>
+        <a href="regional-data.html">Regional Data</a>
+        <a href="media-insights.html">Media &amp; Insights</a>
+      </nav>
+      <a href="contact.html" class="header-cta">Contact Agent</a>
+      <button class="header-hamburger" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="mobile-menu" role="dialog" aria-label="Mobile navigation">
+    <button class="mobile-menu-close" aria-label="Close menu">&#x2715;</button>
+    <a href="market-data.html">Market Data</a>
+    <a href="mortgage-rates.html">Mortgage &amp; Rates</a>
+    <a href="economic-news.html">Economic News</a>
+    <a href="investment-rental.html">Investment &amp; Rental</a>
+    <a href="industry-news.html">Industry News</a>
+    <a href="regional-data.html">Regional Data</a>
+    <a href="media-insights.html">Media &amp; Insights</a>
+    <a href="contact.html" class="btn-primary mobile-cta">Contact Agent</a>
+  </div>
+
+  <!-- TICKER -->
+  <div class="ticker-bar" aria-label="Live market data">
+    <div class="ticker-inner">
+      <div class="ticker-track" id="ticker-track"></div>
+    </div>
+  </div>
+
+  <!-- PAGE HERO -->
+  <div class="container">
+    <div class="page-hero">
+      <h1>About RealtyDataLabs</h1>
+      <p>Objective real estate intelligence for buyers, sellers, investors, and agents &mdash; always free.</p>
+    </div>
+  </div>
+
+  <!-- ABOUT CONTENT -->
+  <div class="about-content">
+
+    <h2>Our Mission</h2>
+    <p>RealtyDataLabs is an independent real estate intelligence platform built to give everyday people access to the same data that industry professionals use every day. Our mission is simple: aggregate the most important housing market data, mortgage rate information, economic indicators, and investment analytics into one clean, fast, and free platform.</p>
+    <p>We believe that objective data should be accessible to everyone &mdash; not just those who can afford expensive subscriptions or have insider connections. Whether you are a first-time buyer trying to understand if now is the right time to purchase, a seasoned investor analyzing cap rates, or an agent tracking national trends, RealtyDataLabs is built for you.</p>
+
+    <h2>What We Provide</h2>
+    <ul>
+      <li><strong>Market Data Aggregation</strong> &mdash; National home price indices, inventory reports, days on market, and sales volume data from the most trusted sources in real estate.</li>
+      <li><strong>Mortgage Rate Tracking</strong> &mdash; Weekly Freddie Mac PMMS data, rate trend analysis, and financing news updated as soon as it publishes.</li>
+      <li><strong>Economic Indicators</strong> &mdash; Federal Reserve policy decisions, CPI inflation data, employment reports, and consumer confidence metrics that directly move real estate markets.</li>
+      <li><strong>Investment Analytics</strong> &mdash; Rental market data, cap rate trends, multifamily market reports, and investment strategy content for real estate investors at every level.</li>
+      <li><strong>Regional Intelligence</strong> &mdash; City, metro, and state-level housing data so you can understand your local market, not just national averages.</li>
+      <li><strong>Industry News</strong> &mdash; Real estate brokerage news, PropTech developments, NAR policy updates, and market commentary from leading industry voices.</li>
+      <li><strong>Free Access, Always</strong> &mdash; No paywalls, no subscriptions, no accounts required. All data is freely available to anyone.</li>
+    </ul>
+
+    <h2>Who This Platform Is For</h2>
+    <ul>
+      <li><strong>Homeowners</strong> who want to understand the value of their property and how market conditions affect their equity.</li>
+      <li><strong>First-Time Buyers</strong> researching affordability, mortgage rates, and whether now is the right time to buy.</li>
+      <li><strong>Home Sellers</strong> who want to price their home correctly and understand buyer demand in their market.</li>
+      <li><strong>Real Estate Investors</strong> analyzing rental yields, cap rates, and market cycles to find their next deal.</li>
+      <li><strong>Real Estate Agents and Brokers</strong> who need objective data to advise their clients and market themselves as informed professionals.</li>
+      <li><strong>Researchers and Journalists</strong> who need reliable, sourced data for analysis and reporting.</li>
+    </ul>
+
+    <h2>Data Sources</h2>
+    <p>RealtyDataLabs aggregates content from publicly available RSS feeds and publications maintained by industry-leading organizations. All original content remains the property of the respective publishers. We link directly to every source article.</p>
+
+    <div class="sources-grid">
+      <div class="source-group">
+        <h4 class="market-color">Market Data</h4>
+        <ul>
+          <li>National Association of Realtors (NAR)</li>
+          <li>Zillow Research</li>
+          <li>Redfin Data Center</li>
+          <li>Realtor.com Research</li>
+          <li>Case-Shiller / S&amp;P CoreLogic</li>
+        </ul>
+      </div>
+      <div class="source-group">
+        <h4 class="mortgage-color">Mortgage &amp; Rates</h4>
+        <ul>
+          <li>Freddie Mac PMMS</li>
+          <li>Mortgage Bankers Association</li>
+          <li>Fannie Mae</li>
+          <li>HousingWire</li>
+          <li>Bankrate</li>
+        </ul>
+      </div>
+      <div class="source-group">
+        <h4 class="economic-color">Economic News</h4>
+        <ul>
+          <li>Federal Reserve (FRED)</li>
+          <li>Bureau of Labor Statistics</li>
+          <li>Bureau of Economic Analysis</li>
+          <li>Wall Street Journal</li>
+          <li>Bloomberg / Reuters</li>
+        </ul>
+      </div>
+      <div class="source-group">
+        <h4 class="investment-color">Investment &amp; Rental</h4>
+        <ul>
+          <li>CoStar Group</li>
+          <li>CBRE Research</li>
+          <li>Apartment List</li>
+          <li>Yardi Matrix</li>
+          <li>BiggerPockets</li>
+        </ul>
+      </div>
+      <div class="source-group">
+        <h4 class="industry-color">Industry News</h4>
+        <ul>
+          <li>Inman News</li>
+          <li>RealTrends</li>
+          <li>HousingWire</li>
+          <li>The Real Deal</li>
+          <li>National Association of Realtors</li>
+        </ul>
+      </div>
+      <div class="source-group">
+        <h4 class="regional-color">Regional Data</h4>
+        <ul>
+          <li>Local MLS publications</li>
+          <li>State housing finance agencies</li>
+          <li>Regional Realtor associations</li>
+          <li>Local business journals</li>
+          <li>City and county data portals</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="free-commitment">
+      <h3>Commitment to Free Access</h3>
+      <p>RealtyDataLabs will always be free to access. We are funded through disclosed affiliate partnerships and advertising. We never accept payment to alter our data presentation, and we do not editorialize or manipulate third-party source content. Our goal is to be the most trustworthy real estate data aggregator on the internet.</p>
+    </div>
+
+    <h2>About the Author</h2>
+    <div class="agent-bio-card">
+      <div class="agent-bio-photo" aria-label="Agent photo placeholder">
+        &#128100;
+      </div>
+      <div class="agent-bio-info">
+        <h3>RealtyDataLabs</h3>
+        <p><strong>Licensed Real Estate Agent &mdash; State of Georgia</strong></p>
+        <p>Affiliated with Keller Williams Realty</p>
+        <p>License Number: <strong>[WORTH VERIFYING &mdash; add your GA license number here]</strong></p>
+        <p style="color:rgba(160,160,176,0.6); font-size:var(--size-tiny);">The author of this site is a licensed real estate agent in the State of Georgia. This platform is an independent information aggregation service. Nothing on this site constitutes real estate, investment, financial, or legal advice.</p>
+      </div>
+    </div>
+
+    <h2>Contact Us</h2>
+    <p>To connect with an agent, submit your information on our <a href="contact.html" style="color:var(--accent-teal);">Contact page</a>. For advertising or partnership inquiries, visit our <a href="advertise.html" style="color:var(--accent-teal);">Advertise page</a>. For privacy or data requests, see our <a href="privacy-policy.html" style="color:var(--accent-teal);">Privacy Policy</a>.</p>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <a href="index.html" class="footer-logo">
+          <img src="images/logo.jpg" alt="RealtyDataLabs" width="32" height="32">
+          <span class="wordmark">Realty<span>Data</span>Labs</span>
         </a>
-
-        <nav class="nav">
-          <a href="index.html">Home</a>
-          <a href="auth.html" class="nav-cta">Sign In / Sign Up</a>
-	  <a href="analyzer.html">Property Analyzer</a>
-          <a href="about.html" class="active">About</a>
-          <a href="contact.html">Contact</a>
-        </nav>
+        <p class="footer-tagline">Objective real estate intelligence for buyers, sellers, investors, and agents.</p>
+        <p class="footer-disclosure">The author of this site is a licensed real estate agent in the State of Georgia. Information is for educational purposes only and does not constitute real estate, investment, financial, or legal advice.</p>
       </div>
-    </header>
-
-    <!-- MAIN CONTENT -->
-    <main class="about-page">
-      <div class="container">
-
-        <!-- HERO -->
-        <section class="about-hero">
-          <h1>About Realty Data Labs</h1>
-          <p class="subhead">
-            Objective real estate intelligence built for clarity, not hype.
-          </p>
-        </section>
-
-        <!-- MISSION -->
-        <section class="about-section">
-          <h2>Our Purpose</h2>
-          <p>
-            Realty Data Labs exists to make real estate data easier to understand,
-            more transparent, and more useful for everyday decision making.
-            The platform is designed to aggregate market signals, historical trends,
-            and economic indicators into tools that help users think clearly about
-            property and housing markets.
-          </p>
-          <p>
-            We focus on education and analysis. We do not replace professional advice,
-            and we do not attempt to predict outcomes. Our goal is to provide context,
-            not conclusions.
-          </p>
-        </section>
-
-        <!-- WHAT WE BUILD -->
-        <section class="about-section">
-          <h2>What We Build</h2>
-          <ul class="about-list">
-            <li>Market driven property analysis tools</li>
-            <li>Exposure and liquidity indicators</li>
-            <li>Risk and opportunity signal frameworks</li>
-            <li>Educational resources tied to real data</li>
-            <li>Investor and homeowner focused intelligence tools</li>
-          </ul>
-        </section>
-
-        <!-- WHO IT IS FOR -->
-        <section class="about-section">
-          <h2>Who This Is For</h2>
-          <p>
-            Realty Data Labs is built for homeowners, investors, real estate
-            professionals, and anyone who wants a clearer understanding of
-            property markets without marketing pressure or lead capture tactics.
-          </p>
-          <p>
-            Some tools are available without an account. Additional features may
-            require registration as the platform evolves.
-          </p>
-        </section>
-
-        <!-- TRANSPARENCY -->
-        <section class="about-section">
-          <h2>Transparency & Compliance</h2>
-          <p>
-            This site provides general real estate, housing market, and economic
-            information for educational purposes only. Data may be delayed,
-            estimated, or sourced from third party providers.
-          </p>
-          <p>
-            The author of this site is a licensed real estate agent in the State of
-            Georgia. Use of this site does not create an agency relationship.
-            Representation is only provided through separate written agreement
-            where permitted by law.
-          </p>
-        </section>
-
-        <!-- DATA USE -->
-        <section class="about-section">
-          <h2>Data Use & Platform Operations</h2>
-          <p>
-            Realty Data Labs may collect limited user provided information when
-            individuals interact with tools, submit property data, or create an
-            account. This information is used to operate the platform, improve
-            analytical models, enhance user experience, and support future
-            feature development.
-          </p>
-          <p>
-            We do not sell personal user data. Aggregated and anonymized usage data
-            may be analyzed to understand market trends, system performance, and
-            platform adoption.
-          </p>
-          <p>
-            Use of this site does not create an agency, advisory, or fiduciary
-            relationship.
-          </p>
-        </section>
-
-        <!-- FUTURE -->
-        <section class="about-section">
-          <h2>Looking Ahead</h2>
-          <p>
-            Realty Data Labs is an evolving platform. Future development may include
-            expanded analytics, account based dashboards, and additional educational
-            tools. All features will continue to prioritize clarity, transparency,
-            and compliance.
-          </p>
-        </section>
-
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul class="footer-nav-list">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="market-data.html">Market Data</a></li>
+          <li><a href="mortgage-rates.html">Mortgage &amp; Rates</a></li>
+          <li><a href="economic-news.html">Economic News</a></li>
+          <li><a href="investment-rental.html">Investment &amp; Rental</a></li>
+          <li><a href="industry-news.html">Industry News</a></li>
+          <li><a href="regional-data.html">Regional Data</a></li>
+          <li><a href="media-insights.html">Media &amp; Insights</a></li>
+          <li><a href="contact.html">Contact Agent</a></li>
+        </ul>
       </div>
-    </main>
-
-    <!-- FOOTER -->
-    <footer class="site-footer">
-      <div class="container footer-inner">
-
-        <nav class="footer-nav">
-          <a href="index.html">Home</a>
-          <a href="auth.html">Sign In / Sign Up</a>
-          <a href="analyzer.html">Property Analyzer</a>
-          <a href="about.html">About</a>
-          <a href="contact.html">Contact</a>
-        </nav>
-
-        <div class="footer-disclaimer">
-          <p>
-            Realty Data Labs provides general real estate, housing market, and economic
-            information for educational purposes only.
-          </p>
-          <p>
-            The author of this site is a licensed real estate agent in the State of Georgia.
-          </p>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul class="footer-nav-list">
+          <li><a href="about.html">About</a></li>
+          <li><a href="disclaimer.html">Disclaimer</a></li>
+          <li><a href="privacy-policy.html">Privacy Policy</a></li>
+          <li><a href="terms-of-service.html">Terms of Service</a></li>
+          <li><a href="advertise.html">Advertise</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Follow Us</h4>
+        <div class="footer-social">
+          <a href="#" class="footer-social-link" aria-label="Twitter/X">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.742l7.737-8.835L1.254 2.25H8.08l4.259 5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            Twitter / X
+          </a>
+          <a href="#" class="footer-social-link" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            Instagram
+          </a>
+          <a href="#" class="footer-social-link" aria-label="YouTube">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            YouTube
+          </a>
+          <a href="#" class="footer-social-link" aria-label="TikTok">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.88a8.28 8.28 0 004.84 1.54V7.01a4.85 4.85 0 01-1.07-.32z"/></svg>
+            TikTok
+          </a>
         </div>
-
-        <div class="footer-meta">
-          <p>© <span id="year"></span> Realty Data Labs</p>
-        </div>
-
       </div>
-    </footer>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; <span id="footer-year"></span> RealtyDataLabs. All rights reserved.</p>
+      <p>Information provided for educational purposes only.</p>
+      <p>Not financial, legal, or real estate advice.</p>
+    </div>
+  </footer>
 
-    <script>
-      document.getElementById("year").textContent =
-        new Date().getFullYear();
-    </script>
-  </body>
+  <!-- SCRIPTS -->
+  <script src="js/ticker.js"></script>
+  <script src="js/feeds.js"></script>
+  <script src="js/cards.js"></script>
+  <script src="js/main.js"></script>
+
+</body>
 </html>

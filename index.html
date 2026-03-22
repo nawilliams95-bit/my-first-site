@@ -1,139 +1,411 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Realty Data Labs | Real Estate Intelligence</title>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RealtyDataLabs — Real Estate Market Intelligence</title>
+  <meta name="description" content="Objective real estate intelligence for buyers, sellers, investors, and agents. Live market data, mortgage rates, economic news, and investment analytics.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://realtydatalabs.com/index.html">
 
-    <!-- GLOBAL + HOME CSS -->
-    <link rel="stylesheet" href="css/base.css" />
-    <link rel="stylesheet" href="css/home.css" />
-  </head>
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="RealtyDataLabs — Real Estate Market Intelligence">
+  <meta property="og:description" content="Objective real estate intelligence for buyers, sellers, investors, and agents. Live market data, mortgage rates, economic news, and investment analytics.">
+  <meta property="og:url" content="https://realtydatalabs.com/">
+  <meta property="og:image" content="images/logo.jpg">
+  <meta property="og:site_name" content="RealtyDataLabs">
 
-  <body>
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="RealtyDataLabs — Real Estate Market Intelligence">
+  <meta name="twitter:description" content="Objective real estate intelligence for buyers, sellers, investors, and agents.">
+  <meta name="twitter:image" content="images/logo.jpg">
 
-    <!-- HEADER -->
-    <header class="site-header">
-      <div class="container header-inner">
-        <a class="brand" href="index.html">
-          <img class="brand-logo" src="images/logo.jpg" alt="Realty Data Labs logo" />
-          <span class="brand-name">Realty Data Labs</span>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/header.css">
+  <link rel="stylesheet" href="css/ticker.css">
+  <link rel="stylesheet" href="css/cards.css">
+  <link rel="stylesheet" href="css/homepage.css">
+  <link rel="stylesheet" href="css/forms.css">
+  <link rel="stylesheet" href="css/footer.css">
+  <link rel="stylesheet" href="css/mobile.css">
+
+  <link rel="icon" type="image/jpeg" href="images/logo.jpg">
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════════ HEADER -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="header-logo">
+        <img src="images/logo.jpg" alt="RealtyDataLabs" width="36" height="36">
+        <span class="wordmark">Realty<span>Data</span>Labs</span>
+      </a>
+      <nav class="header-nav" aria-label="Main navigation">
+        <a href="market-data.html">Market Data</a>
+        <a href="mortgage-rates.html">Mortgage &amp; Rates</a>
+        <a href="economic-news.html">Economic News</a>
+        <a href="investment-rental.html">Investment &amp; Rental</a>
+        <a href="industry-news.html">Industry News</a>
+        <a href="regional-data.html">Regional Data</a>
+        <a href="media-insights.html">Media &amp; Insights</a>
+      </nav>
+      <a href="contact.html" class="header-cta">Contact Agent</a>
+      <button class="header-hamburger" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="mobile-menu" role="dialog" aria-label="Mobile navigation">
+    <button class="mobile-menu-close" aria-label="Close menu">&#x2715;</button>
+    <a href="market-data.html">Market Data</a>
+    <a href="mortgage-rates.html">Mortgage &amp; Rates</a>
+    <a href="economic-news.html">Economic News</a>
+    <a href="investment-rental.html">Investment &amp; Rental</a>
+    <a href="industry-news.html">Industry News</a>
+    <a href="regional-data.html">Regional Data</a>
+    <a href="media-insights.html">Media &amp; Insights</a>
+    <a href="contact.html" class="btn-primary mobile-cta">Contact Agent</a>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ TICKER -->
+  <div class="ticker-bar" aria-label="Live market data">
+    <div class="ticker-inner">
+      <div class="ticker-track" id="ticker-track"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ HERO -->
+  <section class="hero-section">
+    <div class="container">
+      <div class="breaking-label">
+        <span class="breaking-dot"></span>
+        Breaking Headlines
+      </div>
+      <div class="hero-grid">
+        <div class="hero-top" id="hero-grid"></div>
+      </div>
+      <div class="hero-bottom" id="hero-bottom"></div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════ MARKET DATA -->
+  <section class="home-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Market Data</h2>
+        <a href="market-data.html" class="view-all">View All</a>
+      </div>
+      <div class="grid-3" id="market-grid"></div>
+
+      <!-- Affiliate: Mortgage Lender Comparison -->
+      <div class="affiliate-banner">
+        <div class="affiliate-banner-text">
+          <h3>Compare Top Mortgage Lenders</h3>
+          <p>Find the best rates for your purchase or refinance. Compare lenders side by side and get personalized quotes.</p>
+          <span class="affiliate-badge">Sponsored | Advertising Disclosure</span>
+        </div>
+        <a href="#" class="btn-primary" rel="nofollow sponsored">Compare Rates &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════ MORTGAGE & RATES -->
+  <section class="home-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Mortgage &amp; Rates</h2>
+        <a href="mortgage-rates.html" class="view-all">View All</a>
+      </div>
+      <div class="grid-3" id="mortgage-grid"></div>
+
+      <!-- Live Rates Strip -->
+      <div class="rates-strip" aria-label="Current mortgage rates">
+        <div class="rate-item">
+          <span class="rate-label">30-Year Fixed</span>
+          <span class="rate-value font-mono" id="rate30-display">&mdash;</span>
+        </div>
+        <div class="rate-divider" role="separator"></div>
+        <div class="rate-item">
+          <span class="rate-label">15-Year Fixed</span>
+          <span class="rate-value font-mono" id="rate15-display">&mdash;</span>
+        </div>
+        <div class="rate-divider" role="separator"></div>
+        <div class="rate-item">
+          <span class="rate-label">Source</span>
+          <span class="rate-value" style="font-size:0.9rem; color: var(--text-secondary);">Freddie Mac PMMS</span>
+        </div>
+        <div class="rate-divider" role="separator"></div>
+        <a href="mortgage-rates.html" class="btn-outline" style="font-size:0.8rem; padding:9px 20px;">Full Rate Trends</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════ ECONOMIC NEWS -->
+  <section class="home-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Economic News</h2>
+        <a href="economic-news.html" class="view-all">View All</a>
+      </div>
+      <div class="grid-3" id="economic-grid"></div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════ AFFILIATE BANNER FULL WIDTH -->
+  <div style="background: rgba(18,18,26,0.8); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); padding: 40px 0;">
+    <div class="container">
+      <div class="affiliate-banner" style="margin: 0;">
+        <div class="affiliate-banner-text">
+          <h3>Start Investing in Real Estate with Confidence</h3>
+          <p>Access investment property data, rental comps, and deal analysis tools trusted by thousands of investors.</p>
+          <span class="affiliate-badge">Sponsored | Advertising Disclosure</span>
+        </div>
+        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+          <a href="#" class="btn-primary" rel="nofollow sponsored">PropStream &rarr;</a>
+          <a href="#" class="btn-outline" rel="nofollow sponsored">DealMachine &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ INVESTMENT & RENTAL -->
+  <section class="home-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Investment &amp; Rental</h2>
+        <a href="investment-rental.html" class="view-all">View All</a>
+      </div>
+      <div class="grid-3" id="investment-grid"></div>
+      <p style="font-size:var(--size-tiny); color:rgba(160,160,176,0.45); margin-top:16px; text-align:right;">
+        Investment property tools: PropStream and DealMachine links above are affiliate partnerships. Advertising Disclosure.
+      </p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════ LEAD CAPTURE -->
+  <section class="lead-section" id="connect">
+    <div class="lead-inner">
+      <h2>Connect With a Licensed Agent</h2>
+      <p>Submit your information below and a licensed Georgia real estate agent will reach out within 24 hours.</p>
+
+      <form id="lead-form" class="lead-form-wrap" novalidate>
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="full-name">Full Name <span class="required">*</span></label>
+            <input class="form-input" type="text" id="full-name" name="fullName" placeholder="Jane Smith" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="email">Email Address <span class="required">*</span></label>
+            <input class="form-input" type="email" id="email" name="email" placeholder="jane@example.com" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="phone">Phone Number</label>
+            <input class="form-input" type="tel" id="phone" name="phone" placeholder="(555) 000-0000">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="intent">I Am <span class="required">*</span></label>
+            <select class="form-select" id="intent" name="intent" required>
+              <option value="" disabled selected>Select one</option>
+              <option value="buying">Buying</option>
+              <option value="selling">Selling</option>
+              <option value="investing">Investing</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="market">Market or Location <span class="required">*</span></label>
+            <input class="form-input" type="text" id="market" name="market" placeholder="City, State or ZIP" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="timeline">Timeline</label>
+            <select class="form-select" id="timeline" name="timeline">
+              <option value="" disabled selected>Select timeline</option>
+              <option value="immediately">Immediately</option>
+              <option value="1-3months">1&ndash;3 Months</option>
+              <option value="3-6months">3&ndash;6 Months</option>
+              <option value="6-12months">6&ndash;12 Months</option>
+              <option value="researching">Just Researching</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="price-range">Price Range</label>
+            <select class="form-select" id="price-range" name="priceRange">
+              <option value="" disabled selected>Select range</option>
+              <option value="under200k">Under $200K</option>
+              <option value="200-400k">$200K &ndash; $400K</option>
+              <option value="400-600k">$400K &ndash; $600K</option>
+              <option value="600k-1m">$600K &ndash; $1M</option>
+              <option value="over1m">Over $1M</option>
+            </select>
+          </div>
+          <div class="form-group" style="grid-column:1/-1">
+            <label class="form-label" for="notes">Additional Notes</label>
+            <textarea class="form-textarea" id="notes" name="notes" placeholder="Any additional details about your situation..."></textarea>
+          </div>
+        </div>
+        <button type="submit" class="form-submit">
+          <span class="btn-text">Connect With an Agent</span>
+          <span class="spinner"></span>
+        </button>
+        <div id="form-status" class="form-status"></div>
+      </form>
+      <p class="lead-disclosure">By submitting this form you consent to be contacted by a licensed real estate agent. The author of this site is a licensed real estate agent in the State of Georgia. License number: [WORTH VERIFYING &mdash; add your GA license number here].</p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════ INDUSTRY NEWS -->
+  <section class="home-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Industry News</h2>
+        <a href="industry-news.html" class="view-all">View All</a>
+      </div>
+      <div class="grid-3" id="industry-grid"></div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════ REGIONAL DATA -->
+  <section class="home-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Regional Data</h2>
+        <a href="regional-data.html" class="view-all">View All</a>
+      </div>
+      <div class="grid-3" id="regional-grid"></div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════ NEWSLETTER -->
+  <section class="newsletter-section">
+    <div class="newsletter-inner">
+      <h2>Stay Ahead of the Market</h2>
+      <p>Get the most important real estate, mortgage, and economic data delivered to your inbox every week. Free, always.</p>
+      <form class="newsletter-form" id="newsletter-form" novalidate>
+        <input type="email" placeholder="Your email address" aria-label="Email address" required>
+        <button type="submit">Subscribe</button>
+      </form>
+      <p class="newsletter-privacy">No spam. Unsubscribe anytime. We never sell your data.</p>
+      <div class="newsletter-status" id="newsletter-status" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════ FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <a href="index.html" class="footer-logo">
+          <img src="images/logo.jpg" alt="RealtyDataLabs" width="32" height="32">
+          <span class="wordmark">Realty<span>Data</span>Labs</span>
         </a>
-
-        <nav class="nav">
-          <a href="index.html" class="active">Home</a>
-          <a href="contact.html">Need An Agent?</a>
-        </nav>
+        <p class="footer-tagline">Objective real estate intelligence for buyers, sellers, investors, and agents.</p>
+        <p class="footer-disclosure">The author of this site is a licensed real estate agent in the State of Georgia. Information is for educational purposes only and does not constitute real estate, investment, financial, or legal advice.</p>
       </div>
-    </header>
-
-    <main>
-
-      <!-- INTELLIGENCE -->
-      <section class="home-intelligence">
-        <div class="container">
-
-          <!-- NEWS -->
-          <section class="news-section">
-            <h2>Today’s Real Estate and Economic News</h2>
-
-            <div class="news-feed">
-              <article class="news-item">
-                <span class="news-source">Loading</span>
-                <h3>Fetching the latest housing and economic headlines…</h3>
-                <time>—</time>
-              </article>
-            </div>
-          </section>
-
-          <!-- MARKET DATA -->
-          <section class="market-section">
-
-            <!-- MORTGAGE RATES -->
-            <div class="market-box">
-              <h2>National Mortgage Rate Averages</h2>
-
-              <p class="data-disclaimer">
-                Rates shown are Freddie Mac Primary Mortgage Market Survey (PMMS)
-                national averages. PMMS reflects lender-reported pricing trends
-                and is published weekly. Rates are benchmarks only and not loan offers.
-              </p>
-
-              <p class="data-note">
-                Freddie Mac PMMS national averages. Updated weekly.
-              </p>
-
-              <table class="rates-table">
-                <tbody>
-                  <tr>
-                    <td>30-Year Fixed</td>
-                    <td id="rate30">—</td>
-                  </tr>
-                  <tr>
-                    <td>15-Year Fixed</td>
-                    <td id="rate15">—</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <!-- TREASURY -->
-            <div class="market-box">
-              <h2>10-Year Treasury Yield</h2>
-
-              <div class="treasury-value" id="treasury10">—</div>
-
-              <div class="treasury-chart-wrap">
-                <canvas id="treasuryChart"></canvas>
-              </div>
-
-              <p class="data-note">
-                30-day yield trend. Source: U.S. Treasury via FRED.
-              </p>
-            </div>
-
-          </section>
-
-        </div>
-      </section>
-
-    </main>
-
-    <!-- FOOTER -->
-    <footer class="site-footer">
-      <div class="container footer-inner">
-
-        <nav class="footer-nav">
-          <a href="index.html">Home</a>
-          <a href="contact.html">Need An Agent?</a>
-        </nav>
-
-        <div class="footer-disclaimer">
-          <p>
-            Realty Data Labs provides general real estate, housing market,
-            and economic information for educational purposes only.
-          </p>
-          <p>
-            The author of this site is a licensed real estate agent in the State of Georgia.
-          </p>
-        </div>
-
-        <p class="footer-meta">
-          © <span id="year"></span> Realty Data Labs. All rights reserved.
-        </p>
-
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul class="footer-nav-list">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="market-data.html">Market Data</a></li>
+          <li><a href="mortgage-rates.html">Mortgage &amp; Rates</a></li>
+          <li><a href="economic-news.html">Economic News</a></li>
+          <li><a href="investment-rental.html">Investment &amp; Rental</a></li>
+          <li><a href="industry-news.html">Industry News</a></li>
+          <li><a href="regional-data.html">Regional Data</a></li>
+          <li><a href="media-insights.html">Media &amp; Insights</a></li>
+          <li><a href="contact.html">Contact Agent</a></li>
+        </ul>
       </div>
-    </footer>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul class="footer-nav-list">
+          <li><a href="about.html">About</a></li>
+          <li><a href="disclaimer.html">Disclaimer</a></li>
+          <li><a href="privacy-policy.html">Privacy Policy</a></li>
+          <li><a href="terms-of-service.html">Terms of Service</a></li>
+          <li><a href="advertise.html">Advertise</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Follow Us</h4>
+        <div class="footer-social">
+          <a href="#" class="footer-social-link" aria-label="Twitter/X">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.742l7.737-8.835L1.254 2.25H8.08l4.259 5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            Twitter / X
+          </a>
+          <a href="#" class="footer-social-link" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            Instagram
+          </a>
+          <a href="#" class="footer-social-link" aria-label="YouTube">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            YouTube
+          </a>
+          <a href="#" class="footer-social-link" aria-label="TikTok">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.88a8.28 8.28 0 004.84 1.54V7.01a4.85 4.85 0 01-1.07-.32z"/></svg>
+            TikTok
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; <span id="footer-year"></span> RealtyDataLabs. All rights reserved.</p>
+      <p>Information provided for educational purposes only.</p>
+      <p>Not financial, legal, or real estate advice.</p>
+    </div>
+  </footer>
 
-    <!-- FOOTER YEAR -->
-    <script>
-      document.getElementById("year").textContent = new Date().getFullYear();
-    </script>
+  <!-- ═══════════════════════════════════════════════════════════ SCRIPTS -->
+  <script src="js/ticker.js"></script>
+  <script src="js/feeds.js"></script>
+  <script src="js/cards.js"></script>
+  <script src="js/main.js"></script>
 
-    <!-- SCRIPTS -->
-    <script src="js/news.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-    <script src="js/rates.js"></script>
+  <script>
+  (async () => {
+    // Show skeletons in all grids while loading
+    ['hero-grid','hero-bottom','market-grid','mortgage-grid','economic-grid','investment-grid','industry-grid','regional-grid'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) window.RDLCards.renderSkeletons(el, id === 'hero-grid' ? 1 : 3);
+    });
 
-  </body>
+    const all = await window.RDLFeeds.fetchAllCategories();
+
+    // Hero — 4 most recent across all categories
+    const heroAll = Object.values(all).flat().sort((a,b) => new Date(b.pubDate)-new Date(a.pubDate));
+    const heroFeaturedEl = document.getElementById('hero-grid');
+    const heroBottomEl   = document.getElementById('hero-bottom');
+    if (heroFeaturedEl && heroAll[0]) window.RDLCards.renderCards(heroFeaturedEl, [heroAll[0]], true);
+    if (heroBottomEl   && heroAll.length > 1) window.RDLCards.renderCards(heroBottomEl, heroAll.slice(1,4));
+
+    // Category grids
+    const grids = {
+      'market-grid':     { cat:'market' },
+      'mortgage-grid':   { cat:'mortgage' },
+      'economic-grid':   { cat:'economic' },
+      'investment-grid': { cat:'investment' },
+      'industry-grid':   { cat:'industry' },
+      'regional-grid':   { cat:'regional' },
+    };
+    Object.entries(grids).forEach(([id, cfg]) => {
+      const el = document.getElementById(id);
+      if (el) window.RDLCards.renderCards(el, (all[cfg.cat] || []).slice(0,3));
+    });
+
+    // Live rates in rates strip
+    const r30 = localStorage.getItem('rdl_rate30') || '\u2014';
+    const r15 = localStorage.getItem('rdl_rate15') || '\u2014';
+    const r30El = document.getElementById('rate30-display');
+    const r15El = document.getElementById('rate15-display');
+    if (r30El) r30El.textContent = r30;
+    if (r15El) r15El.textContent = r15;
+  })();
+  </script>
+
+</body>
 </html>

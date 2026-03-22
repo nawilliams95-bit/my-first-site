@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" fill="none">
+  <rect width="800" height="450" fill="#1A1A2E"/>
+  <polyline points="100,350 180,300 240,320 320,240 400,260 480,180 560,200 640,140 700,120" stroke="#F59E0B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <polyline points="100,380 180,360 240,370 320,330 400,340 480,290 560,300 640,260 700,240" stroke="#2D5BE3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.6"/>
+  <circle cx="700" cy="120" r="6" fill="#F59E0B"/>
+  <text x="400" y="56" text-anchor="middle" font-family="Inter,sans-serif" font-size="22" font-weight="600" fill="rgba(255,255,255,0.6)">Economic News</text>
+</svg>
