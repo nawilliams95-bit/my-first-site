@@ -6,9 +6,9 @@ const RSS_CONFIG = {
   marketData: {
     feeds: [
       'https://calculatedriskblog.com/feeds/posts/default',
-      'https://feeds.reuters.com/reuters/businessNews',
-      'https://www.nahb.org/news-and-economics/press-releases/feed',
-      'https://www.federalreserve.gov/feeds/press_all.xml'
+      'https://www.federalreserve.gov/feeds/press_all.xml',
+      'https://feeds.content.dowjones.io/public/rss/mw_realestate',
+      'https://www.housingwire.com/feed/'
     ],
     containerId: 'market-data-feed',
     label: 'Market Data',
@@ -18,8 +18,8 @@ const RSS_CONFIG = {
   mortgageRates: {
     feeds: [
       'https://www.mortgagenewsdaily.com/feed/news',
-      'https://www.bankrate.com/rss/mortgage/',
-      'https://feeds.reuters.com/reuters/businessNews',
+      'https://www.housingwire.com/feed/',
+      'https://calculatedriskblog.com/feeds/posts/default',
       'https://www.federalreserve.gov/feeds/press_all.xml'
     ],
     containerId: 'mortgage-rates-feed',
@@ -30,9 +30,9 @@ const RSS_CONFIG = {
   economicNews: {
     feeds: [
       'https://calculatedriskblog.com/feeds/posts/default',
-      'https://feeds.reuters.com/reuters/businessNews',
-      'https://www.cnbc.com/id/10000664/device/rss/rss.html',
-      'https://www.federalreserve.gov/feeds/press_all.xml'
+      'https://www.federalreserve.gov/feeds/press_all.xml',
+      'https://feeds.content.dowjones.io/public/rss/mw_economy',
+      'https://www.bls.gov/feed/bls_latest.rss'
     ],
     containerId: 'economic-news-feed',
     label: 'Economic News',
@@ -41,10 +41,10 @@ const RSS_CONFIG = {
   },
   investmentRental: {
     feeds: [
-      'https://www.biggerpockets.com/blog/feed',
-      'https://www.apartmentlist.com/research/feed',
-      'https://feeds.reuters.com/reuters/businessNews',
-      'https://calculatedriskblog.com/feeds/posts/default'
+      'https://www.housingwire.com/feed/',
+      'https://calculatedriskblog.com/feeds/posts/default',
+      'https://feeds.content.dowjones.io/public/rss/mw_realestate',
+      'https://www.federalreserve.gov/feeds/press_all.xml'
     ],
     containerId: 'investment-rental-feed',
     label: 'Investment & Rental',
@@ -53,9 +53,9 @@ const RSS_CONFIG = {
   },
   industryNews: {
     feeds: [
-      'https://feeds.reuters.com/reuters/businessNews',
-      'https://www.cnbc.com/id/10000664/device/rss/rss.html',
+      'https://www.housingwire.com/feed/',
       'https://calculatedriskblog.com/feeds/posts/default',
+      'https://feeds.content.dowjones.io/public/rss/mw_realestate',
       'https://www.federalreserve.gov/feeds/press_all.xml'
     ],
     containerId: 'industry-news-feed',
@@ -66,9 +66,9 @@ const RSS_CONFIG = {
   regionalData: {
     feeds: [
       'https://calculatedriskblog.com/feeds/posts/default',
-      'https://feeds.reuters.com/reuters/businessNews',
       'https://www.census.gov/construction/nrs/feed.xml',
-      'https://www.federalreserve.gov/feeds/press_all.xml'
+      'https://www.federalreserve.gov/feeds/press_all.xml',
+      'https://www.housingwire.com/feed/'
     ],
     containerId: 'regional-data-feed',
     label: 'Regional Data',
@@ -151,6 +151,12 @@ function getRelativeTime(date) {
   return d + 'd ago';
 }
 
+function safeParseDate(raw) {
+  if (!raw) return new Date();
+  const d = new Date(raw);
+  return isNaN(d.getTime()) ? new Date() : d;
+}
+
 // ── Cache ─────────────────────────────────────────────────────────────────
 
 function clearStaleCache() {
@@ -178,6 +184,11 @@ function cacheArticles(key, articles) {
     localStorage.setItem('rdl_feed_' + key, JSON.stringify({ articles, timestamp: Date.now() }));
   } catch {}
 }
+
+// Cache bust — remove after one deploy cycle
+Object.keys(RSS_CONFIG).forEach(key => {
+  try { localStorage.removeItem('rdl_feed_' + key); } catch {}
+});
 
 clearStaleCache();
 
@@ -220,7 +231,7 @@ function parseXMLFeed(xmlText, configKey) {
     if (xml.querySelector('parsererror')) return articles;
 
     const items = xml.querySelectorAll('item, entry');
-    const cutoff = new Date(Date.now() - 48 * 60 * 60 * 1000);
+    const cutoff = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 
     items.forEach(item => {
       try {
@@ -233,15 +244,15 @@ function parseXMLFeed(xmlText, configKey) {
         if (!link) link = (item.querySelector('id')?.textContent || '').trim();
         if (!link || !link.startsWith('http')) return;
 
-        const descEl   = item.querySelector('description, summary');
+        const descEl   = item.querySelector('description, summary, content\\:encoded, content');
         const rawDesc  = descEl?.textContent || '';
         const cleanDesc = stripHTML(rawDesc).slice(0, 200);
 
         if (isBlacklisted(link, title + ' ' + cleanDesc)) return;
 
-        const pubRaw = item.querySelector('pubDate, published, updated')?.textContent || '';
-        const pubDate = pubRaw ? new Date(pubRaw) : new Date();
-        if (pubDate < cutoff) return;
+        const pubRaw  = item.querySelector('pubDate, published, updated, dc\\:date')?.textContent || '';
+        const pubDate = safeParseDate(pubRaw);
+        if (pubRaw && !isNaN(new Date(pubRaw).getTime()) && pubDate < cutoff) return;
 
         // Image extraction
         let image = item.querySelector('[url]')?.getAttribute('url') || '';
