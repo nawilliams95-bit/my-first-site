@@ -291,6 +291,39 @@
   pointer-events: none;
 }
 
+/* ── Skeleton Line Variants (used by feeds.js card builder) ────────────── */
+.skeleton-line {
+  height: 13px;
+  background: var(--bg-secondary);
+  border-radius: 4px;
+  margin-bottom: 8px;
+  animation: card-shimmer 1.5s infinite;
+  background: linear-gradient(90deg, var(--bg-secondary) 25%, rgba(255,255,255,0.05) 50%, var(--bg-secondary) 75%);
+  background-size: 200% 100%;
+}
+
+.skeleton-line.full   { width: 100%; }
+.skeleton-line.medium { width: 70%; }
+.skeleton-line.short  { width: 40%; }
+
+/* ── Feed Notice / Error States ────────────────────────────────────────── */
+.feed-notice,
+.feed-error {
+  grid-column: 1 / -1;
+  padding: 32px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--bg-card);
+}
+
+.feed-error {
+  border-color: rgba(255, 77, 77, 0.3);
+  color: #FF4D4D;
+}
+
 /* ── Responsive ────────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .article-card.card-featured {

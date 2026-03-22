@@ -115,7 +115,7 @@
         <h2>Market Data</h2>
         <a href="market-data.html" class="view-all">View All</a>
       </div>
-      <div class="grid-3" id="market-grid"></div>
+      <div class="grid-3" id="market-data-feed"></div>
 
       <!-- Affiliate: Mortgage Lender Comparison -->
       <div class="affiliate-banner">
@@ -137,7 +137,7 @@
         <h2>Mortgage &amp; Rates</h2>
         <a href="mortgage-rates.html" class="view-all">View All</a>
       </div>
-      <div class="grid-3" id="mortgage-grid"></div>
+      <div class="grid-3" id="mortgage-rates-feed"></div>
 
       <!-- Live Rates Strip -->
       <div class="rates-strip" aria-label="Current mortgage rates">
@@ -168,7 +168,7 @@
         <h2>Economic News</h2>
         <a href="economic-news.html" class="view-all">View All</a>
       </div>
-      <div class="grid-3" id="economic-grid"></div>
+      <div class="grid-3" id="economic-news-feed"></div>
     </div>
   </section>
 
@@ -198,7 +198,7 @@
         <h2>Investment &amp; Rental</h2>
         <a href="investment-rental.html" class="view-all">View All</a>
       </div>
-      <div class="grid-3" id="investment-grid"></div>
+      <div class="grid-3" id="investment-rental-feed"></div>
       <p style="font-size:var(--size-tiny); color:rgba(160,160,176,0.45); margin-top:16px; text-align:right;">
         Investment property tools: PropStream and DealMachine links above are affiliate partnerships. Advertising Disclosure.
       </p>
@@ -282,7 +282,7 @@
         <h2>Industry News</h2>
         <a href="industry-news.html" class="view-all">View All</a>
       </div>
-      <div class="grid-3" id="industry-grid"></div>
+      <div class="grid-3" id="industry-news-feed"></div>
     </div>
   </section>
 
@@ -293,7 +293,7 @@
         <h2>Regional Data</h2>
         <a href="regional-data.html" class="view-all">View All</a>
       </div>
-      <div class="grid-3" id="regional-grid"></div>
+      <div class="grid-3" id="regional-data-feed"></div>
     </div>
   </section>
 
@@ -380,51 +380,10 @@
   </footer>
 
   <!-- ═══════════════════════════════════════════════════════════ SCRIPTS -->
+  <script src="js/main.js" defer></script>
   <script src="js/ticker.js" defer></script>
   <script src="js/feeds.js" defer></script>
   <script src="js/cards.js" defer></script>
-  <script src="js/main.js" defer></script>
-
-  <script>
-  document.addEventListener('DOMContentLoaded', async () => {
-    // Show skeletons in all grids while loading
-    ['hero-grid','hero-bottom','market-grid','mortgage-grid','economic-grid','investment-grid','industry-grid','regional-grid'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) window.RDLCards.renderSkeletons(el, id === 'hero-grid' ? 1 : 3);
-    });
-
-    const all = await window.RDLFeeds.fetchAllCategories();
-
-    // Hero — 4 most recent across all categories
-    const heroAll = Object.values(all).flat().sort((a,b) => new Date(b.pubDate)-new Date(a.pubDate));
-    const heroFeaturedEl = document.getElementById('hero-grid');
-    const heroBottomEl   = document.getElementById('hero-bottom');
-    if (heroFeaturedEl && heroAll[0]) window.RDLCards.renderCards(heroFeaturedEl, [heroAll[0]], true);
-    if (heroBottomEl   && heroAll.length > 1) window.RDLCards.renderCards(heroBottomEl, heroAll.slice(1,4));
-
-    // Category grids
-    const grids = {
-      'market-grid':     { cat:'market' },
-      'mortgage-grid':   { cat:'mortgage' },
-      'economic-grid':   { cat:'economic' },
-      'investment-grid': { cat:'investment' },
-      'industry-grid':   { cat:'industry' },
-      'regional-grid':   { cat:'regional' },
-    };
-    Object.entries(grids).forEach(([id, cfg]) => {
-      const el = document.getElementById(id);
-      if (el) window.RDLCards.renderCards(el, (all[cfg.cat] || []).slice(0,3));
-    });
-
-    // Live rates in rates strip
-    const r30 = localStorage.getItem('rdl_rate30') || '\u2014';
-    const r15 = localStorage.getItem('rdl_rate15') || '\u2014';
-    const r30El = document.getElementById('rate30-display');
-    const r15El = document.getElementById('rate15-display');
-    if (r30El) r30El.textContent = r30;
-    if (r15El) r15El.textContent = r15;
-  });
-  </script>
 
 </body>
 </html>

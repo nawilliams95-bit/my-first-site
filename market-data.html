@@ -135,7 +135,7 @@
       </div>
 
       <!-- ARTICLES GRID -->
-      <div class="articles-grid" id="articles-grid" aria-live="polite"></div>
+      <div class="articles-grid" id="market-data-feed" aria-live="polite"></div>
 
       <!-- LOAD MORE -->
       <div class="load-more-wrap">
@@ -219,22 +219,16 @@
   </footer>
 
   <!-- SCRIPTS -->
+  <script src="js/main.js" defer></script>
   <script src="js/ticker.js" defer></script>
   <script src="js/feeds.js" defer></script>
   <script src="js/cards.js" defer></script>
   <script src="js/search.js" defer></script>
-  <script src="js/main.js" defer></script>
 
   <script>
-  document.addEventListener('DOMContentLoaded', async () => {
-    const grid = document.getElementById('articles-grid');
-    window.RDLCards.renderSkeletons(grid, 6);
-    const articles = await window.RDLFeeds.fetchCategory('market');
-    const countEl = document.getElementById('results-count');
-    if (countEl) countEl.textContent = articles.length + ' articles';
+  document.addEventListener('DOMContentLoaded', () => {
     const lastEl = document.getElementById('last-updated');
     if (lastEl) lastEl.textContent = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-    window.RDLSearch.initSearch(articles);
   });
   </script>
 

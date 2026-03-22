@@ -1,345 +1,408 @@
-// RealtyDataLabs — Feed Fetcher
-// Fetches RSS feeds via corsproxy.io, parses XML directly, filters, deduplicates, sorts, caches
-// Task 2 — switched from rss2json proxy to corsproxy.io + DOMParser
+// feeds.js — RealtyDataLabs RSS Feed Engine
+// Fetches, filters, and renders articles for all category sections
+// Rebuilt: multi-proxy fallback, XML parsing, self-contained rendering
 
-const FEEDS_CACHE_PREFIX = 'rdl_feeds_';
-const FEEDS_CACHE_TTL = 30 * 60 * 1000; // 30 minutes
+const RSS_CONFIG = {
+  marketData: {
+    feeds: [
+      'https://calculatedriskblog.com/feeds/posts/default',
+      'https://feeds.reuters.com/reuters/businessNews',
+      'https://www.nahb.org/news-and-economics/press-releases/feed',
+      'https://www.federalreserve.gov/feeds/press_all.xml'
+    ],
+    containerId: 'market-data-feed',
+    label: 'Market Data',
+    color: '#2D5BE3',
+    categoryKey: 'market'
+  },
+  mortgageRates: {
+    feeds: [
+      'https://www.mortgagenewsdaily.com/feed/news',
+      'https://www.bankrate.com/rss/mortgage/',
+      'https://feeds.reuters.com/reuters/businessNews',
+      'https://www.federalreserve.gov/feeds/press_all.xml'
+    ],
+    containerId: 'mortgage-rates-feed',
+    label: 'Mortgage & Rates',
+    color: '#00D4AA',
+    categoryKey: 'mortgage'
+  },
+  economicNews: {
+    feeds: [
+      'https://calculatedriskblog.com/feeds/posts/default',
+      'https://feeds.reuters.com/reuters/businessNews',
+      'https://www.cnbc.com/id/10000664/device/rss/rss.html',
+      'https://www.federalreserve.gov/feeds/press_all.xml'
+    ],
+    containerId: 'economic-news-feed',
+    label: 'Economic News',
+    color: '#F59E0B',
+    categoryKey: 'economic'
+  },
+  investmentRental: {
+    feeds: [
+      'https://www.biggerpockets.com/blog/feed',
+      'https://www.apartmentlist.com/research/feed',
+      'https://feeds.reuters.com/reuters/businessNews',
+      'https://calculatedriskblog.com/feeds/posts/default'
+    ],
+    containerId: 'investment-rental-feed',
+    label: 'Investment & Rental',
+    color: '#10B981',
+    categoryKey: 'investment'
+  },
+  industryNews: {
+    feeds: [
+      'https://feeds.reuters.com/reuters/businessNews',
+      'https://www.cnbc.com/id/10000664/device/rss/rss.html',
+      'https://calculatedriskblog.com/feeds/posts/default',
+      'https://www.federalreserve.gov/feeds/press_all.xml'
+    ],
+    containerId: 'industry-news-feed',
+    label: 'Industry News',
+    color: '#8B5CF6',
+    categoryKey: 'industry'
+  },
+  regionalData: {
+    feeds: [
+      'https://calculatedriskblog.com/feeds/posts/default',
+      'https://feeds.reuters.com/reuters/businessNews',
+      'https://www.census.gov/construction/nrs/feed.xml',
+      'https://www.federalreserve.gov/feeds/press_all.xml'
+    ],
+    containerId: 'regional-data-feed',
+    label: 'Regional Data',
+    color: '#EF4444',
+    categoryKey: 'regional'
+  }
+};
 
-// ============================================================
-// BLACKLIST — confirmed paywall or soft-paywall domains
-// ============================================================
-const BLACKLIST = [
-  // Hard paywalls
+// Short key → RSS_CONFIG key map (for backward-compat fetchCategory calls)
+const CATEGORY_KEY_MAP = {
+  'market':     'marketData',
+  'mortgage':   'mortgageRates',
+  'economic':   'economicNews',
+  'investment': 'investmentRental',
+  'industry':   'industryNews',
+  'regional':   'regionalData'
+};
+
+const PROXIES = [
+  url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+  url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+  url => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`
+];
+
+const BLACKLISTED_DOMAINS = [
   'wsj.com', 'bloomberg.com', 'nytimes.com', 'barrons.com',
   'ft.com', 'theinformation.com', 'businessinsider.com',
   'theatlantic.com', 'washingtonpost.com', 'latimes.com',
-  'thetimes.co.uk', 'economist.com', 'fortune.com',
-  'hbr.org', 'wired.com', 'sfchronicle.com', 'bostonglobe.com',
-  'chicagotribune.com', 'medium.com', 'morningstar.com',
-  'costar.com', 'bisnow.com', 'connect.media',
-  'commercialobserver.com', 'nationalmortgagenews.com',
-  'americanbanker.com', 'realestateweekly.com',
-  // Soft paywalls
-  'axios.com', 'therealdeal.com', 'globest.com',
-  'multifamilyexecutive.com', 'builderonline.com',
-  'probuilder.com', 'architecturaldigest.com',
-  'mansionglobal.com', 'paymentssource.com', 'sourcemedia.com'
+  'economist.com', 'fortune.com', 'hbr.org', 'wired.com',
+  'sfchronicle.com', 'bostonglobe.com', 'chicagotribune.com',
+  'nationalmortgagenews.com', 'americanbanker.com',
+  'axios.com', 'therealdeal.com', 'globest.com', 'bisnow.com',
+  'connect.media', 'commercialobserver.com'
 ];
 
-// ============================================================
-// CONFIRMED FREE SOURCES — sorted to top of every result
-// ============================================================
-const CONFIRMED_FREE_SOURCES = [
-  'calculatedriskblog.com', 'fred.stlouisfed.org', 'fredblog.stlouisfed.org',
-  'stlouisfed.org', 'bls.gov', 'census.gov', 'hud.gov', 'fhfa.gov',
-  'fanniemae.com', 'freddiemac.com', 'mortgagenewsdaily.com',
-  'apnews.com', 'reuters.com', 'cnbc.com', 'marketwatch.com',
-  'yahoo.com', 'finance.yahoo.com', 'nerdwallet.com', 'bankrate.com',
-  'biggerpockets.com', 'apartmentlist.com', 'rentcafe.com',
-  'realtor.com', 'zillow.com', 'redfin.com', 'propublica.org',
-  'nahb.org', 'federalreserve.gov', 'treasury.gov', 'home.treasury.gov',
-  'whitehouse.gov', 'occ.gov', 'consumerfinance.gov', 'nar.realtor',
-  'newyorkfed.org', 'frbatlanta.org', 'mba.org'
-];
-
-// ============================================================
-// SOFT PAYWALL SIGNAL DETECTION
-// ============================================================
 const PAYWALL_SIGNALS = [
   'subscribers only', 'subscribe to read', 'sign in to read',
-  'sign in or', 'sign up or', 'sign in to continue', 'sign up to continue',
-  'create a free account', 'register to read', 'members only',
-  'exclusive to subscribers', 'log in to continue', 'free registration required',
-  'create account to view', 'continue reading with', 'unlimited access',
-  'premium content', 'subscriber exclusive', 'already a subscriber',
-  'become a member', 'join to read', 'unlock this article',
-  'read the full article', 'get full access', 'limited free articles',
-  'articles remaining', 'free articles left', 'metered paywall',
-  'digital subscription', 'subscription required', 'paid subscribers',
-  'subscribe for', 'register for free', 'sign up for free',
-  'create your free', 'activate your account', 'paywall'
+  'sign in or', 'sign up or', 'create a free account',
+  'register to read', 'members only', 'log in to continue',
+  'free registration required', 'unlock this article',
+  'articles remaining', 'free articles left', 'limited free articles'
 ];
 
-// ============================================================
-// CATEGORY FEEDS
-// ============================================================
-const CATEGORY_FEEDS = {
-  'market': [
-    { url: 'https://feeds.feedburner.com/zillowblog',                        label: 'Zillow Research' },
-    { url: 'https://www.redfin.com/news/feed/',                              label: 'Redfin News' },
-    { url: 'https://www.nar.realtor/blogs/economists-outlook/feed',          label: 'NAR' },
-    { url: 'https://www.nahb.org/news-and-economics/press-releases/feed',    label: 'NAHB' },
-    { url: 'https://calculatedriskblog.com/feeds/posts/default',             label: 'Calculated Risk' },
-    { url: 'https://www.fhfa.gov/rss/news',                                  label: 'FHFA' }
-  ],
-  'mortgage': [
-    { url: 'https://www.mortgagenewsdaily.com/feed/news',                    label: 'Mortgage News Daily' },
-    { url: 'https://www.bankrate.com/rss/mortgage/',                         label: 'Bankrate' },
-    { url: 'https://www.nerdwallet.com/blog/mortgages/feed/',                label: 'NerdWallet' },
-    { url: 'https://www.federalreserve.gov/feeds/press_all.xml',             label: 'Federal Reserve' },
-    { url: 'https://feeds.reuters.com/reuters/businessNews',                 label: 'Reuters' }
-  ],
-  'economic': [
-    { url: 'https://calculatedriskblog.com/feeds/posts/default',             label: 'Calculated Risk' },
-    { url: 'https://feeds.reuters.com/reuters/businessNews',                 label: 'Reuters' },
-    { url: 'https://www.cnbc.com/id/10000664/device/rss/rss.html',           label: 'CNBC' },
-    { url: 'https://feeds.marketwatch.com/marketwatch/realtimeheadlines/',   label: 'MarketWatch' },
-    { url: 'https://www.federalreserve.gov/feeds/press_all.xml',             label: 'Federal Reserve' }
-  ],
-  'investment': [
-    { url: 'https://www.biggerpockets.com/blog/feed',                        label: 'BiggerPockets' },
-    { url: 'https://www.apartmentlist.com/research/feed',                    label: 'Apartment List' },
-    { url: 'https://www.rentcafe.com/blog/feed/',                            label: 'RentCafe' },
-    { url: 'https://feeds.reuters.com/reuters/businessNews',                 label: 'Reuters' }
-  ],
-  'industry': [
-    // NOTE: housingwire.com, inman.com, therealdeal.com included per config
-    // but articles from blacklisted domains will be filtered before display
-    { url: 'https://www.inman.com/feed/',                                    label: 'Inman' },
-    { url: 'https://housingwire.com/feed/',                                  label: 'HousingWire' },
-    { url: 'https://therealdeal.com/feed/',                                  label: 'The Real Deal' },
-    { url: 'https://feeds.reuters.com/reuters/businessNews',                 label: 'Reuters' },
-    { url: 'https://www.nar.realtor/rss',                                    label: 'NAR' }
-  ],
-  'regional': [
-    { url: 'https://calculatedriskblog.com/feeds/posts/default',             label: 'Calculated Risk' },
-    { url: 'https://www.frbatlanta.org/rss/news',                            label: 'Atlanta Fed' },
-    { url: 'https://www.census.gov/construction/nrs/feed.xml',               label: 'Census Bureau' },
-    { url: 'https://feeds.reuters.com/reuters/businessNews',                 label: 'Reuters' },
-    { url: 'https://www.fhfa.gov/rss/news',                                  label: 'FHFA' }
-  ]
+const FALLBACK_IMAGES = {
+  marketData:       'images/fallback-market.svg',
+  mortgageRates:    'images/fallback-mortgage.svg',
+  economicNews:     'images/fallback-economic.svg',
+  investmentRental: 'images/fallback-investment.svg',
+  industryNews:     'images/fallback-industry.svg',
+  regionalData:     'images/fallback-regional.svg'
 };
 
-// ============================================================
-// HELPERS
-// ============================================================
-
-function isBlacklisted(url) {
-  try {
-    const domain = new URL(url).hostname.replace('www.', '');
-    return BLACKLIST.some(b => domain.includes(b));
-  } catch { return false; }
-}
-
-function isConfirmedFree(url) {
-  try {
-    const domain = new URL(url).hostname.replace('www.', '');
-    return CONFIRMED_FREE_SOURCES.some(s => domain.includes(s));
-  } catch { return false; }
-}
-
-function hasSoftPaywallSignal(title, description) {
-  const text = ((title || '') + ' ' + (description || '')).toLowerCase();
-  return PAYWALL_SIGNALS.some(signal => text.includes(signal));
-}
-
-function isRecent(pubDate) {
-  if (!pubDate) return true;
-  const age = Date.now() - new Date(pubDate).getTime();
-  return age < 48 * 60 * 60 * 1000;
-}
+// ── Helpers ───────────────────────────────────────────────────────────────
 
 function stripHTML(html) {
   if (!html) return '';
-  return html
-    .replace(/<!\[CDATA\[[\s\S]*?\]\]>/gi, m => m.slice(9, -3)) // unwrap CDATA first
-    .replace(/<[^>]*>/g, '')
-    .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&nbsp;/g, ' ')
-    .replace(/\s+/g, ' ').trim();
+  const div = document.createElement('div');
+  div.innerHTML = html;
+  return (div.textContent || div.innerText || '').replace(/\s+/g, ' ').trim();
 }
 
-function extractImageFromXML(item) {
-  // media:content
-  const media = item.querySelector('content') ||
-                item.getElementsByTagNameNS('http://search.yahoo.com/mrss/', 'content')[0];
-  if (media && media.getAttribute('url') && media.getAttribute('url').match(/\.(jpg|jpeg|png|webp)/i)) {
-    return media.getAttribute('url');
+function extractDomain(url) {
+  try { return new URL(url).hostname.replace('www.', ''); } catch { return ''; }
+}
+
+function isBlacklisted(url, text) {
+  const domain = extractDomain(url);
+  if (BLACKLISTED_DOMAINS.some(d => domain.includes(d))) return true;
+  const low = (text || '').toLowerCase();
+  return PAYWALL_SIGNALS.some(s => low.includes(s));
+}
+
+function getRelativeTime(date) {
+  const diff = Date.now() - new Date(date).getTime();
+  const m = Math.floor(diff / 60000);
+  const h = Math.floor(diff / 3600000);
+  const d = Math.floor(diff / 86400000);
+  if (m < 60)  return m + 'm ago';
+  if (h < 24)  return h + 'h ago';
+  return d + 'd ago';
+}
+
+// ── Cache ─────────────────────────────────────────────────────────────────
+
+function clearStaleCache() {
+  Object.keys(RSS_CONFIG).forEach(key => {
+    try {
+      const c = JSON.parse(localStorage.getItem('rdl_feed_' + key));
+      if (!c || Date.now() - c.timestamp > 30 * 60 * 1000) {
+        localStorage.removeItem('rdl_feed_' + key);
+      }
+    } catch { localStorage.removeItem('rdl_feed_' + key); }
+  });
+}
+
+function getCachedArticles(key) {
+  try {
+    const c = JSON.parse(localStorage.getItem('rdl_feed_' + key));
+    if (!c) return null;
+    if (Date.now() - c.timestamp > 30 * 60 * 1000) return null;
+    return c.articles;
+  } catch { return null; }
+}
+
+function cacheArticles(key, articles) {
+  try {
+    localStorage.setItem('rdl_feed_' + key, JSON.stringify({ articles, timestamp: Date.now() }));
+  } catch {}
+}
+
+clearStaleCache();
+
+// ── Fetch with multi-proxy fallback ───────────────────────────────────────
+
+async function fetchWithProxy(url) {
+  for (const makeProxy of PROXIES) {
+    try {
+      const proxyUrl = makeProxy(url);
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 8000);
+      const response = await fetch(proxyUrl, { signal: controller.signal });
+      clearTimeout(timeout);
+      if (response.ok) {
+        const text = await response.text();
+        if (text && text.length > 200) {
+          console.log('[RDL Feeds] OK: ' + url.split('/')[2]);
+          return text;
+        }
+      }
+    } catch { /* try next proxy */ }
   }
-  // enclosure
-  const enc = item.querySelector('enclosure');
-  if (enc && enc.getAttribute('url') && enc.getAttribute('url').match(/\.(jpg|jpeg|png|webp)/i)) {
-    return enc.getAttribute('url');
-  }
-  // img in description
-  const desc = item.querySelector('description')?.textContent || '';
-  const imgMatch = desc.match(/<img[^>]+src=["']([^"']+)["']/i);
-  if (imgMatch && imgMatch[1].startsWith('http')) return imgMatch[1];
+  console.warn('[RDL Feeds] All proxies failed: ' + url);
   return null;
 }
 
-function getItemText(item, tagName) {
-  const el = item.querySelector(tagName);
-  if (!el) return '';
-  // Handle CDATA
-  const raw = el.textContent || el.innerHTML || '';
-  return raw;
+// ── Parse RSS / Atom XML ──────────────────────────────────────────────────
+
+function parseXMLFeed(xmlText, configKey) {
+  const articles = [];
+  try {
+    const parser = new DOMParser();
+    const xml = parser.parseFromString(xmlText, 'text/xml');
+    if (xml.querySelector('parsererror')) return articles;
+
+    const items = xml.querySelectorAll('item, entry');
+    const cutoff = new Date(Date.now() - 48 * 60 * 60 * 1000);
+
+    items.forEach(item => {
+      try {
+        const title = stripHTML(item.querySelector('title')?.textContent || '');
+        if (!title) return;
+
+        // Link — RSS 2.0 text node OR Atom href attribute
+        let link = (item.querySelector('link')?.textContent || '').trim();
+        if (!link) link = item.querySelector('link')?.getAttribute('href') || '';
+        if (!link) link = (item.querySelector('id')?.textContent || '').trim();
+        if (!link || !link.startsWith('http')) return;
+
+        const descEl   = item.querySelector('description, summary');
+        const rawDesc  = descEl?.textContent || '';
+        const cleanDesc = stripHTML(rawDesc).slice(0, 200);
+
+        if (isBlacklisted(link, title + ' ' + cleanDesc)) return;
+
+        const pubRaw = item.querySelector('pubDate, published, updated')?.textContent || '';
+        const pubDate = pubRaw ? new Date(pubRaw) : new Date();
+        if (pubDate < cutoff) return;
+
+        // Image extraction
+        let image = item.querySelector('[url]')?.getAttribute('url') || '';
+        if (!image) image = item.querySelector('enclosure')?.getAttribute('url') || '';
+        if (!image) {
+          const m = rawDesc.match(/<img[^>]+src=["']([^"']+)["']/i);
+          if (m) image = m[1];
+        }
+        if (!image) image = FALLBACK_IMAGES[configKey] || 'images/fallback-market.svg';
+
+        articles.push({
+          title, link, description: cleanDesc,
+          pubDate, image, configKey,
+          source: extractDomain(link),
+          relativeTime: getRelativeTime(pubDate)
+        });
+      } catch {}
+    });
+  } catch {}
+  return articles;
 }
 
-// ============================================================
-// FETCH A SINGLE RSS FEED via corsproxy.io + DOMParser
-// ============================================================
-async function fetchFeed(feedConfig) {
-  const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(feedConfig.url)}`;
+// ── Card HTML ─────────────────────────────────────────────────────────────
+
+function buildArticleCard(article, config) {
+  const fallback = FALLBACK_IMAGES[article.configKey] || 'images/fallback-market.svg';
+  return `
+    <article class="article-card fade-in" onclick="window.open('${article.link}','_blank')">
+      <div class="card-image-wrap">
+        <img src="${article.image}" alt="" loading="lazy"
+             onload="this.classList.add('loaded')"
+             onerror="this.src='${fallback}'" />
+      </div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="badge" style="background:${config.color}20;color:${config.color};border:1px solid ${config.color}40">${config.label}</span>
+          <span class="card-timestamp">${article.relativeTime}</span>
+        </div>
+        <h3 class="card-headline">${article.title}</h3>
+        ${article.description ? `<p class="card-excerpt">${article.description}</p>` : ''}
+        <div class="card-footer">
+          <span class="card-source">${article.source}</span>
+          <a href="${article.link}" target="_blank" rel="noopener noreferrer"
+             class="card-read-more" onclick="event.stopPropagation()">Read More</a>
+        </div>
+      </div>
+    </article>`;
+}
+
+function buildSkeletonCards(count) {
+  return Array(count).fill(`
+    <div class="article-card card-skeleton">
+      <div class="skeleton-image skeleton"></div>
+      <div class="card-body">
+        <div class="skeleton-line short skeleton"></div>
+        <div class="skeleton-line full skeleton"></div>
+        <div class="skeleton-line medium skeleton"></div>
+      </div>
+    </div>`).join('');
+}
+
+function renderArticles(container, articles, config) {
+  if (!container) return;
+  if (!articles || !articles.length) {
+    container.innerHTML = '<div class="feed-notice"><p>Fetching latest verified articles. Check back shortly.</p></div>';
+    return;
+  }
+  container.innerHTML = articles.slice(0, 6).map(a => buildArticleCard(a, config)).join('');
+
+  // Trigger fade-in observer for newly added cards
+  if (window._rdlObserver) {
+    container.querySelectorAll('.fade-in').forEach(el => window._rdlObserver.observe(el));
+  }
+}
+
+// ── Load a single category ────────────────────────────────────────────────
+
+async function loadCategoryFeed(configKey, config) {
+  // Find container — try primary ID, fall back to articles-grid on category pages
+  const container = document.getElementById(config.containerId)
+                 || document.getElementById('articles-grid');
+  if (!container) return [];
+
+  const cached = getCachedArticles(configKey);
+  if (cached && cached.length > 0) {
+    console.log('[RDL Feeds] Cache — ' + configKey + ': ' + cached.length);
+    renderArticles(container, cached, config);
+    if (window.RDLSearch) window.RDLSearch.initSearch(cached);
+    return cached;
+  }
+
+  container.innerHTML = buildSkeletonCards(3);
+
   try {
-    const res = await fetch(proxyUrl, { signal: AbortSignal.timeout(8000) });
-    if (!res.ok) {
-      console.warn(`[RDL Feeds] FAIL — ${feedConfig.label} HTTP ${res.status}`);
-      return [];
-    }
-    const text = await res.text();
-    const parser = new DOMParser();
-    const xml = parser.parseFromString(text, 'text/xml');
+    const feedResults = await Promise.all(config.feeds.map(url => fetchWithProxy(url)));
+    let all = [];
+    feedResults.forEach(text => { if (text) all = all.concat(parseXMLFeed(text, configKey)); });
 
-    // Check for parse error
-    if (xml.querySelector('parsererror')) {
-      console.warn(`[RDL Feeds] PARSE ERROR — ${feedConfig.label}`);
-      return [];
-    }
+    const seen = new Set();
+    const unique = all
+      .filter(a => { if (seen.has(a.link)) return false; seen.add(a.link); return true; })
+      .sort((a, b) => b.pubDate - a.pubDate);
 
-    // Support RSS 2.0 and Atom
-    const items = Array.from(xml.querySelectorAll('item, entry'));
-    if (!items.length) {
-      console.warn(`[RDL Feeds] EMPTY — ${feedConfig.label}`);
-      return [];
+    console.log('[RDL Feeds] ' + configKey + ': fetched=' + all.length + ' displayed=' + unique.length);
+
+    cacheArticles(configKey, unique);
+    renderArticles(container, unique, config);
+
+    if (window.RDLSearch && typeof window.RDLSearch.initSearch === 'function') {
+      window.RDLSearch.initSearch(unique);
     }
 
-    console.log(`[RDL Feeds] OK — ${feedConfig.label}: ${items.length} items`);
-
-    return items.map(item => {
-      const title = stripHTML(getItemText(item, 'title'));
-
-      // Link: RSS uses <link>, Atom uses <link href="..."> or <id>
-      let link = getItemText(item, 'link').trim();
-      if (!link) {
-        const linkEl = item.querySelector('link');
-        link = linkEl?.getAttribute('href') || '';
-      }
-      if (!link) link = getItemText(item, 'id');
-
-      const description = getItemText(item, 'description') || getItemText(item, 'summary') || getItemText(item, 'content');
-      const pubDate = getItemText(item, 'pubDate') || getItemText(item, 'published') || getItemText(item, 'updated');
-
-      return {
-        title,
-        link,
-        description,
-        content: description,
-        pubDate,
-        thumbnail: extractImageFromXML(item),
-        _source:    feedConfig.label,
-        _sourceUrl: feedConfig.url
-      };
-    }).filter(item => item.title && item.link);
+    return unique;
 
   } catch (err) {
-    console.warn(`[RDL Feeds] ERROR — ${feedConfig.label}:`, err.message || err);
+    console.error('[RDL Feeds] Failed: ' + configKey, err);
+    container.innerHTML = '<div class="feed-error"><p>Unable to load articles. Please refresh the page.</p></div>';
     return [];
   }
 }
 
-// ============================================================
-// FETCH ALL FEEDS FOR A CATEGORY
-// ============================================================
-async function fetchCategory(category) {
-  const cacheKey = FEEDS_CACHE_PREFIX + category;
+// ── Load all categories (homepage) ────────────────────────────────────────
 
-  try {
-    const cached = localStorage.getItem(cacheKey);
-    if (cached) {
-      const { data, timestamp } = JSON.parse(cached);
-      if (Date.now() - timestamp < FEEDS_CACHE_TTL) {
-        console.log(`[RDL Feeds] Cache hit — ${category}: ${data.length} articles`);
-        return data;
-      }
-    }
-  } catch {}
-
-  const feeds = CATEGORY_FEEDS[category] || [];
-  const fetchStart = Date.now();
-
-  // Fetch all feeds simultaneously
-  const results = await Promise.all(feeds.map(f => fetchFeed(f)));
-  const totalFetched = results.reduce((n, r) => n + r.length, 0);
-
-  const seen = new Set();
-
-  const articles = results
-    .flat()
-    .filter(item => item.title && item.link)
-    .filter(item => !isBlacklisted(item.link))
-    .filter(item => isRecent(item.pubDate))
-    .filter(item => {
-      if (seen.has(item.link)) return false;
-      seen.add(item.link);
-      return true;
-    })
-    .filter(item => !hasSoftPaywallSignal(item.title, item.description))
-    .map(item => {
-      const verified = isConfirmedFree(item.link);
-      return {
-        title:    stripHTML(item.title),
-        excerpt:  stripHTML(item.description || item.content || '').slice(0, 240),
-        link:     item.link,
-        pubDate:  item.pubDate,
-        image:    item.thumbnail || null,
-        source:   item._source || 'Source',
-        category: category,
-        verified: verified
-      };
-    })
-    .sort((a, b) => {
-      if (a.verified && !b.verified) return -1;
-      if (!a.verified && b.verified) return 1;
-      return new Date(b.pubDate) - new Date(a.pubDate);
-    });
-
-  // Task 2J — diagnostic console log
-  console.log(
-    `[RDL Feeds] ${category}: fetched=${totalFetched} passed=${articles.length} ` +
-    `(${Date.now() - fetchStart}ms)`
+async function loadAllFeeds() {
+  await Promise.all(
+    Object.entries(RSS_CONFIG).map(([key, config]) => loadCategoryFeed(key, config))
   );
-
-  if (!articles.length) {
-    console.warn(`[RDL Feeds] Category "${category}" returned 0 articles after all filters.`);
-  }
-
-  try {
-    localStorage.setItem(cacheKey, JSON.stringify({ data: articles, timestamp: Date.now() }));
-  } catch {}
-
-  return articles;
 }
 
-// ============================================================
-// FETCH ALL CATEGORIES AT ONCE (used by homepage)
-// ============================================================
+// ── fetchCategory — backward compat for category page inline scripts ──────
+
+async function fetchCategory(shortKey) {
+  const configKey = CATEGORY_KEY_MAP[shortKey] || shortKey;
+  const config    = RSS_CONFIG[configKey];
+  if (!config) return [];
+  return loadCategoryFeed(configKey, config);
+}
+
 async function fetchAllCategories() {
-  const categories = Object.keys(CATEGORY_FEEDS);
-  const results    = await Promise.all(categories.map(cat => fetchCategory(cat)));
-  const map = {};
-  categories.forEach((cat, i) => { map[cat] = results[i]; });
-  return map;
+  const results = {};
+  await Promise.all(
+    Object.entries(RSS_CONFIG).map(async ([key, config]) => {
+      results[config.categoryKey] = await loadCategoryFeed(key, config);
+    })
+  );
+  return results;
 }
 
-// Pre-flight HEAD check — CORS-limited, falls back to true
-async function isArticleAccessible(url) {
-  try {
-    const response = await fetch(url, { method: 'HEAD', signal: AbortSignal.timeout(3000) });
-    const headers = response.headers;
-    if (headers.get('x-paywall')) return false;
-    if (headers.get('x-subscription-required')) return false;
-    return response.ok;
-  } catch { return true; }
-}
+// ── Auto-init ─────────────────────────────────────────────────────────────
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Store IntersectionObserver reference for newly rendered cards
+  if ('IntersectionObserver' in window) {
+    window._rdlObserver = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); window._rdlObserver.unobserve(e.target); } });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  }
+  loadAllFeeds();
+});
+
+// ── Public API ────────────────────────────────────────────────────────────
 
 window.RDLFeeds = {
   fetchCategory,
   fetchAllCategories,
-  isArticleAccessible,
-  isConfirmedFree,
-  CATEGORY_FEEDS,
-  BLACKLIST,
-  CONFIRMED_FREE_SOURCES,
+  loadAllFeeds,
+  RSS_CONFIG,
+  BLACKLISTED_DOMAINS,
   PAYWALL_SIGNALS
 };
