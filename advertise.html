@@ -372,5 +372,18 @@
   })();
   </script>
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var yearEls = document.querySelectorAll('.copyright-year');
+  yearEls.forEach(function(el) { el.textContent = new Date().getFullYear(); });
+  if (yearEls.length === 0) {
+    var footer = document.querySelector('footer');
+    if (footer) {
+      var text = footer.innerHTML;
+      footer.innerHTML = text.replace('©  RealtyDataLabs', '© ' + new Date().getFullYear() + ' RealtyDataLabs');
+    }
+  }
+});
+</script>
 </body>
 </html>
