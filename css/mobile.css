@@ -354,6 +354,63 @@ html, body {
   }
 }
 
+/* ── Additional 768px rules (Issue 9 supplement) ──────────────────────── */
+@media (max-width: 768px) {
+  /* Generic grid / multi-column class variants */
+  .grid,
+  [class*="two-col"],
+  [class*="card-row"],
+  [class*="grid-"] {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+  }
+
+  /* Ticker containment */
+  .ticker-wrap,
+  .ticker-container {
+    overflow: hidden;
+  }
+
+  /* Rate card rows */
+  .rate-cards,
+  .rate-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* Article and feed cards full width */
+  .article-card,
+  .feed-card {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* Affiliate and sponsor rows */
+  .affiliate-row,
+  .sponsor-row {
+    flex-direction: column;
+  }
+
+  /* Footer column variants */
+  footer .footer-cols {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  /* Prevent horizontal scroll */
+  body {
+    overflow-x: hidden;
+  }
+
+  /* Glassmorphism cards */
+  .glass-card,
+  [class*="glass"] {
+    margin: 0 8px;
+    border-radius: 12px;
+  }
+}
+
 /* ── Small Mobile (≤ 360px) ────────────────────────────────────────────── */
 @media (max-width: 360px) {
 

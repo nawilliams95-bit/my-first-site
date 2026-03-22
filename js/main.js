@@ -116,12 +116,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ============================================================
-  // LEAD CAPTURE FORM — Formspree endpoint
-  // PENDING CREDENTIALS: Replace REPLACE_WITH_LEAD_FORM_ID with
-  // your Formspree form ID from formspree.io/f/XXXXXXXX
-  // Once KW Command webhook is ready, swap this URL for the KW endpoint.
+  // LEAD CAPTURE FORM — Web3Forms
   // ============================================================
-  const LEAD_FORM_ENDPOINT = 'https://formspree.io/f/REPLACE_WITH_LEAD_FORM_ID';
+  const LEAD_FORM_ENDPOINT = 'https://api.web3forms.com/submit';
 
   const leadForm = document.getElementById('lead-form');
   if (leadForm) {
@@ -211,8 +208,8 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         const response = await fetch(LEAD_FORM_ENDPOINT, {
           method:  'POST',
-          body:    new FormData(leadForm),
-          headers: { 'Accept': 'application/json' }
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body:    JSON.stringify(Object.fromEntries(new FormData(leadForm)))
         });
 
         if (response.ok) {
@@ -245,11 +242,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ============================================================
-  // NEWSLETTER SIGNUP — Formspree endpoint
-  // PENDING CREDENTIALS: Replace REPLACE_WITH_NEWSLETTER_FORM_ID
-  // with your Formspree newsletter form ID from formspree.io
+  // NEWSLETTER SIGNUP — Web3Forms
   // ============================================================
-  const NEWSLETTER_ENDPOINT = 'https://formspree.io/f/REPLACE_WITH_NEWSLETTER_FORM_ID';
+  const NEWSLETTER_ENDPOINT = 'https://api.web3forms.com/submit';
 
   const newsletterForm   = document.getElementById('newsletter-form');
   const newsletterStatus = document.getElementById('newsletter-status');
@@ -275,8 +270,8 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         const response = await fetch(NEWSLETTER_ENDPOINT, {
           method:  'POST',
-          body:    new FormData(newsletterForm),
-          headers: { 'Accept': 'application/json' }
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body:    JSON.stringify(Object.fromEntries(new FormData(newsletterForm)))
         });
 
         if (response.ok) {

@@ -6,8 +6,8 @@ const TICKER_CACHE_KEY = 'rdl_ticker_cache';
 const TICKER_CACHE_TTL = 60 * 60 * 1000; // 1 hour
 
 // FRED API key
-const FRED_API_KEY = 'dcc865cd79fab774a29ff8469d345622';
-const FRED_PROXY = 'https://corsproxy.io/?';
+const FRED_API_KEY = '4f73d187e5b0e664e9447b7d92972edc';
+const FRED_PROXY = 'https://api.allorigins.win/get?url=';
 
 function fredUrl(seriesId, limit) {
   const base = `https://api.stlouisfed.org/fred/series/observations?series_id=${seriesId}&api_key=${FRED_API_KEY}&file_type=json&sort_order=desc&limit=${limit}`;
@@ -26,9 +26,10 @@ function freshnessClass(dateStr) {
 // seriesId, label, format, limit — limit=14 allows YoY calculations
 const TICKER_POINTS = [
   {
-    label:  '30YR FIXED',
-    series: 'MORTGAGE30US',
-    limit:  2,
+    label:    '30YR FIXED',
+    series:   'MORTGAGE30US',
+    limit:    2,
+    fallback: '6.85%',
     format: (obs) => {
       const latest   = parseFloat(obs[0]?.value);
       const previous = parseFloat(obs[1]?.value);
@@ -42,9 +43,10 @@ const TICKER_POINTS = [
     }
   },
   {
-    label:  '15YR FIXED',
-    series: 'MORTGAGE15US',
-    limit:  2,
+    label:    '15YR FIXED',
+    series:   'MORTGAGE15US',
+    limit:    2,
+    fallback: '6.20%',
     format: (obs) => {
       const latest   = parseFloat(obs[0]?.value);
       const previous = parseFloat(obs[1]?.value);
@@ -58,9 +60,10 @@ const TICKER_POINTS = [
     }
   },
   {
-    label:  '10YR TREASURY',
-    series: 'DGS10',
-    limit:  2,
+    label:    '10YR TREASURY',
+    series:   'DGS10',
+    limit:    2,
+    fallback: '4.25%',
     format: (obs) => {
       const latest   = parseFloat(obs[0]?.value);
       const previous = parseFloat(obs[1]?.value);
@@ -74,9 +77,10 @@ const TICKER_POINTS = [
     }
   },
   {
-    label:  'FED FUNDS',
-    series: 'FEDFUNDS',
-    limit:  2,
+    label:    'FED FUNDS',
+    series:   'FEDFUNDS',
+    limit:    2,
+    fallback: '5.33%',
     format: (obs) => {
       const latest   = parseFloat(obs[0]?.value);
       const previous = parseFloat(obs[1]?.value);
@@ -90,9 +94,10 @@ const TICKER_POINTS = [
     }
   },
   {
-    label:  'MEDIAN HOME PRICE',
-    series: 'MSPUS',
-    limit:  2,
+    label:    'MEDIAN HOME PRICE',
+    series:   'MSPUS',
+    limit:    2,
+    fallback: '$412K',
     format: (obs) => {
       const latest   = parseFloat(obs[0]?.value);
       const previous = parseFloat(obs[1]?.value);
@@ -106,9 +111,10 @@ const TICKER_POINTS = [
     }
   },
   {
-    label:  'HOUSING SUPPLY',
-    series: 'MSACSR',      // Monthly Supply of Houses — use YoY comparison
-    limit:  14,
+    label:    'HOUSING SUPPLY',
+    series:   'MSACSR',      // Monthly Supply of Houses — use YoY comparison
+    limit:    14,
+    fallback: '3.5mo',
     format: (obs) => {
       // obs is sorted desc (newest first); obs[0] = latest, obs[12] = ~12 months ago
       const latest  = parseFloat(obs[0]?.value);
@@ -123,9 +129,10 @@ const TICKER_POINTS = [
     }
   },
   {
-    label:  'MORT RATE WoW',
-    series: 'MORTGAGE30US',   // Weekly — WoW change in the 30yr rate
-    limit:  3,
+    label:    'MORT RATE WoW',
+    series:   'MORTGAGE30US',   // Weekly — WoW change in the 30yr rate
+    limit:    3,
+    fallback: '6.85% (+0.00 WoW)',
     format: (obs) => {
       const latest  = parseFloat(obs[0]?.value);
       const prev    = parseFloat(obs[1]?.value);
@@ -139,6 +146,15 @@ const TICKER_POINTS = [
     }
   }
 ];
+
+async function fetchTickerValue(fetchFn, fallback) {
+  try {
+    const val = await fetchFn();
+    return (val !== null && val !== undefined && val !== '') ? val : fallback;
+  } catch {
+    return fallback;
+  }
+}
 
 async function fetchTickerData() {
   // Check cache
@@ -154,9 +170,10 @@ async function fetchTickerData() {
     TICKER_POINTS.map(point =>
       fetch(fredUrl(point.series, point.limit))
         .then(r => r.json())
-        .then(data => {
+        .then(wrapper => {
+          const data = JSON.parse(wrapper.contents);
           const obs = (data.observations || []).filter(o => o.value !== '.');
-          const formatted = obs.length ? point.format(obs) : { value: 'N/A', changeClass: 'neutral', timestamp: null };
+          const formatted = obs.length ? point.format(obs) : { value: point.fallback, changeClass: 'neutral', timestamp: null };
           return {
             label:          point.label,
             value:          formatted.value,
@@ -166,7 +183,7 @@ async function fetchTickerData() {
         })
         .catch(() => ({
           label:          point.label,
-          value:          'N/A',
+          value:          point.fallback,
           changeClass:    'neutral',
           freshnessClass: 'fresh-unknown'
         }))

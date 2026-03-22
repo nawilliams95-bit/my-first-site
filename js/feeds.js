@@ -88,9 +88,9 @@ const CATEGORY_KEY_MAP = {
 };
 
 const PROXIES = [
-  url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
-  url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
-  url => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`
+  { build: url => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`, json: true },
+  { build: url => `https://corsproxy.io/?${encodeURIComponent(url)}`,              json: false },
+  { build: url => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`, json: false }
 ];
 
 const BLACKLISTED_DOMAINS = [
@@ -184,15 +184,21 @@ clearStaleCache();
 // ── Fetch with multi-proxy fallback ───────────────────────────────────────
 
 async function fetchWithProxy(url) {
-  for (const makeProxy of PROXIES) {
+  for (const proxy of PROXIES) {
     try {
-      const proxyUrl = makeProxy(url);
+      const proxyUrl = proxy.build(url);
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 8000);
       const response = await fetch(proxyUrl, { signal: controller.signal });
       clearTimeout(timeout);
       if (response.ok) {
-        const text = await response.text();
+        let text;
+        if (proxy.json) {
+          const data = await response.json();
+          text = data.contents;
+        } else {
+          text = await response.text();
+        }
         if (text && text.length > 200) {
           console.log('[RDL Feeds] OK: ' + url.split('/')[2]);
           return text;
