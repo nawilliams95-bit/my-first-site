@@ -260,37 +260,35 @@ function parseXMLFeed(xmlText, configKey) {
         const pubDate = safeParseDate(pubRaw);
         if (pubRaw && !isNaN(new Date(pubRaw).getTime()) && pubDate < cutoff) return;
 
-        // Image extraction
+        // Image extraction — use getElementsByTagNameNS for namespaced tags
         let image = '';
 
-        // Try all common RSS image locations in order
-        image = image || item.querySelector('media\\:thumbnail')?.getAttribute('url') || '';
-        image = image || item.querySelector('media\\:content')?.getAttribute('url') || '';
-        image = image || item.querySelector('[url]')?.getAttribute('url') || '';
-        image = image || item.querySelector('enclosure[type^="image"]')?.getAttribute('url') || '';
-        image = image || item.querySelector('enclosure')?.getAttribute('url') || '';
+        const mediaNS = 'http://search.yahoo.com/mrss/';
+        const mediaThumbs = item.getElementsByTagNameNS(mediaNS, 'thumbnail');
+        const mediaContent = item.getElementsByTagNameNS(mediaNS, 'content');
+        if (mediaThumbs.length) image = mediaThumbs[0].getAttribute('url') || '';
+        if (!image && mediaContent.length) image = mediaContent[0].getAttribute('url') || '';
 
-        // Try extracting from description HTML
+        if (!image) image = item.querySelector('enclosure[type^="image"]')?.getAttribute('url') || '';
+        if (!image) image = item.querySelector('enclosure')?.getAttribute('url') || '';
+
         if (!image) {
           const srcMatch = rawDesc.match(/<img[^>]+src=["']([^"']+)["']/i);
           if (srcMatch) image = srcMatch[1];
         }
 
-        // Try content:encoded if present
         if (!image) {
-          const contentEl = item.querySelector('content\\:encoded, encoded');
-          if (contentEl) {
-            const contentMatch = contentEl.textContent.match(/<img[^>]+src=["']([^"']+)["']/i);
-            if (contentMatch) image = contentMatch[1];
+          const encoded = item.getElementsByTagNameNS('http://purl.org/rss/1.0/modules/content/', 'encoded')[0];
+          if (encoded) {
+            const m = encoded.textContent.match(/<img[^>]+src=["']([^"']+)["']/i);
+            if (m) image = m[1];
           }
         }
 
-        // Skip data URIs and tiny tracking pixels
-        if (image && (image.startsWith('data:') || image.includes('pixel') || image.includes('tracking'))) {
+        if (image && (image.startsWith('data:') || image.includes('1x1') || image.includes('pixel') || image.includes('tracking'))) {
           image = '';
         }
 
-        // Final fallback
         if (!image) image = FALLBACK_IMAGES[configKey] || 'images/fallback-market.svg';
 
         articles.push({

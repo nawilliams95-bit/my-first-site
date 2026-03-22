@@ -246,3 +246,39 @@
     display: flex;
   }
 }
+
+/* ----- Desktop: full-width header (≥ 769px) ----- */
+@media (min-width: 769px) {
+  .site-header {
+    max-width: 100%;
+    min-height: 70px;
+  }
+
+  .header-inner {
+    max-width: 100%;
+    width: 100%;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .header-logo img {
+    height: 48px;
+    width: auto;
+  }
+
+  .header-nav a {
+    font-size: 0.95rem;
+    padding: 0 0.75rem;
+    white-space: nowrap;
+  }
+}
+
+/* ----- Wide desktop (≥ 1200px) ----- */
+@media (min-width: 1200px) {
+  .header-nav a {
+    font-size: 1rem;
+    padding: 0 1rem;
+  }
+}
