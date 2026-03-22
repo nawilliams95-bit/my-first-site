@@ -8,7 +8,7 @@ const RSS_CONFIG = {
       'https://calculatedriskblog.com/feeds/posts/default',
       'https://www.federalreserve.gov/feeds/press_all.xml',
       'https://feeds.content.dowjones.io/public/rss/mw_realestate',
-      'https://www.housingwire.com/feed/'
+      'https://realestate.yahoo.com/rss'
     ],
     containerId: 'market-data-feed',
     label: 'Market Data',
@@ -18,7 +18,7 @@ const RSS_CONFIG = {
   mortgageRates: {
     feeds: [
       'https://www.mortgagenewsdaily.com/feed/news',
-      'https://www.housingwire.com/feed/',
+      'https://realestate.yahoo.com/rss',
       'https://calculatedriskblog.com/feeds/posts/default',
       'https://www.federalreserve.gov/feeds/press_all.xml'
     ],
@@ -41,7 +41,7 @@ const RSS_CONFIG = {
   },
   investmentRental: {
     feeds: [
-      'https://www.housingwire.com/feed/',
+      'https://realestate.yahoo.com/rss',
       'https://calculatedriskblog.com/feeds/posts/default',
       'https://feeds.content.dowjones.io/public/rss/mw_realestate',
       'https://www.federalreserve.gov/feeds/press_all.xml'
@@ -53,7 +53,7 @@ const RSS_CONFIG = {
   },
   industryNews: {
     feeds: [
-      'https://www.housingwire.com/feed/',
+      'https://realestate.yahoo.com/rss',
       'https://calculatedriskblog.com/feeds/posts/default',
       'https://feeds.content.dowjones.io/public/rss/mw_realestate',
       'https://www.federalreserve.gov/feeds/press_all.xml'
@@ -68,7 +68,7 @@ const RSS_CONFIG = {
       'https://calculatedriskblog.com/feeds/posts/default',
       'https://www.census.gov/construction/nrs/feed.xml',
       'https://www.federalreserve.gov/feeds/press_all.xml',
-      'https://www.housingwire.com/feed/'
+      'https://realestate.yahoo.com/rss'
     ],
     containerId: 'regional-data-feed',
     label: 'Regional Data',
@@ -101,7 +101,8 @@ const BLACKLISTED_DOMAINS = [
   'sfchronicle.com', 'bostonglobe.com', 'chicagotribune.com',
   'nationalmortgagenews.com', 'americanbanker.com',
   'axios.com', 'therealdeal.com', 'globest.com', 'bisnow.com',
-  'connect.media', 'commercialobserver.com'
+  'connect.media', 'commercialobserver.com',
+  'housingwire.com', 'costar.com'
 ];
 
 const PAYWALL_SIGNALS = [
@@ -109,7 +110,12 @@ const PAYWALL_SIGNALS = [
   'sign in or', 'sign up or', 'create a free account',
   'register to read', 'members only', 'log in to continue',
   'free registration required', 'unlock this article',
-  'articles remaining', 'free articles left', 'limited free articles'
+  'articles remaining', 'free articles left', 'limited free articles',
+  'continue reading', 'premium content', 'already a member',
+  'become a member', 'subscriber exclusive', 'paid subscribers',
+  'subscription required', 'premium article', 'subscribe now',
+  'start your free trial', 'get full access', 'read the full article',
+  'access this article', 'exclusive to subscribers'
 ];
 
 const FALLBACK_IMAGES = {
@@ -255,12 +261,36 @@ function parseXMLFeed(xmlText, configKey) {
         if (pubRaw && !isNaN(new Date(pubRaw).getTime()) && pubDate < cutoff) return;
 
         // Image extraction
-        let image = item.querySelector('[url]')?.getAttribute('url') || '';
-        if (!image) image = item.querySelector('enclosure')?.getAttribute('url') || '';
+        let image = '';
+
+        // Try all common RSS image locations in order
+        image = image || item.querySelector('media\\:thumbnail')?.getAttribute('url') || '';
+        image = image || item.querySelector('media\\:content')?.getAttribute('url') || '';
+        image = image || item.querySelector('[url]')?.getAttribute('url') || '';
+        image = image || item.querySelector('enclosure[type^="image"]')?.getAttribute('url') || '';
+        image = image || item.querySelector('enclosure')?.getAttribute('url') || '';
+
+        // Try extracting from description HTML
         if (!image) {
-          const m = rawDesc.match(/<img[^>]+src=["']([^"']+)["']/i);
-          if (m) image = m[1];
+          const srcMatch = rawDesc.match(/<img[^>]+src=["']([^"']+)["']/i);
+          if (srcMatch) image = srcMatch[1];
         }
+
+        // Try content:encoded if present
+        if (!image) {
+          const contentEl = item.querySelector('content\\:encoded, encoded');
+          if (contentEl) {
+            const contentMatch = contentEl.textContent.match(/<img[^>]+src=["']([^"']+)["']/i);
+            if (contentMatch) image = contentMatch[1];
+          }
+        }
+
+        // Skip data URIs and tiny tracking pixels
+        if (image && (image.startsWith('data:') || image.includes('pixel') || image.includes('tracking'))) {
+          image = '';
+        }
+
+        // Final fallback
         if (!image) image = FALLBACK_IMAGES[configKey] || 'images/fallback-market.svg';
 
         articles.push({
