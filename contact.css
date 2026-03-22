@@ -195,5 +195,9 @@
     padding: 1rem;
   }
 
-  /* Make the iframe larger */
-  .contact-card if
+  /* Make the iframe fill available height on small screens */
+  .contact-card iframe {
+    height: 90vh;
+    min-height: 400px;
+  }
+}
