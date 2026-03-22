@@ -26,6 +26,38 @@ function formatRelativeTime(pubDate) {
   return 'Just now';
 }
 
+// ── Report Paywall ──────────────────────────────────────────────────────────
+// Stores reported domains in localStorage; call from card onclick handler
+function reportArticle(e, url, title) {
+  e.preventDefault();
+  e.stopPropagation();
+  try {
+    const domain = new URL(url).hostname.replace('www.', '');
+    const key    = 'rdl_reported_paywalls';
+    const stored = JSON.parse(localStorage.getItem(key) || '[]');
+    if (!stored.find(r => r.domain === domain)) {
+      stored.push({ domain, url, title, reportedAt: new Date().toISOString() });
+      localStorage.setItem(key, JSON.stringify(stored));
+    }
+    // Visual feedback
+    const btn = e.currentTarget;
+    btn.textContent = 'Reported';
+    btn.classList.add('report-link-sent');
+  } catch {}
+}
+
+// Log all reported domains to console on page load (dev visibility)
+(function logReports() {
+  try {
+    const reports = JSON.parse(localStorage.getItem('rdl_reported_paywalls') || '[]');
+    if (reports.length) {
+      console.group('[RDL] Reported paywall domains (' + reports.length + ')');
+      reports.forEach(r => console.log(r.domain, '—', r.reportedAt));
+      console.groupEnd();
+    }
+  } catch {}
+})();
+
 // Build a standard article card
 function buildCard(article, featured = false) {
   const cfg = CATEGORY_CONFIG[article.category] || CATEGORY_CONFIG.market;
@@ -42,6 +74,13 @@ function buildCard(article, featured = false) {
        />`
     : `<span class="card-image-fallback">${cfg.emoji}</span>`;
 
+  const verifiedBadge = article.verified
+    ? `<span class="card-verified" title="Verified free source"></span>`
+    : '';
+
+  const reportLink = `<span class="report-link" title="Report paywall"
+    onclick="reportArticle(event,'${article.link.replace(/'/g, "\\'")}','${article.title.replace(/'/g, "\\'").replace(/"/g, '&quot;')}')">Report paywall</span>`;
+
   return `
     <a href="${article.link}" target="_blank" rel="noopener noreferrer"
        class="article-card${featuredClass} fade-in" aria-label="${article.title}">
@@ -49,13 +88,19 @@ function buildCard(article, featured = false) {
       <div class="card-body">
         <div class="card-meta">
           <span class="badge ${cfg.badgeClass}">${cfg.label}</span>
-          <span class="card-timestamp">${time}</span>
+          <span class="card-meta-right">
+            ${verifiedBadge}
+            <span class="card-timestamp">${time}</span>
+          </span>
         </div>
         <h3 class="card-headline">${article.title}</h3>
         ${article.excerpt ? `<p class="card-excerpt">${article.excerpt}</p>` : ''}
         <div class="card-footer">
           <span class="card-source">${article.source}</span>
-          <span class="card-read-more">Read More</span>
+          <span class="card-footer-right">
+            ${reportLink}
+            <span class="card-read-more">Read More</span>
+          </span>
         </div>
       </div>
     </a>
@@ -100,4 +145,4 @@ function renderCards(container, articles, featuredFirst = false) {
   container.innerHTML = articles.map((art, i) => buildCard(art, featuredFirst && i === 0)).join('');
 }
 
-window.RDLCards = { buildCard, buildSkeletonCard, renderSkeletons, renderCards, CATEGORY_CONFIG };
+window.RDLCards = { buildCard, buildSkeletonCard, renderSkeletons, renderCards, reportArticle, CATEGORY_CONFIG };

@@ -5,49 +5,132 @@ const RSS_PROXY = 'https://api.rss2json.com/v1/api.json?rss_url=';
 const FEEDS_CACHE_PREFIX = 'rdl_feeds_';
 const FEEDS_CACHE_TTL = 30 * 60 * 1000; // 30 minutes
 
-// Blacklisted domains — never show paywalled content
-const BLACKLIST = ['wsj.com','bloomberg.com','nytimes.com','barrons.com','ft.com','theinformation.com'];
+// ============================================================
+// BLACKLIST — confirmed paywall or soft-paywall domains
+// Articles from these domains are dropped before rendering
+// ============================================================
+const BLACKLIST = [
+  // Original
+  'wsj.com',
+  'bloomberg.com',
+  'nytimes.com',
+  'barrons.com',
+  'ft.com',
+  'theinformation.com',
+  // Confirmed soft-paywall additions
+  'axios.com',
+  'therealdeal.com',
+  'globest.com',
+  'bisnow.com',
+  'housingwire.com',
+  'inman.com',
+  'connect.media',
+  'commercialobserver.com',
+  'multifamilyexecutive.com',
+  'builderonline.com',
+  'probuilder.com',
+  'architecturaldigest.com',
+  'mansionglobal.com',
+  'realestateweekly.com',
+  'nationalmortgagenews.com',
+  'americanbanker.com',
+  'paymentssource.com',
+  'sourcemedia.com'
+];
 
-// All approved RSS feeds organized by category
-const CATEGORY_FEEDS = {
-  'market': [
-    { url: 'https://www.zillow.com/research/feed/', label: 'Zillow Research' },
-    { url: 'https://www.redfin.com/blog/feed/', label: 'Redfin News' },
-    { url: 'https://www.realtor.com/news/feed/', label: 'Realtor.com' },
-    { url: 'https://www.fhfa.gov/rss', label: 'FHFA' },
-    { url: 'https://www.calculatedriskblog.com/feeds/posts/default', label: 'Calculated Risk' },
-    { url: 'https://www.nahb.org/news-and-economics/rss', label: 'NAHB' },
-    { url: 'https://www.census.gov/newsroom/rss.xml', label: 'Census Bureau' }
-  ],
-  'mortgage': [
-    { url: 'https://www.freddiemac.com/blog/feed', label: 'Freddie Mac' },
-    { url: 'https://www.mortgagenewsdaily.com/rss', label: 'Mortgage News Daily' },
-    { url: 'https://www.mba.org/news-and-research/newsroom/rss.xml', label: 'MBA' },
-    { url: 'https://www.bankrate.com/rss/mortgage-rates/', label: 'Bankrate' },
-    { url: 'https://www.federalreserve.gov/feeds/press_all.xml', label: 'Federal Reserve' }
-  ],
-  'economic': [
-    { url: 'https://fredblog.stlouisfed.org/feed/', label: 'FRED Blog' },
-    { url: 'https://www.bls.gov/feed/bls_latest.rss', label: 'BLS' },
-    { url: 'https://home.treasury.gov/news/press-releases/rss.xml', label: 'U.S. Treasury' },
-    { url: 'https://www.calculatedriskblog.com/feeds/posts/default', label: 'Calculated Risk' }
-  ],
-  'investment': [
-    { url: 'https://www.biggerpockets.com/blog/feed/', label: 'BiggerPockets' },
-    { url: 'https://www.apartmentlist.com/research/rss.xml', label: 'Apartment List' },
-    { url: 'https://www.rentcafe.com/blog/feed/', label: 'RentCafe' }
-  ],
-  'industry': [
-    { url: 'https://www.housingwire.com/feed/', label: 'HousingWire' },
-    { url: 'https://www.inman.com/feed/', label: 'Inman' },
-    { url: 'https://www.nar.realtor/rss', label: 'NAR' }
-  ],
-  'regional': [
-    { url: 'https://www.stlouisfed.org/on-the-economy/rss', label: 'St. Louis Fed' },
-    { url: 'https://www.newyorkfed.org/research/rss', label: 'NY Fed' },
-    { url: 'https://www.frbatlanta.org/rss', label: 'Atlanta Fed' }
-  ]
-};
+// ============================================================
+// CONFIRMED FREE SOURCES
+// Articles from these domains are trusted, verified free,
+// and sorted to the top of every feed result.
+// ============================================================
+const CONFIRMED_FREE_SOURCES = [
+  'calculatedriskblog.com',
+  'fred.stlouisfed.org',
+  'fredblog.stlouisfed.org',
+  'stlouisfed.org',
+  'bls.gov',
+  'census.gov',
+  'hud.gov',
+  'fhfa.gov',
+  'fanniemae.com',
+  'freddiemac.com',
+  'mortgagenewsdaily.com',
+  'apnews.com',
+  'reuters.com',
+  'cnbc.com',
+  'marketwatch.com',
+  'yahoo.com',
+  'finance.yahoo.com',
+  'nerdwallet.com',
+  'bankrate.com',
+  'biggerpockets.com',
+  'apartmentlist.com',
+  'rentcafe.com',
+  'realtor.com',
+  'zillow.com',
+  'redfin.com',
+  'propublica.org',
+  'nahb.org',
+  'federalreserve.gov',
+  'treasury.gov',
+  'home.treasury.gov',
+  'whitehouse.gov',
+  'occ.gov',
+  'consumerfinance.gov',
+  'nar.realtor',
+  'newyorkfed.org',
+  'frbatlanta.org',
+  'mba.org'
+];
+
+// ============================================================
+// SOFT PAYWALL SIGNAL DETECTION
+// Drops articles whose title, description, or excerpt
+// contain any of these phrases (case-insensitive).
+// ============================================================
+const PAYWALL_SIGNALS = [
+  'subscribers only',
+  'subscribe to read',
+  'sign in to read',
+  'sign in or',
+  'sign up or',
+  'sign in to continue',
+  'sign up to continue',
+  'create a free account',
+  'register to read',
+  'members only',
+  'exclusive to subscribers',
+  'log in to continue',
+  'free registration required',
+  'create account to view',
+  'continue reading with',
+  'unlimited access',
+  'premium content',
+  'subscriber exclusive',
+  'already a subscriber',
+  'become a member',
+  'join to read',
+  'unlock this article',
+  'read the full article',
+  'get full access',
+  'limited free articles',
+  'articles remaining',
+  'free articles left',
+  'metered paywall',
+  'digital subscription',
+  'subscription required',
+  'paid subscribers',
+  'subscribe for',
+  'register for free',
+  'sign up for free',
+  'create your free',
+  'activate your account',
+  'paywall'
+];
+
+// ============================================================
+// HELPERS
+// ============================================================
 
 // Check if URL is blacklisted
 function isBlacklisted(url) {
@@ -59,24 +142,62 @@ function isBlacklisted(url) {
   }
 }
 
+// Check if URL is from a confirmed-free source
+function isConfirmedFree(url) {
+  try {
+    const domain = new URL(url).hostname.replace('www.', '');
+    return CONFIRMED_FREE_SOURCES.some(s => domain.includes(s));
+  } catch {
+    return false;
+  }
+}
+
+// Scan title + description + excerpt for soft paywall signals
+function hasSoftPaywallSignal(item) {
+  const text = [
+    item.title       || '',
+    item.description || '',
+    item.content     || '',
+    item.excerpt     || ''
+  ].join(' ').toLowerCase();
+
+  return PAYWALL_SIGNALS.some(signal => text.includes(signal));
+}
+
+// Pre-flight HEAD request — checks response headers for paywall signals.
+// NOTE: Most third-party sites block cross-origin HEAD requests (CORS),
+// so this falls back to `true` (assume accessible) on network error.
+// Domain blacklist + signal detection are the primary defences.
+async function isArticleAccessible(url) {
+  try {
+    const response = await fetch(url, {
+      method: 'HEAD',
+      signal: AbortSignal.timeout(3000)
+    });
+    const headers = response.headers;
+    if (headers.get('x-paywall'))                 return false;
+    if (headers.get('x-subscription-required'))   return false;
+    return response.ok;
+  } catch {
+    return true; // CORS failure or timeout — assume accessible
+  }
+}
+
 // Check if article is within 48 hours
 function isRecent(pubDate) {
-  if (!pubDate) return true; // assume recent if no date
+  if (!pubDate) return true;
   const age = Date.now() - new Date(pubDate).getTime();
   return age < 48 * 60 * 60 * 1000;
 }
 
 // Extract image from RSS item
 function extractImage(item) {
-  // Try thumbnail first (rss2json provides this)
   if (item.thumbnail && !item.thumbnail.includes('1x1') && item.thumbnail.startsWith('http')) {
     return item.thumbnail;
   }
-  // Try enclosure
   if (item.enclosure && item.enclosure.link && item.enclosure.link.match(/\.(jpg|jpeg|png|webp)/i)) {
     return item.enclosure.link;
   }
-  // Try parsing description for img tag
   if (item.description) {
     const match = item.description.match(/<img[^>]+src=["']([^"'>]+)["']/i);
     if (match && match[1] && match[1].startsWith('http')) return match[1];
@@ -87,10 +208,65 @@ function extractImage(item) {
 // Clean HTML from text
 function stripHtml(html) {
   if (!html) return '';
-  return html.replace(/<[^>]*>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").trim();
+  return html
+    .replace(/<[^>]*>/g, '')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .trim();
 }
 
-// Fetch a single RSS feed via rss2json proxy
+// ============================================================
+// RSS FEEDS BY CATEGORY
+// housingwire.com and inman.com removed from industry feeds —
+// both are now in the blacklist. Keeping other sources only.
+// ============================================================
+const CATEGORY_FEEDS = {
+  'market': [
+    { url: 'https://www.zillow.com/research/feed/',                         label: 'Zillow Research' },
+    { url: 'https://www.redfin.com/blog/feed/',                            label: 'Redfin News' },
+    { url: 'https://www.realtor.com/news/feed/',                           label: 'Realtor.com' },
+    { url: 'https://www.fhfa.gov/rss',                                     label: 'FHFA' },
+    { url: 'https://www.calculatedriskblog.com/feeds/posts/default',       label: 'Calculated Risk' },
+    { url: 'https://www.nahb.org/news-and-economics/rss',                  label: 'NAHB' },
+    { url: 'https://www.census.gov/newsroom/rss.xml',                      label: 'Census Bureau' }
+  ],
+  'mortgage': [
+    { url: 'https://www.freddiemac.com/blog/feed',                         label: 'Freddie Mac' },
+    { url: 'https://www.mortgagenewsdaily.com/rss',                        label: 'Mortgage News Daily' },
+    { url: 'https://www.mba.org/news-and-research/newsroom/rss.xml',       label: 'MBA' },
+    { url: 'https://www.bankrate.com/rss/mortgage-rates/',                 label: 'Bankrate' },
+    { url: 'https://www.federalreserve.gov/feeds/press_all.xml',           label: 'Federal Reserve' }
+  ],
+  'economic': [
+    { url: 'https://fredblog.stlouisfed.org/feed/',                        label: 'FRED Blog' },
+    { url: 'https://www.bls.gov/feed/bls_latest.rss',                     label: 'BLS' },
+    { url: 'https://home.treasury.gov/news/press-releases/rss.xml',       label: 'U.S. Treasury' },
+    { url: 'https://www.calculatedriskblog.com/feeds/posts/default',       label: 'Calculated Risk' }
+  ],
+  'investment': [
+    { url: 'https://www.biggerpockets.com/blog/feed/',                     label: 'BiggerPockets' },
+    { url: 'https://www.apartmentlist.com/research/rss.xml',              label: 'Apartment List' },
+    { url: 'https://www.rentcafe.com/blog/feed/',                         label: 'RentCafe' }
+  ],
+  'industry': [
+    // housingwire.com and inman.com removed — confirmed soft paywall
+    { url: 'https://www.nar.realtor/rss',                                  label: 'NAR' },
+    { url: 'https://www.nahb.org/news-and-economics/rss',                  label: 'NAHB' },
+    { url: 'https://www.federalreserve.gov/feeds/press_all.xml',           label: 'Federal Reserve' }
+  ],
+  'regional': [
+    { url: 'https://www.stlouisfed.org/on-the-economy/rss',               label: 'St. Louis Fed' },
+    { url: 'https://www.newyorkfed.org/research/rss',                     label: 'NY Fed' },
+    { url: 'https://www.frbatlanta.org/rss',                              label: 'Atlanta Fed' }
+  ]
+};
+
+// ============================================================
+// FETCH A SINGLE RSS FEED
+// ============================================================
 async function fetchFeed(feedConfig) {
   const url = RSS_PROXY + encodeURIComponent(feedConfig.url) + '&_=' + Date.now();
   try {
@@ -100,7 +276,7 @@ async function fetchFeed(feedConfig) {
     if (!data.items) return [];
     return data.items.map(item => ({
       ...item,
-      _source: feedConfig.label,
+      _source:    feedConfig.label,
       _sourceUrl: feedConfig.url
     }));
   } catch {
@@ -108,7 +284,11 @@ async function fetchFeed(feedConfig) {
   }
 }
 
-// Fetch all feeds for a category
+// ============================================================
+// FETCH ALL FEEDS FOR A CATEGORY
+// Applies all filters: blacklist, recency, dedup,
+// soft-paywall signals, then sorts confirmed-free to top.
+// ============================================================
 async function fetchCategory(category) {
   const cacheKey = FEEDS_CACHE_PREFIX + category;
 
@@ -130,23 +310,37 @@ async function fetchCategory(category) {
   const articles = results
     .flat()
     .filter(item => item.title && item.link)
+    // Step 1 — hard domain blacklist
     .filter(item => !isBlacklisted(item.link))
+    // Step 2 — recency
     .filter(item => isRecent(item.pubDate))
+    // Step 3 — deduplication by URL
     .filter(item => {
       if (seen.has(item.link)) return false;
       seen.add(item.link);
       return true;
     })
-    .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
-    .map(item => ({
-      title:     stripHtml(item.title),
-      excerpt:   stripHtml(item.description || item.content || '').slice(0, 240),
-      link:      item.link,
-      pubDate:   item.pubDate,
-      image:     extractImage(item),
-      source:    item._source || 'Source',
-      category:  category
-    }));
+    // Step 4 — soft paywall signal detection (title + description + content)
+    .filter(item => !hasSoftPaywallSignal(item))
+    .map(item => {
+      const verified = isConfirmedFree(item.link);
+      return {
+        title:    stripHtml(item.title),
+        excerpt:  stripHtml(item.description || item.content || '').slice(0, 240),
+        link:     item.link,
+        pubDate:  item.pubDate,
+        image:    extractImage(item),
+        source:   item._source || 'Source',
+        category: category,
+        verified: verified  // true = confirmed free source
+      };
+    })
+    // Step 5 — sort: confirmed-free sources first, then by recency
+    .sort((a, b) => {
+      if (a.verified && !b.verified) return -1;
+      if (!a.verified && b.verified) return 1;
+      return new Date(b.pubDate) - new Date(a.pubDate);
+    });
 
   // Cache
   try {
@@ -156,14 +350,25 @@ async function fetchCategory(category) {
   return articles;
 }
 
-// Fetch all categories at once (used by homepage)
+// ============================================================
+// FETCH ALL CATEGORIES AT ONCE (used by homepage)
+// ============================================================
 async function fetchAllCategories() {
   const categories = Object.keys(CATEGORY_FEEDS);
-  const results = await Promise.all(categories.map(cat => fetchCategory(cat)));
+  const results    = await Promise.all(categories.map(cat => fetchCategory(cat)));
   const map = {};
   categories.forEach((cat, i) => { map[cat] = results[i]; });
   return map;
 }
 
-// Export for use by other scripts
-window.RDLFeeds = { fetchCategory, fetchAllCategories, CATEGORY_FEEDS };
+// Export
+window.RDLFeeds = {
+  fetchCategory,
+  fetchAllCategories,
+  isArticleAccessible,
+  isConfirmedFree,
+  CATEGORY_FEEDS,
+  BLACKLIST,
+  CONFIRMED_FREE_SOURCES,
+  PAYWALL_SIGNALS
+};

@@ -248,6 +248,49 @@
   width: 60%;
 }
 
+/* ── Verified Free Badge ───────────────────────────────────────────────── */
+.card-meta-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.card-verified {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #00C48C;
+  box-shadow: 0 0 5px rgba(0, 196, 140, 0.6);
+  flex-shrink: 0;
+}
+
+/* ── Report Paywall Link ────────────────────────────────────────────────── */
+.card-footer-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.report-link {
+  font-size: 0.68rem;
+  color: rgba(160, 160, 176, 0.45);
+  cursor: pointer;
+  transition: color 0.2s ease;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.report-link:hover {
+  color: rgba(255, 100, 100, 0.7);
+}
+
+.report-link.report-link-sent {
+  color: rgba(0, 196, 140, 0.7);
+  pointer-events: none;
+}
+
 /* ── Responsive ────────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .article-card.card-featured {
