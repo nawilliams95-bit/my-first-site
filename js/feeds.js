@@ -110,17 +110,17 @@ function parseFeed(xmlText, feedUrl) {
         })(),
         category: (() => {
           try {
-            const host = new URL(feedUrl).hostname.replace('www.','');
-            if (host.includes('redfin') || host.includes('zillow') ||
-                host.includes('realtor')) return 'market';
-            if (host.includes('mortgagenewsdaily') ||
-                host.includes('federalreserve') ||
-                host.includes('consumerfinance')) return 'mortgage';
-            if (host.includes('norada') || host.includes('retipster') ||
-                host.includes('keepingcurrent') ||
-                host.includes('fortunebuilders')) return 'investment';
-            if (host.includes('rismedia') || host.includes('forbes') ||
-                host.includes('cnbc')) return 'media';
+            const h = new URL(feedUrl).hostname.replace('www.','');
+            if (h.includes('redfin') || h.includes('zillow') ||
+                h.includes('realtor')) return 'market';
+            if (h.includes('mortgagenewsdaily') ||
+                h.includes('federalreserve') ||
+                h.includes('consumerfinance')) return 'mortgage';
+            if (h.includes('norada') || h.includes('retipster') ||
+                h.includes('keepingcurrent') ||
+                h.includes('fortunebuilders')) return 'investment';
+            if (h.includes('rismedia') || h.includes('forbes') ||
+                h.includes('cnbc')) return 'media';
             return 'market';
           } catch { return 'market'; }
         })()
@@ -148,6 +148,64 @@ function setCache(key, data) {
   } catch(e) {}
 }
 
+// ── Skeleton loading ──────────────────────────────────────────────
+function showSkeletons(container, count = 6) {
+  if (window.RDLCards && window.RDLCards.renderSkeletons) {
+    window.RDLCards.renderSkeletons(container, count);
+    return;
+  }
+  // Fallback skeleton
+  container.innerHTML = Array(count).fill(`
+    <div class="article-card card-skeleton">
+      <div class="card-image-wrap skeleton-image skeleton"></div>
+      <div class="card-body">
+        <div class="skeleton-headline skeleton"></div>
+        <div class="skeleton-headline skeleton skeleton-headline-2"></div>
+      </div>
+    </div>`).join('');
+}
+
+// ── Render article cards ──────────────────────────────────────────
+function renderArticles(articles, container) {
+  if (!articles || !articles.length) {
+    container.innerHTML = '<p class="feed-notice" style="padding:40px;text-align:center;color:#888">Unable to load articles right now. Please check back soon.</p>';
+    return;
+  }
+
+  // Use cards.js RDLCards if available (preferred — uses full card styles)
+  if (window.RDLCards && window.RDLCards.renderCards) {
+    window.RDLCards.renderCards(container, articles, false);
+    return;
+  }
+
+  // Fallback inline render if cards.js not yet loaded
+  container.innerHTML = articles.map(a => `
+    <article class="article-card fade-in">
+      ${a.image ? `
+        <div class="card-image-wrap">
+          <img src="${a.image}" loading="lazy" alt=""
+               onerror="this.parentElement.style.display='none'">
+        </div>` : ''}
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="badge badge-${a.category || 'market'}">${a.source}</span>
+          <span class="card-timestamp">${a.pubDate > new Date(0)
+            ? a.pubDate.toLocaleDateString('en-US',
+                {year:'numeric',month:'short',day:'numeric'})
+            : ''}</span>
+        </div>
+        <h3 class="card-headline">
+          <a href="${a.link}" target="_blank" rel="noopener">${a.title}</a>
+        </h3>
+        ${a.excerpt ? `<p class="card-excerpt">${a.excerpt}</p>` : ''}
+        <div class="card-footer">
+          <span class="card-source">${a.source}</span>
+          <span class="card-read-more">Read More</span>
+        </div>
+      </div>
+    </article>`).join('');
+}
+
 // ── Main load function ────────────────────────────────────────────
 async function loadFeeds(feedUrls, container, statusEl, cacheKey) {
   const cached = getCached(cacheKey);
@@ -155,13 +213,13 @@ async function loadFeeds(feedUrls, container, statusEl, cacheKey) {
     if (window.RDLSearch && document.getElementById('search-input')) {
       window.RDLSearch.initSearch(cached);
     } else {
-      window.RDLCards.renderCards(container, cached.slice(0, 10));
+      renderArticles(cached.slice(0, 10), container);
     }
     if (statusEl) statusEl.textContent = new Date().toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'});
     return;
   }
 
-  window.RDLCards.renderSkeletons(container, 6);
+  showSkeletons(container, 6);
 
   const results = await Promise.allSettled(
     feedUrls.map(async url => {
@@ -181,25 +239,23 @@ async function loadFeeds(feedUrls, container, statusEl, cacheKey) {
     .flatMap(r => r.value)
     .sort((a,b) => b.pubDate - a.pubDate);
 
-  const countEl = document.getElementById('results-count');
-  if (countEl) countEl.textContent = articles.length + ' articles';
-
-  // If search/filter UI exists, hand off to search module
+  // If search module is loaded, hand off all articles to it
+  // so filtering/sorting/pagination all work correctly
   if (window.RDLSearch && document.getElementById('search-input')) {
     window.RDLSearch.initSearch(articles);
   } else {
-    // Handle load-more pagination
-    const btn = document.getElementById('load-more-btn');
+    // Direct render with load-more pagination
     const PAGE = 10;
     let shown = Math.min(PAGE, articles.length);
-    window.RDLCards.renderCards(container, articles.slice(0, shown));
+    renderArticles(articles.slice(0, shown), container);
 
+    const btn = document.getElementById('load-more-btn');
     if (btn) {
       if (articles.length > PAGE) {
         btn.style.display = 'flex';
         btn.onclick = () => {
           shown = Math.min(shown + PAGE, articles.length);
-          window.RDLCards.renderCards(container, articles.slice(0, shown));
+          renderArticles(articles.slice(0, shown), container);
           if (shown >= articles.length) btn.style.display = 'none';
         };
       } else {
@@ -208,8 +264,14 @@ async function loadFeeds(feedUrls, container, statusEl, cacheKey) {
     }
   }
 
+  // Update count display
+  const countEl = document.getElementById('results-count');
+  if (countEl) countEl.textContent = articles.length + ' articles';
+
   if (articles.length) setCache(cacheKey, articles);
-  if (statusEl) statusEl.textContent = new Date().toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'});
+  if (statusEl) statusEl.textContent = new Date().toLocaleString(
+    'en-US',{month:'short',day:'numeric',year:'numeric',
+              hour:'numeric',minute:'2-digit'});
 }
 
 // ── Mortgage Rate Widget ──────────────────────────────────────────
@@ -250,30 +312,38 @@ async function fetchMortgageRateWidget() {
 }
 
 // ── Auto-init ─────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-  const CACHE_VERSION = 'v3';
-  const versionKey = 'rdl_cache_version';
-  if (localStorage.getItem(versionKey) !== CACHE_VERSION) {
+function rdlFeedsInit() {
+  const CACHE_VERSION = 'v4';
+  if (localStorage.getItem('rdl_cache_ver') !== CACHE_VERSION) {
     Object.keys(localStorage)
       .filter(k => k.startsWith('rdl_'))
       .forEach(k => localStorage.removeItem(k));
-    localStorage.setItem(versionKey, CACHE_VERSION);
-    console.log('[RDL] Cache cleared — new version:', CACHE_VERSION);
+    localStorage.setItem('rdl_cache_ver', CACHE_VERSION);
+    console.log('[RDL] Cache cleared');
   }
 
   const statusEl = document.getElementById('last-updated');
-  console.log('[RDL] feeds.js init on page:', window.location.pathname);
+  console.log('[RDL] feeds init on:', window.location.pathname);
+  console.log('[RDL] RDLCards available:', !!window.RDLCards);
+  console.log('[RDL] RDLSearch available:', !!window.RDLSearch);
 
   Object.values(RSS_CONFIG).forEach(config => {
     const container = document.getElementById(config.containerId);
-    console.log('[RDL] Container', config.containerId,
-                container ? 'FOUND' : 'NOT FOUND');
+    console.log('[RDL]', config.containerId, container ? 'FOUND' : 'NOT FOUND');
     if (container) {
       loadFeeds(config.feeds, container, statusEl, config.cacheKey);
     }
   });
 
   fetchMortgageRateWidget();
+}
+
+// Wait for all deferred scripts to finish loading
+// before initializing feeds
+document.addEventListener('DOMContentLoaded', () => {
+  // Small timeout ensures cards.js and search.js
+  // (also deferred) have fully executed
+  setTimeout(rdlFeedsInit, 50);
 });
 
 // ── Public API ────────────────────────────────────────────────────
