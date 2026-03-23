@@ -42,49 +42,107 @@ const RSS_CONFIG = {
   }
 };
 
-// ── Fetch and parse a single RSS feed via allorigins proxy ─────────────────
+// ── Fetch and parse a single RSS feed via multi-proxy fallback ────────────
 
 async function fetchFeed(rssUrl) {
-  const proxy = 'https://api.allorigins.win/get?url=' + encodeURIComponent(rssUrl);
-  try {
-    const res = await fetch(proxy, { signal: AbortSignal.timeout(8000) });
-    if (!res.ok) throw new Error('Network error');
-    const json = await res.json();
-    const parser = new DOMParser();
-    const xml = parser.parseFromString(json.contents, 'text/xml');
-    const items = Array.from(xml.querySelectorAll('item'));
-    return items.map(item => {
-      // Extract image from media:content, media:thumbnail, or enclosure
-      const media = item.querySelector('content') ||
-                    item.querySelector('thumbnail') ||
-                    item.querySelector('enclosure[type^="image"]');
-      const imageUrl = media ? (media.getAttribute('url') || null) : null;
+  // Try multiple proxies in order — if one fails, try the next
+  const proxies = [
+    url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+    url => `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
+    url => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+  ];
 
-      // Try to extract image from description HTML as fallback
-      let finalImage = imageUrl;
-      if (!finalImage) {
-        const desc = item.querySelector('description')?.textContent || '';
-        const imgMatch = desc.match(/<img[^>]+src=["']([^"']+)["']/i);
-        if (imgMatch) finalImage = imgMatch[1];
+  let text = null;
+
+  for (const makeProxy of proxies) {
+    try {
+      const proxyUrl = makeProxy(rssUrl);
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 7000);
+      const res = await fetch(proxyUrl, { signal: controller.signal });
+      clearTimeout(timeout);
+      if (!res.ok) continue;
+      const body = await res.text();
+      // Make sure we actually got XML, not an error page
+      if (body.includes('<item') || body.includes('<entry')) {
+        text = body;
+        break;
+      }
+    } catch (e) {
+      console.warn(`Proxy failed for ${rssUrl}:`, e.message);
+      continue;
+    }
+  }
+
+  if (!text) {
+    console.warn('All proxies failed for:', rssUrl);
+    return [];
+  }
+
+  try {
+    const parser = new DOMParser();
+    const xml = parser.parseFromString(text, 'text/xml');
+
+    // Check for XML parse error
+    if (xml.querySelector('parsererror')) {
+      console.warn('XML parse error for:', rssUrl);
+      return [];
+    }
+
+    // Support both RSS <item> and Atom <entry> formats
+    const items = Array.from(
+      xml.querySelectorAll('item').length > 0
+        ? xml.querySelectorAll('item')
+        : xml.querySelectorAll('entry')
+    );
+
+    return items.slice(0, 15).map(item => {
+      // Extract image — try multiple locations
+      const mediaNS = 'http://search.yahoo.com/mrss/';
+      const mediaContent = item.getElementsByTagNameNS(mediaNS, 'content')[0] ||
+                           item.getElementsByTagNameNS(mediaNS, 'thumbnail')[0];
+      const enclosure = item.querySelector('enclosure[type^="image"]');
+      let image = mediaContent?.getAttribute('url') ||
+                  enclosure?.getAttribute('url') || null;
+
+      // Fallback: scrape first img from description
+      if (!image) {
+        const desc = item.querySelector('description, summary')?.textContent || '';
+        const match = desc.match(/<img[^>]+src=["']([^"']+)["']/i);
+        if (match) image = match[1];
       }
 
-      // Strip HTML from description
-      const rawDesc = item.querySelector('description')?.textContent || '';
-      const div = document.createElement('div');
-      div.innerHTML = rawDesc;
-      const cleanDesc = (div.textContent || '').trim().slice(0, 200);
+      // Clean description text
+      const rawDesc = item.querySelector('description, summary, content')
+                         ?.textContent || '';
+      const tmp = document.createElement('div');
+      tmp.innerHTML = rawDesc;
+      const cleanDesc = (tmp.textContent || tmp.innerText || '')
+                        .replace(/\s+/g, ' ').trim().slice(0, 220);
+
+      // Get link — handle both RSS <link> and Atom <link href="">
+      const linkEl = item.querySelector('link');
+      const link = linkEl?.textContent?.trim() ||
+                   linkEl?.getAttribute('href') || '#';
+
+      // Get date — try pubDate (RSS) and published/updated (Atom)
+      const dateStr = item.querySelector('pubDate, published, updated')
+                         ?.textContent || '';
 
       return {
         title: item.querySelector('title')?.textContent?.trim() || 'Untitled',
-        link: item.querySelector('link')?.textContent?.trim() || '#',
-        pubDate: item.querySelector('pubDate')?.textContent || '',
-        description: cleanDesc + (cleanDesc.length === 200 ? '...' : ''),
-        image: finalImage,
-        source: new URL(rssUrl).hostname.replace('www.', '')
+        link,
+        pubDate: dateStr ? new Date(dateStr) : new Date(0),
+        description: cleanDesc + (cleanDesc.length >= 220 ? '...' : ''),
+        image,
+        source: (() => {
+          try { return new URL(rssUrl).hostname.replace('www.', ''); }
+          catch { return rssUrl; }
+        })()
       };
     });
   } catch (e) {
-    console.warn('Feed failed:', rssUrl, e.message);
+    console.warn('Parse error for:', rssUrl, e);
     return [];
   }
 }
@@ -105,12 +163,24 @@ async function loadAllFeeds(feedUrls, containerEl, statusEl) {
     </div>
   `).join('');
 
+  console.log('Starting feed fetch for feeds:', feedUrls);
+
   const results = await Promise.allSettled(feedUrls.map(url => fetchFeed(url)));
+
+  console.log('Feed results:', results.map((r, i) => ({
+    url: feedUrls[i],
+    status: r.status,
+    count: r.status === 'fulfilled' ? r.value.length : 0,
+    error: r.status === 'rejected' ? r.reason : null
+  })));
+
   const articles = results
     .filter(r => r.status === 'fulfilled')
     .flatMap(r => r.value)
     .filter(a => a.title && a.link && a.link !== '#')
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+
+  console.log('Total articles to render:', articles.length);
 
   if (articles.length === 0) {
     containerEl.innerHTML = '<p style="color:var(--text-secondary,#aaa);padding:16px;">Unable to load articles at this time. Please check back soon.</p>';
