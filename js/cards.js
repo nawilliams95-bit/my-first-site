@@ -8,7 +8,8 @@ const CATEGORY_CONFIG = {
   economic:   { label: 'Economic News',    badgeClass: 'badge-economic',   fallback: 'images/fallback-economic.svg',   emoji: '📈' },
   investment: { label: 'Investment & Rental', badgeClass: 'badge-investment', fallback: 'images/fallback-investment.svg', emoji: '💼' },
   industry:   { label: 'Industry News',    badgeClass: 'badge-industry',   fallback: 'images/fallback-industry.svg',   emoji: '🏢' },
-  regional:   { label: 'Regional Data',    badgeClass: 'badge-regional',   fallback: 'images/fallback-regional.svg',   emoji: '🗺️' }
+  regional:   { label: 'Regional Data',    badgeClass: 'badge-regional',   fallback: 'images/fallback-regional.svg',   emoji: '🗺️' },
+  media:      { label: 'Media & Insights', badgeClass: 'badge-industry',   fallback: 'images/fallback-industry.svg',   emoji: '📰' }
 };
 
 // Format relative time: "2 hours ago"

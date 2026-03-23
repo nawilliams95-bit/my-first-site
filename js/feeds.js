@@ -6,9 +6,11 @@ const RSS_CONFIG = {
   marketData: {
     feeds: [
       'https://calculatedriskblog.com/feeds/posts/default',
-      'https://www.federalreserve.gov/feeds/press_all.xml',
-      'https://www.redfin.com/news/feed/',
-      'https://www.cnbc.com/id/10000664/device/rss/rss.html'
+      'https://www.nar.realtor/newsroom/rss.xml',
+      'https://redfin.com/blog/feed',
+      'https://eyeonhousing.org/feed/',
+      'https://zillow.mediaroom.com/rss/news_releases.rss',
+      'https://www.worldpropertyjournal.com/feed/rss.xml'
     ],
     containerId: 'market-data-feed',
     label: 'Market Data',
@@ -17,10 +19,10 @@ const RSS_CONFIG = {
   },
   mortgageRates: {
     feeds: [
-      'https://calculatedriskblog.com/feeds/posts/default',
+      'https://www.mortgagenewsdaily.com/rss/mortgage_news.aspx',
       'https://www.federalreserve.gov/feeds/press_all.xml',
-      'https://www.cnbc.com/id/10000664/device/rss/rss.html',
-      'https://feeds.npr.org/1017/rss.xml'
+      'https://www.consumerfinance.gov/about-us/newsroom/feed/',
+      'https://realtor.com/news/real-estate-news/feed'
     ],
     containerId: 'mortgage-rates-feed',
     label: 'Mortgage & Rates',
@@ -41,10 +43,10 @@ const RSS_CONFIG = {
   },
   investmentRental: {
     feeds: [
-      'https://biggerpockets.com/blog/feed',
-      'https://calculatedriskblog.com/feeds/posts/default',
-      'https://www.redfin.com/news/feed/',
-      'https://www.federalreserve.gov/feeds/press_all.xml'
+      'https://www.apartmentlist.com/research/feed',
+      'https://www.noradarealestate.com/blog/feed/',
+      'https://realtor.com/news/trends/feed',
+      'https://eyeonhousing.org/feed/'
     ],
     containerId: 'investment-rental-feed',
     label: 'Investment & Rental',
@@ -74,6 +76,19 @@ const RSS_CONFIG = {
     label: 'Regional Data',
     color: '#EF4444',
     categoryKey: 'regional'
+  },
+  mediaInsights: {
+    feeds: [
+      'https://blog.rismedia.com/feed',
+      'https://www.forbes.com/real-estate/feed/',
+      'https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000115',
+      'https://redfin.com/blog/feed',
+      'https://geekestateblog.com/feed'
+    ],
+    containerId: 'media-insights-feed',
+    label: 'Media & Insights',
+    color: '#8B5CF6',
+    categoryKey: 'media'
   }
 };
 
@@ -84,12 +99,13 @@ const CATEGORY_KEY_MAP = {
   'economic':   'economicNews',
   'investment': 'investmentRental',
   'industry':   'industryNews',
-  'regional':   'regionalData'
+  'regional':   'regionalData',
+  'media':      'mediaInsights'
 };
 
 const PROXIES = [
+  { build: url => `https://corsproxy.io/?url=${encodeURIComponent(url)}`,              json: false },
   { build: url => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`, json: true },
-  { build: url => `https://corsproxy.io/?${encodeURIComponent(url)}`,              json: false },
   { build: url => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`, json: false }
 ];
 
@@ -124,7 +140,8 @@ const FALLBACK_IMAGES = {
   economicNews:     'images/fallback-economic.svg',
   investmentRental: 'images/fallback-investment.svg',
   industryNews:     'images/fallback-industry.svg',
-  regionalData:     'images/fallback-regional.svg'
+  regionalData:     'images/fallback-regional.svg',
+  mediaInsights:    'images/fallback-industry.svg'
 };
 
 // ── Helpers ───────────────────────────────────────────────────────────────
@@ -200,7 +217,7 @@ async function fetchWithProxy(url) {
     try {
       const proxyUrl = proxy.build(url);
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 8000);
+      const timeout = setTimeout(() => controller.abort(), 10000);
       const response = await fetch(proxyUrl, { signal: controller.signal });
       clearTimeout(timeout);
       if (response.ok) {
@@ -372,9 +389,13 @@ async function loadCategoryFeed(configKey, config) {
   container.innerHTML = buildSkeletonCards(3);
 
   try {
-    const feedResults = await Promise.all(config.feeds.map(url => fetchWithProxy(url)));
+    const feedResults = await Promise.allSettled(config.feeds.map(url => fetchWithProxy(url)));
+    const texts = feedResults
+      .filter(r => r.status === 'fulfilled' && r.value)
+      .map(r => r.value);
+
     let all = [];
-    feedResults.forEach(text => { if (text) all = all.concat(parseXMLFeed(text, configKey)); });
+    texts.forEach(text => { all = all.concat(parseXMLFeed(text, configKey)); });
 
     const seen = new Set();
     const unique = all
@@ -384,7 +405,18 @@ async function loadCategoryFeed(configKey, config) {
     console.log('[RDL Feeds] ' + configKey + ': fetched=' + all.length + ' displayed=' + unique.length);
 
     cacheArticles(configKey, unique);
-    renderArticles(container, unique, config);
+
+    if (texts.length === 0 || unique.length === 0) {
+      container.innerHTML = '<div class="feed-error"><p>Unable to load articles. Please refresh the page.</p></div>';
+    } else {
+      renderArticles(container, unique, config);
+    }
+
+    // Update "last-updated" timestamp if present on this page
+    const lastEl = document.getElementById('last-updated');
+    if (lastEl && unique.length > 0) {
+      lastEl.textContent = new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+    }
 
     if (window.RDLSearch && typeof window.RDLSearch.initSearch === 'function') {
       window.RDLSearch.initSearch(unique);
@@ -426,6 +458,60 @@ async function fetchAllCategories() {
   return results;
 }
 
+// ── Mortgage Rate Widget ───────────────────────────────────────────────────
+
+async function fetchMortgageRateWidget() {
+  const el30 = document.getElementById('rate30-display');
+  const el15 = document.getElementById('rate15-display');
+  if (!el30 && !el15) return;
+
+  const fallbackHtml = '<a href="https://www.mortgagenewsdaily.com/mortgage-rates.aspx" target="_blank" rel="noopener" style="font-size:0.8rem;color:var(--accent-teal)">See Current Rates</a>';
+
+  try {
+    const feedUrl = 'https://www.mortgagenewsdaily.com/rss/mortgage_rates.aspx';
+    const proxyUrl = `https://corsproxy.io/?url=${encodeURIComponent(feedUrl)}`;
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10000);
+    const res = await fetch(proxyUrl, { signal: controller.signal });
+    clearTimeout(timeout);
+    if (!res.ok) throw new Error('feed failed');
+    const txt = await res.text();
+
+    const xml = new DOMParser().parseFromString(txt, 'text/xml');
+    if (xml.querySelector('parsererror')) throw new Error('parse error');
+
+    const items = [...xml.querySelectorAll('item')];
+    let r30 = null, r15 = null;
+
+    for (const item of items.slice(0, 10)) {
+      const content = (item.querySelector('title')?.textContent || '') + ' ' +
+                      stripHTML(item.querySelector('description')?.textContent || '');
+      if (!r30 && /30\s*[–\-]?\s*(yr|year)/i.test(content)) {
+        const m = content.match(/(\d\.\d{2,3})%/);
+        if (m) r30 = m[1] + '%';
+      }
+      if (!r15 && /15\s*[–\-]?\s*(yr|year)/i.test(content)) {
+        const m = content.match(/(\d\.\d{2,3})%/);
+        if (m) r15 = m[1] + '%';
+      }
+      if (r30 && r15) break;
+    }
+
+    // Last resort: grab first rate from the first item's title
+    if (!r30 && items.length) {
+      const m = (items[0].querySelector('title')?.textContent || '').match(/(\d\.\d{2,3})%/);
+      if (m) r30 = m[1] + '%';
+    }
+
+    if (el30) { if (r30) el30.textContent = r30; else el30.innerHTML = fallbackHtml; }
+    if (el15) { if (r15) el15.textContent = r15; else el15.innerHTML = fallbackHtml; }
+
+  } catch {
+    if (el30) el30.innerHTML = fallbackHtml;
+    if (el15) el15.innerHTML = fallbackHtml;
+  }
+}
+
 // ── Auto-init ─────────────────────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -435,6 +521,7 @@ document.addEventListener('DOMContentLoaded', () => {
       entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); window._rdlObserver.unobserve(e.target); } });
     }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
   }
+  fetchMortgageRateWidget();
   loadAllFeeds();
 });
 
