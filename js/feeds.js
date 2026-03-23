@@ -362,12 +362,14 @@ function renderArticles(container, articles, config) {
     container.innerHTML = '<div class="feed-notice"><p>Fetching latest verified articles. Check back shortly.</p></div>';
     return;
   }
-  container.innerHTML = articles.slice(0, 6).map(a => buildArticleCard(a, config)).join('');
-
-  // Trigger fade-in observer for newly added cards
-  if (window._rdlObserver) {
-    container.querySelectorAll('.fade-in').forEach(el => window._rdlObserver.observe(el));
-  }
+  const html = articles.slice(0, 6).map(a => buildArticleCard(a, config)).join('');
+  requestAnimationFrame(() => {
+    container.innerHTML = html;
+    // Trigger fade-in observer for newly added cards
+    if (window._rdlObserver) {
+      container.querySelectorAll('.fade-in').forEach(el => window._rdlObserver.observe(el));
+    }
+  });
 }
 
 // ── Load a single category ────────────────────────────────────────────────
@@ -407,7 +409,9 @@ async function loadCategoryFeed(configKey, config) {
     cacheArticles(configKey, unique);
 
     if (texts.length === 0 || unique.length === 0) {
-      container.innerHTML = '<div class="feed-error"><p>Unable to load articles. Please refresh the page.</p></div>';
+      requestAnimationFrame(() => {
+        container.innerHTML = '<div class="feed-error"><p>Unable to load articles. Please refresh the page.</p></div>';
+      });
     } else {
       renderArticles(container, unique, config);
     }

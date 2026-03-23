@@ -2,6 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <!-- Performance: resource hints -->
+  <link rel="preconnect" href="https://corsproxy.io" crossorigin>
+  <link rel="preconnect" href="https://api.rss2json.com" crossorigin>
+  <link rel="dns-prefetch" href="https://corsproxy.io">
+  <link rel="dns-prefetch" href="https://api.rss2json.com">
+  <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com">
+  <link rel="preload" as="image" href="images/logo.jpg">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Advertise — RealtyDataLabs</title>
   <meta name="description" content="Advertise on RealtyDataLabs and reach a highly engaged audience of real estate buyers, sellers, investors, and agents actively researching the market.">
@@ -75,7 +82,10 @@
   <header class="site-header">
     <div class="header-inner">
       <a href="index.html" class="header-logo">
-        <img src="images/logo.jpg" alt="RealtyDataLabs" width="36" height="36">
+        <picture>
+          <source srcset="images/logo.webp" type="image/webp">
+          <img src="images/logo.jpg" alt="RealtyDataLabs" width="36" height="36" fetchpriority="high">
+        </picture>
         <span class="wordmark">Realty<span>Data</span>Labs</span>
       </a>
       <nav class="header-nav" aria-label="Main navigation">
@@ -283,7 +293,10 @@
     <div class="footer-grid">
       <div class="footer-col">
         <a href="index.html" class="footer-logo">
+          <picture>
+          <source srcset="images/logo.webp" type="image/webp">
           <img src="images/logo.jpg" alt="RealtyDataLabs" width="32" height="32" loading="lazy">
+        </picture>
           <span class="wordmark">Realty<span>Data</span>Labs</span>
         </a>
         <p class="footer-tagline">Objective real estate intelligence for buyers, sellers, investors, and agents.</p>
