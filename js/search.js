@@ -11,7 +11,7 @@
       sortSelect:    document.getElementById('sort-select'),
       sourceSelect:  document.getElementById('source-select'),
       resultsCount:  document.getElementById('results-count'),
-      articlesGrid:  document.getElementById('articles-grid'),
+      articlesGrid:  document.getElementById('articles-grid') || document.querySelector('.articles-grid'),
       loadMoreBtn:   document.getElementById('load-more-btn'),
     };
   }
@@ -28,26 +28,35 @@
     const sourceVal  = el.sourceSelect ? el.sourceSelect.value : 'all';
 
     let filtered = allArticles.filter(art => {
+      const body = (art.excerpt || art.description || '').toLowerCase();
       const matchSearch = !searchVal ||
         art.title.toLowerCase().includes(searchVal) ||
-        art.excerpt.toLowerCase().includes(searchVal) ||
+        body.includes(searchVal) ||
         art.source.toLowerCase().includes(searchVal);
       const matchSource = sourceVal === 'all' || art.source === sourceVal;
       return matchSearch && matchSource;
     });
 
-    if (sortVal === 'latest') {
+    if (sortVal === 'newest' || sortVal === 'latest') {
       filtered.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+    } else if (sortVal === 'oldest') {
+      filtered.sort((a, b) => new Date(a.pubDate) - new Date(b.pubDate));
+    } else if (sortVal === 'az') {
+      filtered.sort((a, b) => a.title.localeCompare(b.title));
     } else {
-      // "relevant" — score by search term matches in title (weight 2) vs excerpt (weight 1)
+      // "relevant" — score by search term matches in title (weight 2) vs body (weight 1)
       if (searchVal) {
         filtered.sort((a, b) => {
+          const bodyA = (a.excerpt || a.description || '').toLowerCase();
+          const bodyB = (b.excerpt || b.description || '').toLowerCase();
           const scoreA = (a.title.toLowerCase().split(searchVal).length - 1) * 2 +
-                         (a.excerpt.toLowerCase().split(searchVal).length - 1);
+                         (bodyA.split(searchVal).length - 1);
           const scoreB = (b.title.toLowerCase().split(searchVal).length - 1) * 2 +
-                         (b.excerpt.toLowerCase().split(searchVal).length - 1);
+                         (bodyB.split(searchVal).length - 1);
           return scoreB - scoreA;
         });
+      } else {
+        filtered.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
       }
     }
 

@@ -289,6 +289,8 @@ function parseXMLFeed(xmlText, configKey) {
         articles.push({
           title, link, description: cleanDesc,
           pubDate, image, configKey,
+          category: RSS_CONFIG[configKey]?.categoryKey || configKey,
+          excerpt: cleanDesc,
           source: extractDomain(link),
           relativeTime: getRelativeTime(pubDate)
         });
