@@ -91,7 +91,13 @@ body {
   font-size: var(--size-body);
   line-height: 1.6;
   color: var(--text-primary);
-  background-color: var(--bg-primary);
+  background-color: transparent;
+  background-image: linear-gradient(rgba(10, 10, 15, 0.6), rgba(10, 10, 15, 0.6)),
+                    url('../images/background.jpg');
+  background-size: cover;
+  background-position: center top;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
   /* Offset for fixed header + ticker */
   padding-top: calc(var(--header-h) + var(--ticker-h));
   overflow-x: hidden;
