@@ -191,11 +191,6 @@ function cacheArticles(key, articles) {
   } catch {}
 }
 
-// Cache bust — remove after one deploy cycle
-Object.keys(RSS_CONFIG).forEach(key => {
-  try { localStorage.removeItem('rdl_feed_' + key); } catch {}
-});
-
 clearStaleCache();
 
 // ── Fetch with multi-proxy fallback ───────────────────────────────────────
@@ -310,9 +305,9 @@ function buildArticleCard(article, config) {
   return `
     <article class="article-card fade-in" onclick="window.open('${article.link}','_blank')">
       <div class="card-image-wrap">
-        <img src="${article.image}" alt="" loading="lazy"
+        <img src="${article.image}" alt=""
              onload="this.classList.add('loaded')"
-             onerror="this.src='${fallback}'" />
+             onerror="this.onerror=null;this.src='${fallback}'" />
       </div>
       <div class="card-body">
         <div class="card-meta">
