@@ -28,15 +28,6 @@ const RSS_CONFIG = {
     ],
     containerId: 'investment-rental-feed',
     cacheKey: 'investment-rental'
-  },
-  mediaInsights: {
-    feeds: [
-      'https://blog.rismedia.com/feed',
-      'https://www.forbes.com/real-estate/feed/',
-      'https://redfin.com/blog/feed'
-    ],
-    containerId: 'media-insights-feed',
-    cacheKey: 'media-insights'
   }
 };
 
@@ -45,7 +36,7 @@ async function fetchWithProxy(url) {
   const proxies = [
     u => `https://api.allorigins.win/get?url=${encodeURIComponent(u)}`,
     u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
-    u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+    u => `https://corsproxy.io/?url=${encodeURIComponent(u)}`,
     u => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
   ];
   for (const proxy of proxies) {
@@ -111,10 +102,27 @@ function parseFeed(xmlText, feedUrl) {
         link: link.startsWith('http') ? link : '#',
         pubDate: dateStr ? new Date(dateStr) : new Date(0),
         description: desc.length > 220 ? desc.slice(0,220)+'...' : desc,
+        excerpt: desc.length > 220 ? desc.slice(0,220)+'...' : desc,
         image,
         source: (() => {
           try { return new URL(feedUrl).hostname.replace('www.',''); }
           catch { return ''; }
+        })(),
+        category: (() => {
+          try {
+            const host = new URL(feedUrl).hostname.replace('www.','');
+            if (host.includes('redfin') || host.includes('zillow') ||
+                host.includes('realtor')) return 'market';
+            if (host.includes('mortgagenewsdaily') ||
+                host.includes('federalreserve') ||
+                host.includes('consumerfinance')) return 'mortgage';
+            if (host.includes('norada') || host.includes('retipster') ||
+                host.includes('keepingcurrent') ||
+                host.includes('fortunebuilders')) return 'investment';
+            if (host.includes('rismedia') || host.includes('forbes') ||
+                host.includes('cnbc')) return 'media';
+            return 'market';
+          } catch { return 'market'; }
         })()
       };
     }).filter(a => a.title && a.link !== '#');
@@ -140,46 +148,20 @@ function setCache(key, data) {
   } catch(e) {}
 }
 
-// ── Skeleton loading ──────────────────────────────────────────────
-function showSkeletons(container, count = 6) {
-  container.innerHTML = Array(count).fill(`
-    <div class="article-card card-skeleton">
-      <div class="card-body">
-        <div class="skeleton-line full"></div>
-        <div class="skeleton-line medium"></div>
-        <div class="skeleton-line short"></div>
-      </div>
-    </div>`).join('');
-}
-
-// ── Render article cards ──────────────────────────────────────────
-function renderArticles(articles, container) {
-  if (!articles.length) {
-    container.innerHTML = '<p class="feed-notice">Unable to load articles right now. Please check back soon.</p>';
-    return;
-  }
-  container.innerHTML = articles.map(a => `
-    <article class="article-card fade-in">
-      ${a.image ? `<div class="article-image"><img src="${a.image}" loading="lazy" alt="" onerror="this.parentElement.style.display='none'"></div>` : ''}
-      <div class="article-body">
-        <span class="article-source">${a.source}</span>
-        <h3><a href="${a.link}" target="_blank" rel="noopener">${a.title}</a></h3>
-        ${a.description ? `<p class="article-description">${a.description}</p>` : ''}
-        <time>${a.pubDate > new Date(0) ? a.pubDate.toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}) : ''}</time>
-      </div>
-    </article>`).join('');
-}
-
 // ── Main load function ────────────────────────────────────────────
 async function loadFeeds(feedUrls, container, statusEl, cacheKey) {
   const cached = getCached(cacheKey);
   if (cached && cached.length) {
-    renderArticles(cached, container);
+    if (window.RDLSearch && document.getElementById('search-input')) {
+      window.RDLSearch.initSearch(cached);
+    } else {
+      window.RDLCards.renderCards(container, cached.slice(0, 10));
+    }
     if (statusEl) statusEl.textContent = new Date().toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'});
     return;
   }
 
-  showSkeletons(container);
+  window.RDLCards.renderSkeletons(container, 6);
 
   const results = await Promise.allSettled(
     feedUrls.map(async url => {
@@ -202,22 +184,27 @@ async function loadFeeds(feedUrls, container, statusEl, cacheKey) {
   const countEl = document.getElementById('results-count');
   if (countEl) countEl.textContent = articles.length + ' articles';
 
-  // Handle load-more pagination
-  const btn = document.getElementById('load-more-btn');
-  const PAGE = 10;
-  let shown = Math.min(PAGE, articles.length);
-  renderArticles(articles.slice(0, shown), container);
+  // If search/filter UI exists, hand off to search module
+  if (window.RDLSearch && document.getElementById('search-input')) {
+    window.RDLSearch.initSearch(articles);
+  } else {
+    // Handle load-more pagination
+    const btn = document.getElementById('load-more-btn');
+    const PAGE = 10;
+    let shown = Math.min(PAGE, articles.length);
+    window.RDLCards.renderCards(container, articles.slice(0, shown));
 
-  if (btn) {
-    if (articles.length > PAGE) {
-      btn.style.display = 'flex';
-      btn.onclick = () => {
-        shown = Math.min(shown + PAGE, articles.length);
-        renderArticles(articles.slice(0, shown), container);
-        if (shown >= articles.length) btn.style.display = 'none';
-      };
-    } else {
-      btn.style.display = 'none';
+    if (btn) {
+      if (articles.length > PAGE) {
+        btn.style.display = 'flex';
+        btn.onclick = () => {
+          shown = Math.min(shown + PAGE, articles.length);
+          window.RDLCards.renderCards(container, articles.slice(0, shown));
+          if (shown >= articles.length) btn.style.display = 'none';
+        };
+      } else {
+        btn.style.display = 'none';
+      }
     }
   }
 
@@ -264,10 +251,23 @@ async function fetchMortgageRateWidget() {
 
 // ── Auto-init ─────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+  const CACHE_VERSION = 'v3';
+  const versionKey = 'rdl_cache_version';
+  if (localStorage.getItem(versionKey) !== CACHE_VERSION) {
+    Object.keys(localStorage)
+      .filter(k => k.startsWith('rdl_'))
+      .forEach(k => localStorage.removeItem(k));
+    localStorage.setItem(versionKey, CACHE_VERSION);
+    console.log('[RDL] Cache cleared — new version:', CACHE_VERSION);
+  }
+
   const statusEl = document.getElementById('last-updated');
+  console.log('[RDL] feeds.js init on page:', window.location.pathname);
 
   Object.values(RSS_CONFIG).forEach(config => {
     const container = document.getElementById(config.containerId);
+    console.log('[RDL] Container', config.containerId,
+                container ? 'FOUND' : 'NOT FOUND');
     if (container) {
       loadFeeds(config.feeds, container, statusEl, config.cacheKey);
     }
