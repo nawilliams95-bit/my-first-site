@@ -104,8 +104,8 @@ const CATEGORY_KEY_MAP = {
 };
 
 const PROXIES = [
-  { build: url => `https://corsproxy.io/?url=${encodeURIComponent(url)}`,              json: false },
-  { build: url => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`, json: true },
+  { build: url => 'https://corsproxy.io/?' + encodeURIComponent(url),                  json: false },
+  { build: url => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,      json: true },
   { build: url => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`, json: false }
 ];
 
@@ -301,7 +301,7 @@ function parseXMLFeed(xmlText, configKey) {
           image = '';
         }
 
-        if (!image) image = FALLBACK_IMAGES[configKey] || 'images/fallback-market.svg';
+        if (!image) image = null;
 
         articles.push({
           title, link, description: cleanDesc,
@@ -319,50 +319,41 @@ function parseXMLFeed(xmlText, configKey) {
 
 // ── Card HTML ─────────────────────────────────────────────────────────────
 
-function buildArticleCard(article, config) {
-  const fallback = FALLBACK_IMAGES[article.configKey] || 'images/fallback-market.svg';
+function buildArticleCard(article) {
+  const imageHtml = article.image
+    ? `<div class="article-image"><img src="${article.image}" loading="lazy" alt="" onerror="this.parentElement.style.display='none'"></div>`
+    : '';
   return `
-    <article class="article-card fade-in" onclick="window.open('${article.link}','_blank')">
-      <div class="card-image-wrap">
-        <img src="${article.image}" alt=""
-             onload="this.classList.add('loaded')"
-             onerror="if(!this.dataset.proxied){this.dataset.proxied='1';this.src='https://images.weserv.nl/?url='+encodeURIComponent(this.src)+'&w=400&h=220&fit=cover&output=jpg'}else{this.onerror=null;this.src='${fallback}'}" />
-      </div>
-      <div class="card-body">
-        <div class="card-meta">
-          <span class="badge" style="background:${config.color}20;color:${config.color};border:1px solid ${config.color}40">${config.label}</span>
-          <span class="card-timestamp">${article.relativeTime}</span>
-        </div>
-        <h3 class="card-headline">${article.title}</h3>
-        ${article.description ? `<p class="card-excerpt">${article.description}</p>` : ''}
-        <div class="card-footer">
-          <span class="card-source">${article.source}</span>
-          <a href="${article.link}" target="_blank" rel="noopener noreferrer"
-             class="card-read-more" onclick="event.stopPropagation()">Read More</a>
-        </div>
+    <article class="article-card fade-in">
+      ${imageHtml}
+      <div class="article-body">
+        <span class="article-source">${article.source}</span>
+        <h3><a href="${article.link}" target="_blank" rel="noopener">${article.title}</a></h3>
+        ${article.description ? `<p class="article-description">${article.description}</p>` : ''}
+        <time>${article.relativeTime}</time>
       </div>
     </article>`;
 }
 
 function buildSkeletonCards(count) {
   return Array(count).fill(`
-    <div class="article-card card-skeleton">
-      <div class="skeleton-image skeleton"></div>
-      <div class="card-body">
-        <div class="skeleton-line short skeleton"></div>
-        <div class="skeleton-line full skeleton"></div>
-        <div class="skeleton-line medium skeleton"></div>
+    <div class="skeleton-card">
+      <div class="skeleton-img"></div>
+      <div class="article-body">
+        <div class="skeleton-line short"></div>
+        <div class="skeleton-line full"></div>
+        <div class="skeleton-line medium"></div>
       </div>
     </div>`).join('');
 }
 
-function renderArticles(container, articles, config) {
+function renderArticles(container, articles) {
   if (!container) return;
   if (!articles || !articles.length) {
     container.innerHTML = '<div class="feed-notice"><p>Fetching latest verified articles. Check back shortly.</p></div>';
     return;
   }
-  const html = articles.slice(0, 6).map(a => buildArticleCard(a, config)).join('');
+  const html = articles.slice(0, 10).map(a => buildArticleCard(a)).join('');
   requestAnimationFrame(() => {
     container.innerHTML = html;
     // Trigger fade-in observer for newly added cards
@@ -383,7 +374,7 @@ async function loadCategoryFeed(configKey, config) {
   const cached = getCachedArticles(configKey);
   if (cached && cached.length > 0) {
     console.log('[RDL Feeds] Cache — ' + configKey + ': ' + cached.length);
-    renderArticles(container, cached, config);
+    renderArticles(container, cached);
     if (window.RDLSearch) window.RDLSearch.initSearch(cached);
     return cached;
   }
@@ -413,7 +404,7 @@ async function loadCategoryFeed(configKey, config) {
         container.innerHTML = '<div class="feed-error"><p>Unable to load articles. Please refresh the page.</p></div>';
       });
     } else {
-      renderArticles(container, unique, config);
+      renderArticles(container, unique);
     }
 
     // Update "last-updated" timestamp if present on this page
@@ -473,7 +464,7 @@ async function fetchMortgageRateWidget() {
 
   try {
     const feedUrl = 'https://www.mortgagenewsdaily.com/rss/mortgage_rates.aspx';
-    const proxyUrl = `https://corsproxy.io/?url=${encodeURIComponent(feedUrl)}`;
+    const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(feedUrl);
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 10000);
     const res = await fetch(proxyUrl, { signal: controller.signal });
