@@ -307,7 +307,7 @@ function buildArticleCard(article, config) {
       <div class="card-image-wrap">
         <img src="${article.image}" alt=""
              onload="this.classList.add('loaded')"
-             onerror="this.onerror=null;this.src='${fallback}'" />
+             onerror="if(!this.dataset.proxied){this.dataset.proxied='1';this.src='https://images.weserv.nl/?url='+encodeURIComponent(this.src)+'&w=400&h=220&fit=cover&output=jpg'}else{this.onerror=null;this.src='${fallback}'}" />
       </div>
       <div class="card-body">
         <div class="card-meta">
