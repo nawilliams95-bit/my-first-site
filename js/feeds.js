@@ -7,8 +7,8 @@ const RSS_CONFIG = {
     feeds: [
       'https://calculatedriskblog.com/feeds/posts/default',
       'https://www.federalreserve.gov/feeds/press_all.xml',
-      'https://feeds.content.dowjones.io/public/rss/mw_realestate',
-      'https://realestate.yahoo.com/rss'
+      'https://www.redfin.com/news/feed/',
+      'https://www.cnbc.com/id/10000664/device/rss/rss.html'
     ],
     containerId: 'market-data-feed',
     label: 'Market Data',
@@ -17,10 +17,10 @@ const RSS_CONFIG = {
   },
   mortgageRates: {
     feeds: [
-      'https://www.mortgagenewsdaily.com/feed/news',
-      'https://realestate.yahoo.com/rss',
       'https://calculatedriskblog.com/feeds/posts/default',
-      'https://www.federalreserve.gov/feeds/press_all.xml'
+      'https://www.federalreserve.gov/feeds/press_all.xml',
+      'https://www.cnbc.com/id/10000664/device/rss/rss.html',
+      'https://feeds.npr.org/1017/rss.xml'
     ],
     containerId: 'mortgage-rates-feed',
     label: 'Mortgage & Rates',
@@ -31,8 +31,8 @@ const RSS_CONFIG = {
     feeds: [
       'https://calculatedriskblog.com/feeds/posts/default',
       'https://www.federalreserve.gov/feeds/press_all.xml',
-      'https://feeds.content.dowjones.io/public/rss/mw_economy',
-      'https://www.bls.gov/feed/bls_latest.rss'
+      'https://www.cnbc.com/id/20910258/device/rss/rss.html',
+      'https://feeds.npr.org/1017/rss.xml'
     ],
     containerId: 'economic-news-feed',
     label: 'Economic News',
@@ -41,9 +41,9 @@ const RSS_CONFIG = {
   },
   investmentRental: {
     feeds: [
-      'https://realestate.yahoo.com/rss',
+      'https://biggerpockets.com/blog/feed',
       'https://calculatedriskblog.com/feeds/posts/default',
-      'https://feeds.content.dowjones.io/public/rss/mw_realestate',
+      'https://www.redfin.com/news/feed/',
       'https://www.federalreserve.gov/feeds/press_all.xml'
     ],
     containerId: 'investment-rental-feed',
@@ -53,9 +53,9 @@ const RSS_CONFIG = {
   },
   industryNews: {
     feeds: [
-      'https://realestate.yahoo.com/rss',
+      'https://www.redfin.com/news/feed/',
       'https://calculatedriskblog.com/feeds/posts/default',
-      'https://feeds.content.dowjones.io/public/rss/mw_realestate',
+      'https://feeds.npr.org/1006/rss.xml',
       'https://www.federalreserve.gov/feeds/press_all.xml'
     ],
     containerId: 'industry-news-feed',
@@ -66,9 +66,9 @@ const RSS_CONFIG = {
   regionalData: {
     feeds: [
       'https://calculatedriskblog.com/feeds/posts/default',
-      'https://www.census.gov/construction/nrs/feed.xml',
+      'https://www.redfin.com/news/feed/',
       'https://www.federalreserve.gov/feeds/press_all.xml',
-      'https://realestate.yahoo.com/rss'
+      'https://www.cnbc.com/id/100003114/device/rss/rss.html'
     ],
     containerId: 'regional-data-feed',
     label: 'Regional Data',

@@ -231,10 +231,10 @@ async function initTicker() {
     const points = await fetchTickerData();
     track.innerHTML = buildTickerHTML(points);
   } catch (e) {
-    // On total failure, show N/A values
+    // On total failure, show fallback values
     const fallback = TICKER_POINTS.map(p => ({
       label:          p.label,
-      value:          'N/A',
+      value:          p.fallback,
       changeClass:    'neutral',
       freshnessClass: 'fresh-unknown'
     }));
