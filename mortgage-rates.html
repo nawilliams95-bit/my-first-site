@@ -62,7 +62,7 @@
         <span class="wordmark">Realty<span>Data</span>Labs</span>
       </a>
       <nav class="header-nav" aria-label="Main navigation">
-        <a href="market-data.html">Market Data</a>
+        <a href="market-data.html">Real Estate News</a>
         <a href="mortgage-rates.html" class="active">Mortgage &amp; Rates</a>
         <a href="investment-rental.html">Investment &amp; Rental</a>
         <a href="media-insights.html">Media &amp; Insights</a>
@@ -75,7 +75,7 @@
   </header>
   <div class="mobile-menu" role="dialog" aria-label="Mobile navigation">
     <button class="mobile-menu-close" aria-label="Close menu">&#x2715;</button>
-    <a href="market-data.html">Market Data</a>
+    <a href="market-data.html">Real Estate News</a>
     <a href="mortgage-rates.html">Mortgage &amp; Rates</a>
     <a href="investment-rental.html">Investment &amp; Rental</a>
     <a href="media-insights.html">Media &amp; Insights</a>
@@ -98,50 +98,63 @@
             <span class="badge badge-mortgage">Mortgage &amp; Rates</span>
           </div>
           <h1>Mortgage &amp; Rate Data</h1>
-          <p>Current mortgage rate data, PMMS reports, rate trends, and financing news from lenders and industry authorities.</p>
-          <div class="category-meta">
-            <span><span id="results-count" class="category-accent">Loading...</span></span>
-            <span>Last updated: <time id="last-updated">checking...</time></span>
-          </div>
+          <p>Current mortgage rates, PMMS data, rate trends, and financing tools from top lenders and industry authorities.</p>
         </div>
       </div>
     </section>
 
-    <!-- FILTER BAR -->
-    <div class="container">
-      <div class="filter-bar" role="search" aria-label="Filter articles">
-        <div class="filter-search">
-          <input type="search" id="search-input" placeholder="Search mortgage and rate articles..." aria-label="Search articles">
+    <!-- RATE DASHBOARD -->
+    <div class="container" style="padding-bottom:56px;">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin-bottom:40px;">
+
+        <div style="background:rgba(26,26,46,0.8);border:1px solid var(--border-color);border-radius:12px;padding:24px 20px;text-align:center;">
+          <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-secondary);margin-bottom:8px;">30-Year Fixed</div>
+          <div id="rate30-display" style="font-size:1.8rem;font-weight:700;color:var(--accent-teal);font-family:var(--font-mono);">--</div>
+          <div style="font-size:0.7rem;color:rgba(160,160,176,0.6);margin-top:6px;">National Avg</div>
         </div>
-        <div class="filter-group">
-          <label for="sort-select">Sort</label>
-          <select class="filter-select" id="sort-select" aria-label="Sort articles">
-            <option value="newest">Newest First</option>
-            <option value="oldest">Oldest First</option>
-            <option value="az">A &ndash; Z</option>
-          </select>
+
+        <div style="background:rgba(26,26,46,0.8);border:1px solid var(--border-color);border-radius:12px;padding:24px 20px;text-align:center;">
+          <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-secondary);margin-bottom:8px;">15-Year Fixed</div>
+          <div id="rate15-display" style="font-size:1.8rem;font-weight:700;color:var(--accent-teal);font-family:var(--font-mono);">--</div>
+          <div style="font-size:0.7rem;color:rgba(160,160,176,0.6);margin-top:6px;">National Avg</div>
         </div>
-        <div class="filter-group">
-          <label for="source-select">Source</label>
-          <select class="filter-select" id="source-select" aria-label="Filter by source">
-            <option value="all">All Sources</option>
-          </select>
+
+        <div style="background:rgba(26,26,46,0.8);border:1px solid var(--border-color);border-radius:12px;padding:24px 20px;text-align:center;">
+          <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-secondary);margin-bottom:8px;">5/1 ARM</div>
+          <div style="font-size:1rem;font-weight:600;margin-top:8px;">
+            <a href="https://www.bankrate.com/mortgages/arm-loan-rates/" target="_blank" rel="noopener" style="color:var(--accent-teal);text-decoration:none;">See Rates &rarr;</a>
+          </div>
+          <div style="font-size:0.7rem;color:rgba(160,160,176,0.6);margin-top:6px;">Adjustable Rate</div>
         </div>
-        <span class="results-count" id="results-count-filter" aria-live="polite"></span>
+
+        <div style="background:rgba(26,26,46,0.8);border:1px solid var(--border-color);border-radius:12px;padding:24px 20px;text-align:center;">
+          <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-secondary);margin-bottom:8px;">FHA 30-Year</div>
+          <div style="font-size:1rem;font-weight:600;margin-top:8px;">
+            <a href="https://www.lendingtree.com/home/fha/" target="_blank" rel="noopener" style="color:var(--accent-teal);text-decoration:none;">See Rates &rarr;</a>
+          </div>
+          <div style="font-size:0.7rem;color:rgba(160,160,176,0.6);margin-top:6px;">FHA Loan</div>
+        </div>
+
+        <div style="background:rgba(26,26,46,0.8);border:1px solid var(--border-color);border-radius:12px;padding:24px 20px;text-align:center;">
+          <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-secondary);margin-bottom:8px;">VA 30-Year</div>
+          <div style="font-size:1rem;font-weight:600;margin-top:8px;">
+            <a href="https://www.benefits.va.gov/homeloans/" target="_blank" rel="noopener" style="color:var(--accent-teal);text-decoration:none;">See Rates &rarr;</a>
+          </div>
+          <div style="font-size:0.7rem;color:rgba(160,160,176,0.6);margin-top:6px;">VA Loan</div>
+        </div>
+
       </div>
 
-      <!-- ARTICLES GRID -->
-      <div class="articles-grid" id="mortgage-rates-feed" aria-live="polite"></div>
-
-      <!-- LOAD MORE -->
-      <div class="load-more-wrap">
-        <button id="load-more-btn" aria-label="Load more articles">Load More Articles</button>
-      </div>
-
-      <!-- AFFILIATE -->
-      <div class="category-affiliate">
-        <p>Compare mortgage rates from top lenders &mdash; <strong>Bankrate Mortgage Comparison</strong> helps you find the best rate for your purchase or refinance.</p>
-        <a href="https://www.lendingtree.com/home/mortgage/" target="_blank" rel="noopener sponsored" class="btn-outline">Compare Rates &rarr;</a>
+      <!-- Rate Comparison Tools -->
+      <div style="background:rgba(26,26,46,0.5);border:1px solid var(--border-color);border-radius:12px;padding:24px 28px;">
+        <h3 style="font-size:var(--size-h3);margin-bottom:10px;color:var(--text-primary);">Compare Rates &amp; Get Pre-Qualified</h3>
+        <p style="font-size:var(--size-small);color:var(--text-secondary);margin-bottom:20px;">Find the best rate for your purchase or refinance from top lenders.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:12px;">
+          <a href="https://www.lendingtree.com/home/mortgage/" target="_blank" rel="noopener sponsored" class="btn-outline" style="font-size:0.85rem;">Compare Lenders &mdash; LendingTree</a>
+          <a href="https://www.bankrate.com/mortgages/" target="_blank" rel="noopener sponsored" class="btn-outline" style="font-size:0.85rem;">Find Today&rsquo;s Best Rates &mdash; Bankrate</a>
+          <a href="https://better.com/" target="_blank" rel="noopener sponsored" class="btn-outline" style="font-size:0.85rem;">Get Pre-Approved in Minutes &mdash; Better.com</a>
+          <a href="https://www.mortgagenewsdaily.com/mortgage-rates.aspx" target="_blank" rel="noopener" class="btn-outline" style="font-size:0.85rem;">Rate History &amp; Trends &mdash; MND</a>
+        </div>
       </div>
     </div>
   </div>
@@ -173,7 +186,7 @@
         <h4>Navigation</h4>
         <ul class="footer-nav-list">
           <li><a href="index.html">Home</a></li>
-          <li><a href="market-data.html">Market Data</a></li>
+          <li><a href="market-data.html">Real Estate News</a></li>
           <li><a href="mortgage-rates.html">Mortgage &amp; Rates</a></li>
           <li><a href="investment-rental.html">Investment &amp; Rental</a></li>
           <li><a href="media-insights.html">Media &amp; Insights</a></li>

@@ -4,12 +4,9 @@
 const RSS_CONFIG = {
   marketData: {
     feeds: [
-      'https://calculatedriskblog.com/feeds/posts/default',
-      'https://www.nar.realtor/newsroom/rss.xml',
       'https://redfin.com/blog/feed',
-      'https://eyeonhousing.org/feed/',
-      'https://realtor.com/news/feed',
-      'https://www.worldpropertyjournal.com/feed/rss.xml'
+      'https://www.nar.realtor/newsroom/rss.xml',
+      'https://realtor.com/news/feed'
     ],
     containerId: 'market-data-feed'
   },
@@ -24,10 +21,10 @@ const RSS_CONFIG = {
   },
   investmentRental: {
     feeds: [
-      'https://www.apartmentlist.com/research/feed',
       'https://www.noradarealestate.com/blog/feed/',
-      'https://realtor.com/news/trends/feed',
-      'https://eyeonhousing.org/feed/'
+      'https://retipster.com/feed/',
+      'https://www.keepingcurrentmatters.com/feed/',
+      'https://www.fortunebuilders.com/feed/'
     ],
     containerId: 'investment-rental-feed'
   },
