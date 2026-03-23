@@ -1,23 +1,23 @@
 // feeds.js — RealtyDataLabs RSS Feed Engine
-// Uses allorigins.win proxy for reliable CORS-free feed fetching
 
 const RSS_CONFIG = {
   marketData: {
     feeds: [
-      'https://redfin.com/blog/feed',
-      'https://www.nar.realtor/newsroom/rss.xml',
-      'https://realtor.com/news/feed'
+      'https://www.redfin.com/blog/feed',
+      'https://zillow.mediaroom.com/rss/news_releases.rss',
+      'https://www.realtor.com/news/feed'
     ],
-    containerId: 'market-data-feed'
+    containerId: 'market-data-feed',
+    cacheKey: 'market-data'
   },
   mortgageRates: {
     feeds: [
       'https://www.mortgagenewsdaily.com/rss/mortgage_news.aspx',
       'https://www.federalreserve.gov/feeds/press_all.xml',
-      'https://www.consumerfinance.gov/about-us/newsroom/feed/',
-      'https://realtor.com/news/real-estate-news/feed'
+      'https://www.consumerfinance.gov/about-us/newsroom/feed/'
     ],
-    containerId: 'mortgage-rates-feed'
+    containerId: 'mortgage-rates-feed',
+    cacheKey: 'mortgage-rates'
   },
   investmentRental: {
     feeds: [
@@ -26,282 +26,255 @@ const RSS_CONFIG = {
       'https://www.keepingcurrentmatters.com/feed/',
       'https://www.fortunebuilders.com/feed/'
     ],
-    containerId: 'investment-rental-feed'
+    containerId: 'investment-rental-feed',
+    cacheKey: 'investment-rental'
   },
   mediaInsights: {
     feeds: [
       'https://blog.rismedia.com/feed',
       'https://www.forbes.com/real-estate/feed/',
-      'https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000115',
       'https://redfin.com/blog/feed'
     ],
-    containerId: 'media-insights-feed'
+    containerId: 'media-insights-feed',
+    cacheKey: 'media-insights'
   }
 };
 
-// ── Fetch and parse a single RSS feed via multi-proxy fallback ────────────
-
-async function fetchFeed(rssUrl) {
-  // Proxy list — each entry has a build fn and an extract fn
-  // allorigins /get returns JSON {contents: "..."} — most reliable
-  // allorigins /raw returns raw text
-  // corsproxy format is ?<encoded-url> with NO "url=" prefix
-  // codetabs as last resort
+// ── Multi-proxy fallback fetch ────────────────────────────────────
+async function fetchWithProxy(url) {
   const proxies = [
-    {
-      build: url => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
-      extract: async res => { const j = await res.json(); return j.contents || ''; }
-    },
-    {
-      build: url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
-      extract: async res => res.text()
-    },
-    {
-      build: url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
-      extract: async res => res.text()
-    },
-    {
-      build: url => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
-      extract: async res => res.text()
-    }
+    u => `https://api.allorigins.win/get?url=${encodeURIComponent(u)}`,
+    u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+    u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+    u => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
   ];
-
-  let text = null;
-
   for (const proxy of proxies) {
     try {
-      const proxyUrl = proxy.build(rssUrl);
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 8000);
-      const res = await fetch(proxyUrl, { signal: controller.signal });
-      clearTimeout(timeout);
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 8000);
+      const proxyUrl = proxy(url);
+      const res = await fetch(proxyUrl, { signal: ctrl.signal });
+      clearTimeout(timer);
       if (!res.ok) continue;
-      const body = await proxy.extract(res);
-      // Accept if response contains any RSS/Atom structure
-      if (body && (
-        body.includes('<item') || body.includes('<entry') ||
-        body.includes('<rss')  || body.includes('<feed')  ||
-        body.includes('<channel')
-      )) {
-        text = body;
-        console.log(`[feeds] OK via ${proxyUrl.split('?')[0]} for ${new URL(rssUrl).hostname}`);
-        break;
+      // allorigins /get returns JSON wrapper
+      let text;
+      if (proxyUrl.includes('allorigins.win/get')) {
+        const j = await res.json();
+        text = j.contents || '';
+      } else {
+        text = await res.text();
       }
-    } catch (e) {
-      console.warn(`[feeds] Proxy failed for ${rssUrl}:`, e.message);
-      continue;
-    }
+      if (text && (
+        text.includes('<item') || text.includes('<entry') ||
+        text.includes('<rss')  || text.includes('<feed')  ||
+        text.includes('<channel')
+      )) {
+        console.log('[RDL] OK via', proxyUrl.split('?')[0], 'for', new URL(url).hostname);
+        return text;
+      }
+    } catch(e) { continue; }
   }
+  console.warn('[RDL] All proxies failed for:', url);
+  return null;
+}
 
-  if (!text) {
-    console.warn('All proxies failed for:', rssUrl);
-    return [];
-  }
-
+// ── Parse RSS or Atom feed ────────────────────────────────────────
+function parseFeed(xmlText, feedUrl) {
   try {
-    const parser = new DOMParser();
-    const xml = parser.parseFromString(text, 'text/xml');
-
-    // Check for XML parse error
-    if (xml.querySelector('parsererror')) {
-      console.warn('XML parse error for:', rssUrl);
-      return [];
-    }
-
-    // Support both RSS <item> and Atom <entry> formats
+    const xml = new DOMParser().parseFromString(xmlText, 'text/xml');
+    if (xml.querySelector('parsererror')) return [];
     const items = Array.from(
-      xml.querySelectorAll('item').length > 0
+      xml.querySelectorAll('item').length
         ? xml.querySelectorAll('item')
         : xml.querySelectorAll('entry')
     );
-
-    return items.slice(0, 15).map(item => {
-      // Extract image — try multiple locations
-      const mediaNS = 'http://search.yahoo.com/mrss/';
-      const mediaContent = item.getElementsByTagNameNS(mediaNS, 'content')[0] ||
-                           item.getElementsByTagNameNS(mediaNS, 'thumbnail')[0];
-      const enclosure = item.querySelector('enclosure[type^="image"]');
-      let image = mediaContent?.getAttribute('url') ||
-                  enclosure?.getAttribute('url') || null;
-
-      // Fallback: scrape first img from description
+    return items.slice(0, 20).map(item => {
+      const ns = 'http://search.yahoo.com/mrss/';
+      const mc = item.getElementsByTagNameNS(ns,'content')[0] ||
+                 item.getElementsByTagNameNS(ns,'thumbnail')[0];
+      const enc = item.querySelector('enclosure[type^="image"]');
+      let image = mc?.getAttribute('url') || enc?.getAttribute('url') || null;
       if (!image) {
-        const desc = item.querySelector('description, summary')?.textContent || '';
-        const match = desc.match(/<img[^>]+src=["']([^"']+)["']/i);
-        if (match) image = match[1];
+        const raw = item.querySelector('description,summary')?.textContent || '';
+        const m = raw.match(/<img[^>]+src=["']([^"']+)["']/i);
+        if (m && m[1].startsWith('http')) image = m[1];
       }
-
-      // Clean description text
-      const rawDesc = item.querySelector('description, summary, content')
-                         ?.textContent || '';
+      const rawDesc = item.querySelector('description,summary,content')?.textContent || '';
       const tmp = document.createElement('div');
       tmp.innerHTML = rawDesc;
-      const cleanDesc = (tmp.textContent || tmp.innerText || '')
-                        .replace(/\s+/g, ' ').trim().slice(0, 220);
-
-      // Get link — handle both RSS <link> and Atom <link href="">
+      const desc = (tmp.textContent||'').replace(/\s+/g,' ').trim();
       const linkEl = item.querySelector('link');
-      const link = linkEl?.textContent?.trim() ||
-                   linkEl?.getAttribute('href') || '#';
-
-      // Get date — try pubDate (RSS) and published/updated (Atom)
-      const dateStr = item.querySelector('pubDate, published, updated')
-                         ?.textContent || '';
-
+      const link = linkEl?.getAttribute('href') || linkEl?.textContent?.trim() || '#';
+      const dateStr = item.querySelector('pubDate,published,updated')?.textContent || '';
       return {
-        title: item.querySelector('title')?.textContent?.trim() || 'Untitled',
-        link,
+        title: item.querySelector('title')?.textContent?.trim() || '',
+        link: link.startsWith('http') ? link : '#',
         pubDate: dateStr ? new Date(dateStr) : new Date(0),
-        description: cleanDesc + (cleanDesc.length >= 220 ? '...' : ''),
+        description: desc.length > 220 ? desc.slice(0,220)+'...' : desc,
         image,
         source: (() => {
-          try { return new URL(rssUrl).hostname.replace('www.', ''); }
-          catch { return rssUrl; }
+          try { return new URL(feedUrl).hostname.replace('www.',''); }
+          catch { return ''; }
         })()
       };
-    });
-  } catch (e) {
-    console.warn('Parse error for:', rssUrl, e);
-    return [];
-  }
+    }).filter(a => a.title && a.link !== '#');
+  } catch(e) { return []; }
 }
 
-// ── Fetch all feeds and render into container ──────────────────────────────
+// ── Cache helpers ─────────────────────────────────────────────────
+const CACHE_TTL = 30 * 60 * 1000;
 
-async function loadAllFeeds(feedUrls, containerEl, statusEl) {
-  // Show skeleton cards while loading
-  containerEl.innerHTML = Array(6).fill(`
-    <div style="background:#1a1a2e;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:16px;
-                margin-bottom:12px;">
-      <div style="height:12px;background:rgba(255,255,255,0.08);border-radius:4px;
-                  width:80%;margin-bottom:8px"></div>
-      <div style="height:12px;background:rgba(255,255,255,0.08);border-radius:4px;
-                  width:55%;margin-bottom:8px"></div>
-      <div style="height:12px;background:rgba(255,255,255,0.08);border-radius:4px;
-                  width:35%"></div>
-    </div>
-  `).join('');
+function getCached(key) {
+  try {
+    const raw = localStorage.getItem('rdl_' + key);
+    if (!raw) return null;
+    const { ts, data } = JSON.parse(raw);
+    if (Date.now() - ts > CACHE_TTL) return null;
+    return data;
+  } catch(e) { return null; }
+}
 
-  console.log('Starting feed fetch for feeds:', feedUrls);
+function setCache(key, data) {
+  try {
+    localStorage.setItem('rdl_' + key, JSON.stringify({ ts: Date.now(), data }));
+  } catch(e) {}
+}
 
-  const results = await Promise.allSettled(feedUrls.map(url => fetchFeed(url)));
+// ── Skeleton loading ──────────────────────────────────────────────
+function showSkeletons(container, count = 6) {
+  container.innerHTML = Array(count).fill(`
+    <div class="article-card card-skeleton">
+      <div class="card-body">
+        <div class="skeleton-line full"></div>
+        <div class="skeleton-line medium"></div>
+        <div class="skeleton-line short"></div>
+      </div>
+    </div>`).join('');
+}
 
-  console.log('Feed results:', results.map((r, i) => ({
+// ── Render article cards ──────────────────────────────────────────
+function renderArticles(articles, container) {
+  if (!articles.length) {
+    container.innerHTML = '<p class="feed-notice">Unable to load articles right now. Please check back soon.</p>';
+    return;
+  }
+  container.innerHTML = articles.map(a => `
+    <article class="article-card fade-in">
+      ${a.image ? `<div class="article-image"><img src="${a.image}" loading="lazy" alt="" onerror="this.parentElement.style.display='none'"></div>` : ''}
+      <div class="article-body">
+        <span class="article-source">${a.source}</span>
+        <h3><a href="${a.link}" target="_blank" rel="noopener">${a.title}</a></h3>
+        ${a.description ? `<p class="article-description">${a.description}</p>` : ''}
+        <time>${a.pubDate > new Date(0) ? a.pubDate.toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}) : ''}</time>
+      </div>
+    </article>`).join('');
+}
+
+// ── Main load function ────────────────────────────────────────────
+async function loadFeeds(feedUrls, container, statusEl, cacheKey) {
+  const cached = getCached(cacheKey);
+  if (cached && cached.length) {
+    renderArticles(cached, container);
+    if (statusEl) statusEl.textContent = new Date().toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'});
+    return;
+  }
+
+  showSkeletons(container);
+
+  const results = await Promise.allSettled(
+    feedUrls.map(async url => {
+      const text = await fetchWithProxy(url);
+      return text ? parseFeed(text, url) : [];
+    })
+  );
+
+  console.log('[RDL] Feed results:', results.map((r,i) => ({
     url: feedUrls[i],
-    status: r.status,
-    count: r.status === 'fulfilled' ? r.value.length : 0,
-    error: r.status === 'rejected' ? r.reason : null
+    ok: r.status === 'fulfilled',
+    count: r.value?.length ?? 0
   })));
 
   const articles = results
     .filter(r => r.status === 'fulfilled')
     .flatMap(r => r.value)
-    .filter(a => a.title && a.link && a.link !== '#')
-    .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+    .sort((a,b) => b.pubDate - a.pubDate);
 
-  console.log('Total articles to render:', articles.length);
-
-  if (articles.length === 0) {
-    containerEl.innerHTML = '<p style="color:var(--text-secondary,#aaa);padding:16px;">Unable to load articles at this time. Please check back soon.</p>';
-    return;
-  }
-
-  // Render articles using existing card CSS classes
-  containerEl.innerHTML = articles.slice(0, 10).map(a => `
-    <article class="article-card fade-in">
-      ${a.image ? `<div class="article-image"><img src="${a.image}" loading="lazy" alt=""
-                       onerror="this.parentElement.style.display='none'"></div>` : ''}
-      <div class="article-body">
-        <span class="article-source">${a.source}</span>
-        <h3><a href="${a.link}" target="_blank" rel="noopener">${a.title}</a></h3>
-        ${a.description ? `<p class="article-description">${a.description}</p>` : ''}
-        <time>${new Date(a.pubDate).toLocaleDateString('en-US', {year:'numeric', month:'short', day:'numeric'})}</time>
-      </div>
-    </article>
-  `).join('');
-
-  if (statusEl) {
-    statusEl.textContent = new Date().toLocaleString('en-US', {
-      month: 'short', day: 'numeric', year: 'numeric',
-      hour: 'numeric', minute: '2-digit'
-    });
-  }
-
-  // Update results count if present
   const countEl = document.getElementById('results-count');
   if (countEl) countEl.textContent = articles.length + ' articles';
+
+  // Handle load-more pagination
+  const btn = document.getElementById('load-more-btn');
+  const PAGE = 10;
+  let shown = Math.min(PAGE, articles.length);
+  renderArticles(articles.slice(0, shown), container);
+
+  if (btn) {
+    if (articles.length > PAGE) {
+      btn.style.display = 'flex';
+      btn.onclick = () => {
+        shown = Math.min(shown + PAGE, articles.length);
+        renderArticles(articles.slice(0, shown), container);
+        if (shown >= articles.length) btn.style.display = 'none';
+      };
+    } else {
+      btn.style.display = 'none';
+    }
+  }
+
+  if (articles.length) setCache(cacheKey, articles);
+  if (statusEl) statusEl.textContent = new Date().toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'});
 }
 
-// ── Mortgage Rate Widget ───────────────────────────────────────────────────
-
+// ── Mortgage Rate Widget ──────────────────────────────────────────
 async function fetchMortgageRateWidget() {
   const el30 = document.getElementById('rate30-display');
   const el15 = document.getElementById('rate15-display');
   if (!el30 && !el15) return;
 
-  const fallbackHtml = '<a href="https://www.mortgagenewsdaily.com/mortgage-rates.aspx" target="_blank" rel="noopener" style="font-size:0.8rem;color:var(--accent-teal)">See Current Rates</a>';
+  const fallback = '<a href="https://www.mortgagenewsdaily.com/mortgage-rates.aspx" target="_blank" rel="noopener" style="font-size:0.8rem;color:var(--accent-teal)">See Current Rates</a>';
 
   try {
-    const feedUrl = 'https://www.mortgagenewsdaily.com/rss/mortgage_rates.aspx';
-    const proxy = 'https://api.allorigins.win/get?url=' + encodeURIComponent(feedUrl);
-    const res = await fetch(proxy, { signal: AbortSignal.timeout(8000) });
-    if (!res.ok) throw new Error('feed failed');
-    const json = await res.json();
-
-    const xml = new DOMParser().parseFromString(json.contents, 'text/xml');
+    const text = await fetchWithProxy('https://www.mortgagenewsdaily.com/rss/mortgage_rates.aspx');
+    if (!text) throw new Error('no data');
+    const xml = new DOMParser().parseFromString(text, 'text/xml');
     if (xml.querySelector('parsererror')) throw new Error('parse error');
 
     const items = [...xml.querySelectorAll('item')];
     let r30 = null, r15 = null;
-
     for (const item of items.slice(0, 10)) {
       const content = (item.querySelector('title')?.textContent || '') + ' ' +
                       (item.querySelector('description')?.textContent || '');
-      if (!r30 && /30\s*[–\-]?\s*(yr|year)/i.test(content)) {
-        const m = content.match(/(\d\.\d{2,3})%/);
+      if (!r30 && /30[^%\d]*(\d+\.\d+)%/i.test(content)) {
+        const m = content.match(/30[^%\d]*(\d+\.\d+)%/i);
         if (m) r30 = m[1] + '%';
       }
-      if (!r15 && /15\s*[–\-]?\s*(yr|year)/i.test(content)) {
-        const m = content.match(/(\d\.\d{2,3})%/);
+      if (!r15 && /15[^%\d]*(\d+\.\d+)%/i.test(content)) {
+        const m = content.match(/15[^%\d]*(\d+\.\d+)%/i);
         if (m) r15 = m[1] + '%';
       }
       if (r30 && r15) break;
     }
-
-    if (!r30 && items.length) {
-      const m = (items[0].querySelector('title')?.textContent || '').match(/(\d\.\d{2,3})%/);
-      if (m) r30 = m[1] + '%';
-    }
-
-    if (el30) { if (r30) el30.textContent = r30; else el30.innerHTML = fallbackHtml; }
-    if (el15) { if (r15) el15.textContent = r15; else el15.innerHTML = fallbackHtml; }
-
-  } catch {
-    if (el30) el30.innerHTML = fallbackHtml;
-    if (el15) el15.innerHTML = fallbackHtml;
+    if (el30) el30.textContent = r30 || '—';
+    if (el15) el15.textContent = r15 || '—';
+  } catch(e) {
+    if (el30) el30.innerHTML = fallback;
+    if (el15) el15.innerHTML = fallback;
   }
 }
 
-// ── Auto-init ─────────────────────────────────────────────────────────────
-
+// ── Auto-init ─────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   const statusEl = document.getElementById('last-updated');
 
-  // Load feeds for whichever containers exist on this page
   Object.values(RSS_CONFIG).forEach(config => {
     const container = document.getElementById(config.containerId);
     if (container) {
-      loadAllFeeds(config.feeds, container, statusEl);
+      loadFeeds(config.feeds, container, statusEl, config.cacheKey);
     }
   });
 
   fetchMortgageRateWidget();
 });
 
-// ── Public API ────────────────────────────────────────────────────────────
-
-window.RDLFeeds = {
-  RSS_CONFIG,
-  fetchFeed,
-  loadAllFeeds
-};
+// ── Public API ────────────────────────────────────────────────────
+window.RDLFeeds = { RSS_CONFIG, fetchWithProxy, parseFeed, loadFeeds };
