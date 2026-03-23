@@ -45,31 +45,53 @@ const RSS_CONFIG = {
 // ── Fetch and parse a single RSS feed via multi-proxy fallback ────────────
 
 async function fetchFeed(rssUrl) {
-  // Try multiple proxies in order — if one fails, try the next
+  // Proxy list — each entry has a build fn and an extract fn
+  // allorigins /get returns JSON {contents: "..."} — most reliable
+  // allorigins /raw returns raw text
+  // corsproxy format is ?<encoded-url> with NO "url=" prefix
+  // codetabs as last resort
   const proxies = [
-    url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
-    url => `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
-    url => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+    {
+      build: url => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+      extract: async res => { const j = await res.json(); return j.contents || ''; }
+    },
+    {
+      build: url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+      extract: async res => res.text()
+    },
+    {
+      build: url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+      extract: async res => res.text()
+    },
+    {
+      build: url => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+      extract: async res => res.text()
+    }
   ];
 
   let text = null;
 
-  for (const makeProxy of proxies) {
+  for (const proxy of proxies) {
     try {
-      const proxyUrl = makeProxy(rssUrl);
+      const proxyUrl = proxy.build(rssUrl);
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 7000);
+      const timeout = setTimeout(() => controller.abort(), 8000);
       const res = await fetch(proxyUrl, { signal: controller.signal });
       clearTimeout(timeout);
       if (!res.ok) continue;
-      const body = await res.text();
-      // Make sure we actually got XML, not an error page
-      if (body.includes('<item') || body.includes('<entry')) {
+      const body = await proxy.extract(res);
+      // Accept if response contains any RSS/Atom structure
+      if (body && (
+        body.includes('<item') || body.includes('<entry') ||
+        body.includes('<rss')  || body.includes('<feed')  ||
+        body.includes('<channel')
+      )) {
         text = body;
+        console.log(`[feeds] OK via ${proxyUrl.split('?')[0]} for ${new URL(rssUrl).hostname}`);
         break;
       }
     } catch (e) {
-      console.warn(`Proxy failed for ${rssUrl}:`, e.message);
+      console.warn(`[feeds] Proxy failed for ${rssUrl}:`, e.message);
       continue;
     }
   }
