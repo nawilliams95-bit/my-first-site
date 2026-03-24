@@ -96,36 +96,13 @@
           <h1>Real Estate News</h1>
           <p>The latest housing market news, home price reports, and real estate trends from top industry sources.</p>
           <div class="category-meta">
-            <span><span id="results-count" class="category-accent">Loading...</span></span>
             <span>Last updated: <time id="last-updated">checking...</time></span>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- FILTER BAR -->
     <div class="container">
-      <div class="filter-bar" role="search" aria-label="Filter articles">
-        <div class="filter-search">
-          <input type="search" id="search-input" placeholder="Search market data articles..." aria-label="Search articles">
-        </div>
-        <div class="filter-group">
-          <label for="sort-select">Sort</label>
-          <select class="filter-select" id="sort-select" aria-label="Sort articles">
-            <option value="newest">Newest First</option>
-            <option value="oldest">Oldest First</option>
-            <option value="az">A &ndash; Z</option>
-          </select>
-        </div>
-        <div class="filter-group">
-          <label for="source-select">Source</label>
-          <select class="filter-select" id="source-select" aria-label="Filter by source">
-            <option value="all">All Sources</option>
-          </select>
-        </div>
-        <span class="results-count" id="results-count-filter" aria-live="polite"></span>
-      </div>
-
       <!-- ARTICLES GRID -->
       <div class="articles-grid" id="market-data-feed" aria-live="polite"></div>
 
@@ -133,7 +110,6 @@
       <div class="load-more-wrap">
         <button id="load-more-btn" aria-label="Load more articles">Load More Articles</button>
       </div>
-
     </div>
   </div>
 
