@@ -4,27 +4,28 @@ const RSS_CONFIG = {
   marketData: {
     feeds: [
       'https://www.redfin.com/blog/feed',
-      'https://zillow.mediaroom.com/rss/news_releases.rss',
-      'https://www.realtor.com/news/feed'
+      'https://zillow.mediaroom.com/press-releases?pagetemplate=rss&category=816',
+      'https://www.realtor.com/news/feed',
+      'https://keepingcurrentmatters.com/feed'
     ],
     containerId: 'market-data-feed',
     cacheKey: 'market-data'
   },
   mortgageRates: {
     feeds: [
-      'https://www.mortgagenewsdaily.com/rss/mortgage_news.aspx',
       'https://www.federalreserve.gov/feeds/press_all.xml',
-      'https://www.consumerfinance.gov/about-us/newsroom/feed/'
+      'https://www.consumerfinance.gov/about-us/newsroom/feed/',
+      'https://blog.rismedia.com/feed'
     ],
     containerId: 'mortgage-rates-feed',
     cacheKey: 'mortgage-rates'
   },
   investmentRental: {
     feeds: [
-      'https://www.noradarealestate.com/blog/feed/',
+      'https://www.fortunebuilders.com/feed/',
       'https://retipster.com/feed/',
-      'https://www.keepingcurrentmatters.com/feed/',
-      'https://www.fortunebuilders.com/feed/'
+      'https://keepingcurrentmatters.com/feed',
+      'https://www.redfin.com/blog/feed'
     ],
     containerId: 'investment-rental-feed',
     cacheKey: 'investment-rental'
@@ -34,12 +35,15 @@ const RSS_CONFIG = {
 // ── Multi-proxy fallback fetch ────────────────────────────────────
 async function fetchWithProxy(url) {
   const proxies = [
-    u => `https://api.allorigins.win/get?url=${encodeURIComponent(u)}`,
-    u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
     u => `https://corsproxy.io/?url=${encodeURIComponent(u)}`,
+    u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
     u => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
+    u => `https://thingproxy.freeboard.io/fetch/${u}`,
   ];
-  for (const proxy of proxies) {
+  // Rotate starting proxy based on URL hash to spread load
+  const startIdx = url.length % proxies.length;
+  const rotated = [...proxies.slice(startIdx), ...proxies.slice(0, startIdx)];
+  for (const proxy of rotated) {
     try {
       const ctrl = new AbortController();
       const timer = setTimeout(() => ctrl.abort(), 8000);
@@ -47,14 +51,7 @@ async function fetchWithProxy(url) {
       const res = await fetch(proxyUrl, { signal: ctrl.signal });
       clearTimeout(timer);
       if (!res.ok) continue;
-      // allorigins /get returns JSON wrapper
-      let text;
-      if (proxyUrl.includes('allorigins.win/get')) {
-        const j = await res.json();
-        text = j.contents || '';
-      } else {
-        text = await res.text();
-      }
+      const text = await res.text();
       if (text && (
         text.includes('<item') || text.includes('<entry') ||
         text.includes('<rss')  || text.includes('<feed')  ||
@@ -313,7 +310,7 @@ async function fetchMortgageRateWidget() {
 
 // ── Auto-init ─────────────────────────────────────────────────────
 function rdlFeedsInit() {
-  const CACHE_VERSION = 'v4';
+  const CACHE_VERSION = 'v7';
   if (localStorage.getItem('rdl_cache_ver') !== CACHE_VERSION) {
     Object.keys(localStorage)
       .filter(k => k.startsWith('rdl_'))
