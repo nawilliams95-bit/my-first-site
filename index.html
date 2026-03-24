@@ -48,10 +48,80 @@
   <link rel="stylesheet" href="css/footer.css">
   <link rel="stylesheet" href="css/mobile.css">
 
+  <style>
+    .home-hero{padding:80px 0 60px;text-align:center}
+    .hero-eyebrow{font-size:.75rem;font-weight:700;letter-spacing:.1em;
+      text-transform:uppercase;color:var(--accent-teal,#4fd1c5);
+      margin-bottom:16px}
+    .hero-headline{font-size:clamp(2.2rem,5vw,3.5rem);font-weight:800;
+      line-height:1.15;color:var(--text-primary,#fff);margin-bottom:20px}
+    .hero-sub{font-size:1.05rem;color:var(--text-secondary,#aaa);
+      max-width:560px;margin:0 auto 32px;line-height:1.7}
+    .hero-ctas{display:flex;gap:12px;justify-content:center;
+      flex-wrap:wrap}
+    .home-rate-strip{border-top:1px solid var(--border-color,#2a2a3e);
+      border-bottom:1px solid var(--border-color,#2a2a3e);
+      padding:20px 0;background:rgba(255,255,255,.02)}
+    .rate-strip-row{display:flex;align-items:center;gap:24px;
+      flex-wrap:wrap}
+    .rate-strip-item{display:flex;flex-direction:column;gap:2px}
+    .rate-strip-label{font-size:.65rem;font-weight:700;
+      letter-spacing:.08em;text-transform:uppercase;
+      color:var(--text-secondary,#888)}
+    .rate-strip-value{font-size:1.3rem;font-weight:700;
+      color:var(--text-primary,#fff);
+      font-family:'JetBrains Mono',monospace}
+    .rate-strip-divider{width:1px;height:36px;
+      background:var(--border-color,#2a2a3e)}
+    .rate-strip-cta{margin-left:auto;font-size:.85rem;
+      color:var(--accent-teal,#4fd1c5);text-decoration:none;
+      font-weight:600;white-space:nowrap}
+    .home-feed-section{padding:48px 0;
+      border-bottom:1px solid var(--border-color,#2a2a3e)}
+    .home-section-header{display:flex;align-items:baseline;
+      justify-content:space-between;margin-bottom:24px}
+    .home-section-header h2{font-size:1.3rem;font-weight:700;
+      color:var(--text-primary,#fff)}
+    .view-all-link{font-size:.85rem;color:var(--accent-teal,#4fd1c5);
+      text-decoration:none;font-weight:600}
+    .home-preview-grid{display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+      gap:16px}
+    .preview-skeleton{height:220px;border-radius:10px}
+    .preview-card{display:block;text-decoration:none;
+      border:1px solid var(--border-color,#2a2a3e);border-radius:10px;
+      overflow:hidden;transition:border-color .2s;
+      background:rgba(255,255,255,.03)}
+    .preview-card:hover{border-color:var(--accent-teal,#4fd1c5)}
+    .preview-card-img{width:100%;height:160px;object-fit:cover;
+      display:block}
+    .preview-card-img-placeholder{width:100%;height:160px;
+      background:linear-gradient(135deg,
+        rgba(79,209,197,.08),rgba(15,52,96,.4));
+      display:flex;align-items:center;justify-content:center}
+    .preview-card-body{padding:14px 16px}
+    .preview-card-source{font-size:.65rem;font-weight:700;
+      text-transform:uppercase;letter-spacing:.06em;
+      color:var(--accent-teal,#4fd1c5);margin-bottom:6px;display:block}
+    .preview-card-title{font-size:.9rem;font-weight:600;
+      color:var(--text-primary,#fff);line-height:1.4;
+      margin-bottom:6px;display:block}
+    .preview-card-date{font-size:.72rem;color:var(--text-secondary,#888);
+      display:block}
+    .home-agent-section{padding:60px 0;
+      border-bottom:1px solid var(--border-color,#2a2a3e)}
+    .home-agent-inner{display:grid;
+      grid-template-columns:1fr 340px;gap:48px;align-items:start}
+    @media(max-width:768px){.home-agent-inner{grid-template-columns:1fr}}
+    .home-form-side h2{font-size:1.5rem;font-weight:700;
+      color:var(--text-primary,#fff);margin-bottom:10px}
+    .home-form-side>p{color:var(--text-secondary,#aaa);
+      font-size:.9rem;margin-bottom:24px;line-height:1.6}
+  </style>
 </head>
 <body>
 
-  <!-- ═══════════════════════════════════════════════════════════ HEADER -->
+  <!-- HEADER -->
   <header class="site-header">
     <div class="header-inner">
       <a href="index.html" class="header-logo">
@@ -78,83 +148,87 @@
     <a href="contact.html" class="btn-primary mobile-cta">Contact Agent</a>
   </div>
 
-  <!-- ═══════════════════════════════════════════════════════════ TICKER -->
+  <!-- TICKER -->
   <div class="ticker-bar" aria-label="Live market data">
     <div class="ticker-inner">
       <div class="ticker-track" id="ticker-track"></div>
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════════════════ HERO -->
+  <!-- HERO -->
   <section class="home-hero">
     <div class="container">
-      <div class="hero-eyebrow">Real Estate Intelligence — Free, Always</div>
-      <h1>The Data Behind<br>Every Smart Move</h1>
-      <p class="hero-sub">Live mortgage rates, housing market news, and investment data — aggregated from the most trusted sources in real estate. No paywall. No signup.</p>
-      <div class="hero-actions">
+      <p class="hero-eyebrow">Free Real Estate Intelligence</p>
+      <h1 class="hero-headline">The Data Behind<br>Every Smart Move</h1>
+      <p class="hero-sub">Live mortgage rates, housing market news, and investment data from the most trusted sources in real estate. No paywall. No signup. Always free.</p>
+      <div class="hero-ctas">
         <a href="market-data.html" class="btn-primary">Real Estate News</a>
+        <a href="rates-market-data.html" class="btn-outline">Live Rate Data</a>
         <a href="contact.html" class="btn-outline">Talk to an Agent</a>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════════════════════════════════════════════════════ RATE STRIP -->
-  <section class="rate-strip">
+  <!-- LIVE RATE STRIP -->
+  <section class="home-rate-strip">
     <div class="container">
-      <div class="rate-strip-inner">
-        <div class="rate-item">
-          <span class="rate-label">30-Year Fixed</span>
-          <span class="rate-value" id="rate30-display">—</span>
+      <div class="rate-strip-row">
+        <div class="rate-strip-item">
+          <span class="rate-strip-label">30-Year Fixed</span>
+          <span class="rate-strip-value" id="rate30-display">—</span>
         </div>
-        <div class="rate-item">
-          <span class="rate-label">15-Year Fixed</span>
-          <span class="rate-value" id="rate15-display">—</span>
+        <div class="rate-strip-divider"></div>
+        <div class="rate-strip-item">
+          <span class="rate-strip-label">15-Year Fixed</span>
+          <span class="rate-strip-value" id="rate15-display">—</span>
         </div>
-        <div class="rate-item">
-          <span class="rate-label">Source</span>
-          <span class="rate-value" style="font-size:0.75rem;color:var(--text-secondary)">Freddie Mac / FRED</span>
+        <div class="rate-strip-divider"></div>
+        <div class="rate-strip-item">
+          <span class="rate-strip-label">Source</span>
+          <span class="rate-strip-value" style="font-size:0.75rem;opacity:0.7">Freddie Mac / FRED</span>
         </div>
-        <a href="rates-market-data.html" class="rate-strip-link">
-          Full Rate Data &rarr;
-        </a>
+        <a href="rates-market-data.html" class="rate-strip-cta">Full Rate Dashboard &rarr;</a>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════════════════════════════════════════════════════ NEWS PREVIEW -->
-  <section class="home-section">
+  <!-- REAL ESTATE NEWS PREVIEW -->
+  <section class="home-feed-section">
     <div class="container">
-      <div class="section-header">
+      <div class="home-section-header">
         <h2>Real Estate News</h2>
-        <a href="market-data.html" class="section-view-all">View All &rarr;</a>
+        <a href="market-data.html" class="view-all-link">View All &rarr;</a>
       </div>
-      <div class="preview-grid" id="homepage-news-preview">
-        <!-- Populated by feeds.js loadHomepagePreview() -->
+      <div class="home-preview-grid" id="homepage-news-preview">
+        <div class="preview-skeleton skeleton"></div>
+        <div class="preview-skeleton skeleton" style="height:220px"></div>
+        <div class="preview-skeleton skeleton" style="height:220px"></div>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════════════════════════════════════════════════════ INVESTMENT PREVIEW -->
-  <section class="home-section">
+  <!-- INVESTMENT PREVIEW -->
+  <section class="home-feed-section">
     <div class="container">
-      <div class="section-header">
+      <div class="home-section-header">
         <h2>Investment &amp; Rental</h2>
-        <a href="investment-rental.html" class="section-view-all">View All &rarr;</a>
+        <a href="investment-rental.html" class="view-all-link">View All &rarr;</a>
       </div>
-      <div class="preview-grid" id="homepage-invest-preview">
-        <!-- Populated by feeds.js loadHomepagePreview() -->
+      <div class="home-preview-grid" id="homepage-invest-preview">
+        <div class="preview-skeleton skeleton" style="height:220px"></div>
+        <div class="preview-skeleton skeleton" style="height:220px"></div>
+        <div class="preview-skeleton skeleton" style="height:220px"></div>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════════════════════════════════════════════════════ AGENT LEAD CAPTURE -->
-  <section class="home-section home-section-dark">
+  <!-- AGENT LEAD FORM -->
+  <section class="home-agent-section">
     <div class="container">
-      <div class="agent-split">
-
-        <div class="agent-form-side">
+      <div class="home-agent-inner">
+        <div class="home-form-side">
           <h2>Connect With a Licensed Agent</h2>
-          <p>Submit your information and Nick Williams, REALTOR&reg; at KW Elevate, will reach out within 24 hours.</p>
+          <p>Nick Williams, REALTOR® at KW Elevate, serves buyers, sellers, and investors across North Georgia. Submit your information and he will reach out within 24 hours.</p>
 
           <form id="lead-form" class="lead-form-wrap" novalidate>
             <!-- Web3Forms -->
@@ -224,64 +298,62 @@
           <p class="lead-disclosure">By submitting this form you consent to be contacted by a licensed real estate agent. The author of this site is a licensed real estate agent in the State of Georgia. License number: 447455.</p>
         </div>
 
-        <div class="agent-card-side">
-          <div class="agent-card">
-            <img src="images/nick-williams.jpeg"
-                 alt="Nick Williams — REALTOR®"
-                 class="agent-photo"
-                 onerror="this.style.display='none'">
-            <h3 class="agent-name">Nick Williams</h3>
-            <p class="agent-title">REALTOR® — KW Elevate</p>
-            <p class="agent-location">Blue Ridge, GA 30513</p>
-            <div class="agent-details">
-              <div class="agent-detail-row">
-                <span class="agent-detail-label">Office</span>
-                <a href="tel:+17066238186" class="agent-detail-value">(706) 623-8186</a>
-              </div>
-              <div class="agent-detail-row">
-                <span class="agent-detail-label">Mobile</span>
-                <a href="tel:+17069945670" class="agent-detail-value">(706) 994-5670</a>
-              </div>
-              <div class="agent-detail-row">
-                <span class="agent-detail-label">Email</span>
-                <a href="mailto:nicholaswilliams@kw.com" class="agent-detail-value">nicholaswilliams@kw.com</a>
-              </div>
-              <div class="agent-detail-row">
-                <span class="agent-detail-label">Website</span>
-                <a href="https://nicknorthga.com" target="_blank" rel="noopener" class="agent-detail-value">nicknorthga.com</a>
-              </div>
-              <div class="agent-detail-row">
-                <span class="agent-detail-label">License</span>
-                <span class="agent-detail-value">447455 — Georgia</span>
-              </div>
+        <div class="agent-card">
+          <img src="images/nick-williams.jpeg"
+               alt="Nick Williams — REALTOR®"
+               class="agent-photo"
+               onerror="this.style.display='none'">
+          <h3 class="agent-name">Nick Williams</h3>
+          <p class="agent-title">REALTOR® — KW Elevate</p>
+          <p class="agent-location">Blue Ridge, GA 30513</p>
+          <div class="agent-details">
+            <div class="agent-detail-row">
+              <span class="agent-detail-label">Office</span>
+              <a href="tel:+17066238186" class="agent-detail-value">(706) 623-8186</a>
             </div>
-            <div class="agent-social">
-              <a href="https://youtube.com/@realtydatalabs" target="_blank" rel="noopener" aria-label="YouTube" class="agent-social-link">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-                YouTube
-              </a>
-              <a href="https://www.instagram.com/realtydatalabs" target="_blank" rel="noopener" aria-label="Instagram" class="agent-social-link">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                Instagram
-              </a>
-              <a href="https://x.com/realtydatalabs" target="_blank" rel="noopener" aria-label="Twitter/X" class="agent-social-link">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.742l7.737-8.835L1.254 2.25H8.08l4.259 5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                X
-              </a>
-              <a href="https://www.tiktok.com/@realtydatalabs" target="_blank" rel="noopener" aria-label="TikTok" class="agent-social-link">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.88a8.28 8.28 0 004.84 1.54V7.01a4.85 4.85 0 01-1.07-.32z"/></svg>
-                TikTok
-              </a>
+            <div class="agent-detail-row">
+              <span class="agent-detail-label">Mobile</span>
+              <a href="tel:+17069945670" class="agent-detail-value">(706) 994-5670</a>
             </div>
-            <p class="agent-response-time">Typically responds within 24 hours on business days.</p>
+            <div class="agent-detail-row">
+              <span class="agent-detail-label">Email</span>
+              <a href="mailto:nicholaswilliams@kw.com" class="agent-detail-value">nicholaswilliams@kw.com</a>
+            </div>
+            <div class="agent-detail-row">
+              <span class="agent-detail-label">Website</span>
+              <a href="https://nicknorthga.com" target="_blank" rel="noopener" class="agent-detail-value">nicknorthga.com</a>
+            </div>
+            <div class="agent-detail-row">
+              <span class="agent-detail-label">License</span>
+              <span class="agent-detail-value">447455 — Georgia</span>
+            </div>
           </div>
+          <div class="agent-social">
+            <a href="https://youtube.com/@realtydatalabs" target="_blank" rel="noopener" aria-label="YouTube" class="agent-social-link">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+              YouTube
+            </a>
+            <a href="https://www.instagram.com/realtydatalabs" target="_blank" rel="noopener" aria-label="Instagram" class="agent-social-link">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+              Instagram
+            </a>
+            <a href="https://x.com/realtydatalabs" target="_blank" rel="noopener" aria-label="Twitter/X" class="agent-social-link">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.742l7.737-8.835L1.254 2.25H8.08l4.259 5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+              X
+            </a>
+            <a href="https://www.tiktok.com/@realtydatalabs" target="_blank" rel="noopener" aria-label="TikTok" class="agent-social-link">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.88a8.28 8.28 0 004.84 1.54V7.01a4.85 4.85 0 01-1.07-.32z"/></svg>
+              TikTok
+            </a>
+          </div>
+          <p class="agent-response-time">Typically responds within 24 hours on business days.</p>
         </div>
 
       </div>
     </div>
   </section>
 
-  <!-- ═══════════════════════════════════════════════════════════ NEWSLETTER -->
+  <!-- NEWSLETTER -->
   <section class="newsletter-section">
     <div class="newsletter-inner">
       <h2>Stay Ahead of the Market</h2>
@@ -300,31 +372,20 @@
     </div>
   </section>
 
-  <!-- ═══════════════════════════════════════════════════════════ AFFILIATE RESOURCES -->
-  <div style="background:rgba(18,18,26,0.8);border-top:1px solid var(--border-color);padding:40px 0;">
+  <!-- AFFILIATE RESOURCES -->
+  <div style="background:rgba(18,18,26,0.8);border-top:1px solid var(--border-color,#2a2a3e);padding:32px 0">
     <div class="container">
-      <p style="font-size:0.7rem;color:var(--text-secondary);margin-bottom:16px;opacity:0.75;">
-        Advertising Disclosure: Affiliate partnerships below.
-      </p>
-      <h3 style="color:var(--text-primary);margin-bottom:16px">Recommended Resources</h3>
-      <div style="display:flex;flex-wrap:wrap;gap:12px;">
-        <a href="https://www.lendingtree.com/home/mortgage/" target="_blank" rel="noopener sponsored" class="btn-outline" style="font-size:0.85rem;">
-          Compare Mortgage Rates &mdash; LendingTree
-        </a>
-        <a href="https://propstream.com/" target="_blank" rel="noopener sponsored" class="btn-outline" style="font-size:0.85rem;">
-          Find Investment Properties &mdash; PropStream
-        </a>
-        <a href="https://dealcheck.io/" target="_blank" rel="noopener sponsored" class="btn-outline" style="font-size:0.85rem;">
-          Analyze Deals &mdash; DealCheck
-        </a>
-        <a href="https://www.colibrilearning.com/" target="_blank" rel="noopener sponsored" class="btn-outline" style="font-size:0.85rem;">
-          Get Licensed &mdash; Colibri Real Estate
-        </a>
+      <p style="font-size:0.7rem;color:var(--text-secondary,#666);margin-bottom:14px">Advertising Disclosure: Affiliate partnerships. We may earn a commission at no cost to you.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:10px">
+        <a href="https://www.lendingtree.com/home/mortgage/" target="_blank" rel="noopener sponsored" class="btn-outline" style="font-size:0.85rem">Compare Rates — LendingTree</a>
+        <a href="https://propstream.com/" target="_blank" rel="noopener sponsored" class="btn-outline" style="font-size:0.85rem">Find Deals — PropStream</a>
+        <a href="https://dealcheck.io/" target="_blank" rel="noopener sponsored" class="btn-outline" style="font-size:0.85rem">Analyze Deals — DealCheck</a>
+        <a href="https://www.colibrilearning.com/" target="_blank" rel="noopener sponsored" class="btn-outline" style="font-size:0.85rem">Get Licensed — Colibri</a>
       </div>
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════════════════ FOOTER -->
+  <!-- FOOTER -->
   <footer class="site-footer">
     <div class="footer-grid">
       <div class="footer-col">
@@ -384,11 +445,97 @@
     </div>
   </footer>
 
-  <!-- ═══════════════════════════════════════════════════════════ SCRIPTS -->
+  <!-- SCRIPTS -->
   <script data-cfasync="false" src="js/cards.js"></script>
   <script data-cfasync="false" src="js/search.js"></script>
   <script data-cfasync="false" src="js/feeds.js"></script>
   <script data-cfasync="false" src="js/main.js" defer></script>
   <script data-cfasync="false" src="js/ticker.js" defer></script>
+
+  <script data-cfasync="false">
+  (function(){
+    const W='https://rss-proxy.nawilliams95.workers.dev/?url=';
+    const K='4f73d187e5b0e664e9447b7d92972edc';
+
+    async function loadPreview(feedUrl,containerId,limit){
+      const el=document.getElementById(containerId);
+      if(!el)return;
+      try{
+        const fetchUrl=feedUrl.startsWith('https://rss-proxy')
+          ?feedUrl:W+encodeURIComponent(feedUrl);
+        const res=await fetch(fetchUrl);
+        if(!res.ok)return;
+        const text=await res.text();
+        const xml=new DOMParser().parseFromString(text,'text/xml');
+        if(xml.querySelector('parsererror'))return;
+        const items=Array.from(
+          xml.querySelectorAll('item').length
+            ?xml.querySelectorAll('item')
+            :xml.querySelectorAll('entry')
+        ).slice(0,limit);
+        if(!items.length)return;
+        const ns='http://search.yahoo.com/mrss/';
+        el.innerHTML=items.map(item=>{
+          const title=(item.querySelector('title')?.textContent||'').trim();
+          const linkEl=item.querySelector('link');
+          const link=linkEl?.getAttribute('href')||linkEl?.textContent?.trim()||'#';
+          const dateStr=item.querySelector('pubDate,published')?.textContent||'';
+          const date=dateStr?new Date(dateStr).toLocaleDateString('en-US',
+            {month:'short',day:'numeric',year:'numeric'}):'';
+          const mc=item.getElementsByTagNameNS(ns,'content')[0]||
+                    item.getElementsByTagNameNS(ns,'thumbnail')[0];
+          const enc=item.querySelector('enclosure[type^="image"]');
+          let img=mc?.getAttribute('url')||enc?.getAttribute('url')||null;
+          if(!img){
+            const d=item.querySelector('description,summary')?.textContent||'';
+            const m=d.match(/<img[^>]+src=["']([^"']+)["']/i);
+            if(m&&m[1].startsWith('http'))img=m[1];
+          }
+          let src='';
+          try{src=new URL(feedUrl).hostname.replace('www.','');}catch(e){}
+          return`<a href="${link}" target="_blank" rel="noopener" class="preview-card">
+            ${img
+              ?`<img src="${img}" class="preview-card-img" loading="lazy" alt=""
+                     onerror="this.parentElement.classList.add('no-img');this.style.display='none'">`
+              :`<div class="preview-card-img-placeholder">
+                  <span style="font-size:.65rem;font-weight:700;text-transform:uppercase;
+                    letter-spacing:.08em;color:rgba(79,209,197,.7)">${src}</span>
+                 </div>`
+            }
+            <div class="preview-card-body">
+              <span class="preview-card-source">${src}</span>
+              <span class="preview-card-title">${title}</span>
+              <span class="preview-card-date">${date}</span>
+            </div>
+          </a>`;
+        }).join('');
+      }catch(e){console.warn('[RDL]Preview failed',e.message);}
+    }
+
+    async function loadRates(){
+      async function fred(s){
+        try{
+          const r=await fetch(
+            `https://api.stlouisfed.org/fred/series/observations`+
+            `?series_id=${s}&api_key=${K}&file_type=json&sort_order=desc&limit=1`);
+          const d=await r.json();
+          const obs=(d.observations||[]).filter(o=>o.value!=='.');
+          return obs[0]?.value?parseFloat(obs[0].value).toFixed(2)+'%':null;
+        }catch(e){return null;}
+      }
+      const[r30,r15]=await Promise.all([fred('MORTGAGE30US'),fred('MORTGAGE15US')]);
+      const e30=document.getElementById('rate30-display');
+      const e15=document.getElementById('rate15-display');
+      if(e30)e30.textContent=r30||'—';
+      if(e15)e15.textContent=r15||'—';
+    }
+
+    document.addEventListener('DOMContentLoaded',function(){
+      loadPreview('https://www.redfin.com/blog/feed','homepage-news-preview',3);
+      loadPreview('https://www.fortunebuilders.com/feed/','homepage-invest-preview',3);
+      loadRates();
+    });
+  })();
+  </script>
 </body>
 </html>
