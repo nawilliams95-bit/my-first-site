@@ -321,34 +321,10 @@
   </footer>
 
   <!-- SCRIPTS -->
-  <script src="js/ticker.js" defer></script>
-  <script src="js/feeds.js" defer></script>
-  <script src="js/cards.js" defer></script>
-  <script src="js/search.js" defer></script>
-  <script src="js/main.js" defer></script>
-
-  <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const lastEl = document.getElementById('last-updated');
-    if (lastEl) lastEl.textContent = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  });
-  </script>
-
-  <!-- Twitter Widgets -->
-  <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  var yearEls = document.querySelectorAll('.copyright-year');
-  yearEls.forEach(function(el) { el.textContent = new Date().getFullYear(); });
-  if (yearEls.length === 0) {
-    var footer = document.querySelector('footer');
-    if (footer) {
-      var text = footer.innerHTML;
-      footer.innerHTML = text.replace('©  RealtyDataLabs', '© ' + new Date().getFullYear() + ' RealtyDataLabs');
-    }
-  }
-});
-</script>
+  <script data-cfasync="false" src="js/cards.js"></script>
+  <script data-cfasync="false" src="js/search.js"></script>
+  <script data-cfasync="false" src="js/feeds.js"></script>
+  <script data-cfasync="false" src="js/main.js" defer></script>
+  <script data-cfasync="false" src="js/ticker.js" defer></script>
 </body>
 </html>
