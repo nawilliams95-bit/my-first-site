@@ -33,32 +33,35 @@ const RSS_CONFIG = {
 };
 
 // ── Proxy fetch via RealtyDataLabs Cloudflare Worker ─────────────
-const RDL_PROXY = 'https://rss-proxy.nawilliams95.workers.dev';
-
 async function fetchWithProxy(url) {
-  const proxyUrl = `${RDL_PROXY}/?url=${encodeURIComponent(url)}`;
+  // Use our own Cloudflare Worker proxy — no rate limits, no CORS issues
+  const WORKER_PROXY = 'https://rss-proxy.nawilliams95.workers.dev/?url=';
+
   try {
     const ctrl = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), 10000);
-    const res = await fetch(proxyUrl, { signal: ctrl.signal });
+    const res = await fetch(WORKER_PROXY + encodeURIComponent(url), {
+      signal: ctrl.signal
+    });
     clearTimeout(timer);
+
     if (!res.ok) {
-      console.warn('[RDL] Proxy returned', res.status, 'for', url);
+      console.warn('[RDL] Worker proxy returned', res.status, 'for', url);
       return null;
     }
+
     const text = await res.text();
-    if (text && (
-      text.includes('<item') || text.includes('<entry') ||
-      text.includes('<rss')  || text.includes('<feed')  ||
-      text.includes('<channel')
-    )) {
-      console.log('[RDL] OK via worker for', new URL(url).hostname);
+    if (text && (text.includes('<item') || text.includes('<entry') ||
+                 text.includes('<rss') || text.includes('<feed'))) {
+      console.log('[RDL] OK via Cloudflare Worker for', new URL(url).hostname);
       return text;
     }
-    console.warn('[RDL] Worker response not valid RSS for:', url);
+
+    console.warn('[RDL] Invalid RSS from worker for', url);
     return null;
+
   } catch(e) {
-    console.warn('[RDL] Worker fetch failed for:', url, e.message);
+    console.warn('[RDL] Worker proxy failed for', url, e.message);
     return null;
   }
 }
