@@ -3,15 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <!-- Performance: resource hints -->
-  <link rel="preconnect" href="https://corsproxy.io" crossorigin>
-  <link rel="dns-prefetch" href="https://corsproxy.io">
-  <link rel="dns-prefetch" href="https://api.allorigins.win">
+  <link rel="preconnect" href="https://rss-proxy.nawilliams95.workers.dev" crossorigin>
+  <link rel="dns-prefetch" href="https://api.stlouisfed.org">
   <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RealtyDataLabs — Real Estate Market Intelligence</title>
   <meta name="description" content="Free real estate market intelligence for buyers, sellers, and investors. Live mortgage rates, housing news, and investment data — always free, no signup required.">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://realtydatalabs.com/index.html">
+  <link rel="canonical" href="https://realtydatalabs.com/">
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
@@ -34,7 +33,7 @@
     gtag('config', 'G-96MTQL2F8G');
   </script>
 
-    <!-- Google Fonts -->
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -87,182 +86,160 @@
   </div>
 
   <!-- ═══════════════════════════════════════════════════════════ HERO -->
-  <section class="hero-section">
+  <section class="home-hero">
     <div class="container">
-      <div class="breaking-label">
-        <span class="breaking-dot"></span>
-        Breaking Headlines
-      </div>
-      <div class="hero-grid">
-        <div class="hero-top" id="hero-grid"></div>
-      </div>
-      <div class="hero-bottom" id="hero-bottom"></div>
-    </div>
-  </section>
-
-  <!-- ═══════════════════════════════════════════════════════════ MARKET DATA -->
-  <section class="home-section">
-    <div class="container">
-      <div class="section-header">
-        <h2>Market Data</h2>
-        <a href="market-data.html" class="view-all">View All</a>
-      </div>
-      <div class="grid-3" id="market-data-feed"></div>
-
-      <!-- Affiliate: Mortgage Lender Comparison -->
-      <div class="affiliate-banner">
-        <div class="affiliate-banner-text">
-          <h3>Compare Top Mortgage Lenders</h3>
-          <p>Find the best rates for your purchase or refinance. Compare lenders side by side and get personalized quotes.</p>
-          <span class="affiliate-badge">Sponsored | Advertising Disclosure</span>
-        </div>
-        <!-- AFFILIATE: LendingTree — get tracking URL at ltpartners.com after approval -->
-        <a href="https://lendingtree.com" target="_blank" class="btn-primary" rel="nofollow noopener sponsored">Compare Rates &rarr;</a>
+      <div class="hero-eyebrow">Real Estate Intelligence — Free, Always</div>
+      <h1>The Data Behind<br>Every Smart Move</h1>
+      <p class="hero-sub">Live mortgage rates, housing market news, and investment data — aggregated from the most trusted sources in real estate. No paywall. No signup.</p>
+      <div class="hero-actions">
+        <a href="market-data.html" class="btn-primary">Real Estate News</a>
+        <a href="contact.html" class="btn-outline">Talk to an Agent</a>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════════════════════════════════════════════════════ MORTGAGE & RATES -->
-  <section class="home-section">
+  <!-- ═══════════════════════════════════════════════════════════ RATE STRIP -->
+  <section class="rate-strip">
     <div class="container">
-      <div class="section-header">
-        <h2>Mortgage &amp; Rates</h2>
-        <a href="mortgage-rates.html" class="view-all">View All</a>
-      </div>
-      <div class="grid-3" id="mortgage-rates-feed"></div>
-
-      <!-- Live Rates Strip -->
-      <div class="rates-strip" aria-label="Current mortgage rates">
+      <div class="rate-strip-inner">
         <div class="rate-item">
           <span class="rate-label">30-Year Fixed</span>
-          <span class="rate-value font-mono" id="rate30-display">&mdash;</span>
+          <span class="rate-value" id="rate30-display">—</span>
         </div>
-        <div class="rate-divider" role="separator"></div>
         <div class="rate-item">
           <span class="rate-label">15-Year Fixed</span>
-          <span class="rate-value font-mono" id="rate15-display">&mdash;</span>
+          <span class="rate-value" id="rate15-display">—</span>
         </div>
-        <div class="rate-divider" role="separator"></div>
         <div class="rate-item">
           <span class="rate-label">Source</span>
-          <span class="rate-value" style="font-size:0.9rem; color: var(--text-secondary);">Freddie Mac PMMS</span>
+          <span class="rate-value" style="font-size:0.75rem;color:var(--text-secondary)">Freddie Mac / FRED</span>
         </div>
-        <div class="rate-divider" role="separator"></div>
-        <a href="mortgage-rates.html" class="btn-outline" style="font-size:0.8rem; padding:9px 20px;">Full Rate Trends</a>
+        <a href="mortgage-rates.html" class="rate-strip-link">
+          Full Rate Data &rarr;
+        </a>
       </div>
     </div>
   </section>
 
-
-  <!-- ═══════════════════════════════════════════════════════════ AFFILIATE BANNER FULL WIDTH -->
-  <div style="background: rgba(18,18,26,0.8); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); padding: 40px 0;">
+  <!-- ═══════════════════════════════════════════════════════════ NEWS PREVIEW -->
+  <section class="home-section">
     <div class="container">
-      <div class="affiliate-banner" style="margin: 0;">
-        <div class="affiliate-banner-text">
-          <h3>Start Investing in Real Estate with Confidence</h3>
-          <p>Access investment property data, rental comps, and deal analysis tools trusted by thousands of investors.</p>
-          <span class="affiliate-badge">Sponsored | Advertising Disclosure</span>
-        </div>
-        <div style="display:flex; gap:12px; flex-wrap:wrap;">
-          <!-- AFFILIATE: PropStream — get tracking URL at propstream.com/affiliates after approval -->
-          <a href="https://propstream.com" target="_blank" class="btn-primary" rel="nofollow noopener sponsored">PropStream &rarr;</a>
-          <!-- AFFILIATE: DealMachine — get tracking URL at dealmachine.com affiliates after approval -->
-          <a href="https://dealmachine.com" target="_blank" class="btn-outline" rel="nofollow noopener sponsored">DealMachine &rarr;</a>
-        </div>
+      <div class="section-header">
+        <h2>Real Estate News</h2>
+        <a href="market-data.html" class="section-view-all">View All &rarr;</a>
+      </div>
+      <div class="preview-grid" id="homepage-news-preview">
+        <!-- Populated by feeds.js loadHomepagePreview() -->
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- ═══════════════════════════════════════════════════════════ INVESTMENT & RENTAL -->
+  <!-- ═══════════════════════════════════════════════════════════ INVESTMENT PREVIEW -->
   <section class="home-section">
     <div class="container">
       <div class="section-header">
         <h2>Investment &amp; Rental</h2>
-        <a href="investment-rental.html" class="view-all">View All</a>
+        <a href="investment-rental.html" class="section-view-all">View All &rarr;</a>
       </div>
-      <div class="grid-3" id="investment-rental-feed"></div>
-      <p style="font-size:var(--size-tiny); color:rgba(160,160,176,0.45); margin-top:16px; text-align:right;">
-        Investment property tools: PropStream and DealMachine links above are affiliate partnerships. Advertising Disclosure.
-      </p>
+      <div class="preview-grid" id="homepage-invest-preview">
+        <!-- Populated by feeds.js loadHomepagePreview() -->
+      </div>
     </div>
   </section>
 
-  <!-- ═══════════════════════════════════════════════════════════ LEAD CAPTURE -->
-  <section class="lead-section" id="connect">
-    <div class="lead-inner">
-      <h2>Connect With a Licensed Agent</h2>
-      <p>Submit your information below and a licensed Georgia real estate agent will reach out within 24 hours.</p>
+  <!-- ═══════════════════════════════════════════════════════════ AGENT LEAD CAPTURE -->
+  <section class="home-section home-section-dark">
+    <div class="container">
+      <div class="agent-split">
 
-      <form id="lead-form" class="lead-form-wrap" novalidate>
-        <!-- Web3Forms: get your free access key at https://web3forms.com -->
-        <input type="hidden" name="access_key" value="7f4b72d6-e68a-42ff-807b-ba1b43284937">
-        <input type="hidden" name="subject" value="New Lead — RealtyDataLabs">
-        <input type="hidden" name="from_name" value="RealtyDataLabs">
-        <input type="checkbox" name="botcheck" style="display:none;">
-        <div class="form-grid-2">
-          <div class="form-group">
-            <label class="form-label" for="full-name">Full Name <span class="required">*</span></label>
-            <input class="form-input" type="text" id="full-name" name="fullName" placeholder="Jane Smith" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="email">Email Address <span class="required">*</span></label>
-            <input class="form-input" type="email" id="email" name="email" placeholder="jane@example.com" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="phone">Phone Number</label>
-            <input class="form-input" type="tel" id="phone" name="phone" placeholder="(555) 000-0000">
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="intent">I Am <span class="required">*</span></label>
-            <select class="form-select" id="intent" name="intent" required>
-              <option value="" disabled selected>Select one</option>
-              <option value="buying">Buying</option>
-              <option value="selling">Selling</option>
-              <option value="investing">Investing</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="market">Market or Location <span class="required">*</span></label>
-            <input class="form-input" type="text" id="market" name="market" placeholder="City, State or ZIP" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="timeline">Timeline</label>
-            <select class="form-select" id="timeline" name="timeline">
-              <option value="" disabled selected>Select timeline</option>
-              <option value="immediately">Immediately</option>
-              <option value="1-3months">1&ndash;3 Months</option>
-              <option value="3-6months">3&ndash;6 Months</option>
-              <option value="6-12months">6&ndash;12 Months</option>
-              <option value="researching">Just Researching</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="price-range">Price Range</label>
-            <select class="form-select" id="price-range" name="priceRange">
-              <option value="" disabled selected>Select range</option>
-              <option value="under200k">Under $200K</option>
-              <option value="200-400k">$200K &ndash; $400K</option>
-              <option value="400-600k">$400K &ndash; $600K</option>
-              <option value="600k-1m">$600K &ndash; $1M</option>
-              <option value="over1m">Over $1M</option>
-            </select>
-          </div>
-          <div class="form-group" style="grid-column:1/-1">
-            <label class="form-label" for="notes">Additional Notes</label>
-            <textarea class="form-textarea" id="notes" name="notes" placeholder="Any additional details about your situation..."></textarea>
+        <div class="agent-form-side">
+          <h2>Connect With a Licensed Agent</h2>
+          <p>Submit your information and Nick Williams, REALTOR&reg; at KW Elevate, will reach out within 24 hours.</p>
+
+          <form id="lead-form" class="lead-form-wrap" novalidate>
+            <!-- Web3Forms -->
+            <input type="hidden" name="access_key" value="7f4b72d6-e68a-42ff-807b-ba1b43284937">
+            <input type="hidden" name="subject" value="New Lead — RealtyDataLabs">
+            <input type="hidden" name="from_name" value="RealtyDataLabs">
+            <input type="checkbox" name="botcheck" style="display:none;">
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label" for="full-name">Full Name <span class="required">*</span></label>
+                <input class="form-input" type="text" id="full-name" name="fullName" placeholder="Jane Smith" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="email">Email Address <span class="required">*</span></label>
+                <input class="form-input" type="email" id="email" name="email" placeholder="jane@example.com" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="phone">Phone Number</label>
+                <input class="form-input" type="tel" id="phone" name="phone" placeholder="(555) 000-0000">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="intent">I Am <span class="required">*</span></label>
+                <select class="form-select" id="intent" name="intent" required>
+                  <option value="" disabled selected>Select one</option>
+                  <option value="buying">Buying</option>
+                  <option value="selling">Selling</option>
+                  <option value="investing">Investing</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="market">Market or Location <span class="required">*</span></label>
+                <input class="form-input" type="text" id="market" name="market" placeholder="City, State or ZIP" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="timeline">Timeline</label>
+                <select class="form-select" id="timeline" name="timeline">
+                  <option value="" disabled selected>Select timeline</option>
+                  <option value="immediately">Immediately</option>
+                  <option value="1-3months">1&ndash;3 Months</option>
+                  <option value="3-6months">3&ndash;6 Months</option>
+                  <option value="6-12months">6&ndash;12 Months</option>
+                  <option value="researching">Just Researching</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="price-range">Price Range</label>
+                <select class="form-select" id="price-range" name="priceRange">
+                  <option value="" disabled selected>Select range</option>
+                  <option value="under200k">Under $200K</option>
+                  <option value="200-400k">$200K &ndash; $400K</option>
+                  <option value="400-600k">$400K &ndash; $600K</option>
+                  <option value="600k-1m">$600K &ndash; $1M</option>
+                  <option value="over1m">Over $1M</option>
+                </select>
+              </div>
+              <div class="form-group" style="grid-column:1/-1">
+                <label class="form-label" for="notes">Additional Notes</label>
+                <textarea class="form-textarea" id="notes" name="notes" placeholder="Any additional details about your situation..."></textarea>
+              </div>
+            </div>
+            <button type="submit" class="form-submit">
+              <span class="btn-text">Connect With an Agent</span>
+              <span class="spinner"></span>
+            </button>
+            <div id="form-status" class="form-status"></div>
+          </form>
+          <p class="lead-disclosure">By submitting this form you consent to be contacted by a licensed real estate agent. The author of this site is a licensed real estate agent in the State of Georgia. License number: 447455.</p>
+        </div>
+
+        <div class="agent-card-side">
+          <div class="agent-profile-card">
+            <div class="agent-photo">
+              <img src="images/nick-williams.jpeg" alt="Nick Williams" onerror="this.style.display='none'">
+            </div>
+            <h3>Nick Williams</h3>
+            <p>REALTOR&reg; &mdash; KW Elevate</p>
+            <p>Blue Ridge, GA</p>
+            <a href="https://nicknorthga.com" target="_blank" rel="noopener">nicknorthga.com</a>
+            <a href="tel:+17069945670">(706) 994-5670</a>
           </div>
         </div>
-        <button type="submit" class="form-submit">
-          <span class="btn-text">Connect With an Agent</span>
-          <span class="spinner"></span>
-        </button>
-        <div id="form-status" class="form-status"></div>
-      </form>
-      <p class="lead-disclosure">By submitting this form you consent to be contacted by a licensed real estate agent. The author of this site is a licensed real estate agent in the State of Georgia. License number: 447455.</p>
+
+      </div>
     </div>
   </section>
-
-
 
   <!-- ═══════════════════════════════════════════════════════════ NEWSLETTER -->
   <section class="newsletter-section">
@@ -270,7 +247,7 @@
       <h2>Stay Ahead of the Market</h2>
       <p>Get the most important real estate, mortgage, and economic data delivered to your inbox every week. Free, always.</p>
       <form class="newsletter-form" id="newsletter-form" novalidate>
-        <!-- Web3Forms: get your free access key at https://web3forms.com -->
+        <!-- Web3Forms -->
         <input type="hidden" name="access_key" value="7f4b72d6-e68a-42ff-807b-ba1b43284937">
         <input type="hidden" name="subject" value="Newsletter Signup — RealtyDataLabs">
         <input type="hidden" name="from_name" value="RealtyDataLabs Newsletter">
@@ -282,6 +259,30 @@
       <div class="newsletter-status" id="newsletter-status" aria-live="polite"></div>
     </div>
   </section>
+
+  <!-- ═══════════════════════════════════════════════════════════ AFFILIATE RESOURCES -->
+  <div style="background:rgba(18,18,26,0.8);border-top:1px solid var(--border-color);padding:40px 0;">
+    <div class="container">
+      <p style="font-size:0.7rem;color:var(--text-secondary);margin-bottom:16px;opacity:0.75;">
+        Advertising Disclosure: Affiliate partnerships below.
+      </p>
+      <h3 style="color:var(--text-primary);margin-bottom:16px">Recommended Resources</h3>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;">
+        <a href="https://www.lendingtree.com/home/mortgage/" target="_blank" rel="noopener sponsored" class="btn-outline" style="font-size:0.85rem;">
+          Compare Mortgage Rates &mdash; LendingTree
+        </a>
+        <a href="https://propstream.com/" target="_blank" rel="noopener sponsored" class="btn-outline" style="font-size:0.85rem;">
+          Find Investment Properties &mdash; PropStream
+        </a>
+        <a href="https://dealcheck.io/" target="_blank" rel="noopener sponsored" class="btn-outline" style="font-size:0.85rem;">
+          Analyze Deals &mdash; DealCheck
+        </a>
+        <a href="https://www.colibrilearning.com/" target="_blank" rel="noopener sponsored" class="btn-outline" style="font-size:0.85rem;">
+          Get Licensed &mdash; Colibri Real Estate
+        </a>
+      </div>
+    </div>
+  </div>
 
   <!-- ═══════════════════════════════════════════════════════════ FOOTER -->
   <footer class="site-footer">
