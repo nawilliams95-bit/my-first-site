@@ -32,38 +32,35 @@ const RSS_CONFIG = {
   }
 };
 
-// ── Multi-proxy fallback fetch ────────────────────────────────────
+// ── Proxy fetch via RealtyDataLabs Cloudflare Worker ─────────────
+const RDL_PROXY = 'https://rss-proxy.nawilliams95.workers.dev';
+
 async function fetchWithProxy(url) {
-  const proxies = [
-    u => `https://corsproxy.io/?url=${encodeURIComponent(u)}`,
-    u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
-    u => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
-    u => `https://thingproxy.freeboard.io/fetch/${u}`,
-  ];
-  // Rotate starting proxy based on URL hash to spread load
-  const startIdx = url.length % proxies.length;
-  const rotated = [...proxies.slice(startIdx), ...proxies.slice(0, startIdx)];
-  for (const proxy of rotated) {
-    try {
-      const ctrl = new AbortController();
-      const timer = setTimeout(() => ctrl.abort(), 8000);
-      const proxyUrl = proxy(url);
-      const res = await fetch(proxyUrl, { signal: ctrl.signal });
-      clearTimeout(timer);
-      if (!res.ok) continue;
-      const text = await res.text();
-      if (text && (
-        text.includes('<item') || text.includes('<entry') ||
-        text.includes('<rss')  || text.includes('<feed')  ||
-        text.includes('<channel')
-      )) {
-        console.log('[RDL] OK via', proxyUrl.split('?')[0], 'for', new URL(url).hostname);
-        return text;
-      }
-    } catch(e) { continue; }
+  const proxyUrl = `${RDL_PROXY}/?url=${encodeURIComponent(url)}`;
+  try {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 10000);
+    const res = await fetch(proxyUrl, { signal: ctrl.signal });
+    clearTimeout(timer);
+    if (!res.ok) {
+      console.warn('[RDL] Proxy returned', res.status, 'for', url);
+      return null;
+    }
+    const text = await res.text();
+    if (text && (
+      text.includes('<item') || text.includes('<entry') ||
+      text.includes('<rss')  || text.includes('<feed')  ||
+      text.includes('<channel')
+    )) {
+      console.log('[RDL] OK via worker for', new URL(url).hostname);
+      return text;
+    }
+    console.warn('[RDL] Worker response not valid RSS for:', url);
+    return null;
+  } catch(e) {
+    console.warn('[RDL] Worker fetch failed for:', url, e.message);
+    return null;
   }
-  console.warn('[RDL] All proxies failed for:', url);
-  return null;
 }
 
 // ── Parse RSS or Atom feed ────────────────────────────────────────
@@ -310,7 +307,7 @@ async function fetchMortgageRateWidget() {
 
 // ── Auto-init ─────────────────────────────────────────────────────
 function rdlFeedsInit() {
-  const CACHE_VERSION = 'v7';
+  const CACHE_VERSION = 'v8';
   if (localStorage.getItem('rdl_cache_ver') !== CACHE_VERSION) {
     Object.keys(localStorage)
       .filter(k => k.startsWith('rdl_'))
