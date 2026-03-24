@@ -1,7 +1,7 @@
 // feeds.js — RealtyDataLabs
 // Cloudflare Worker proxy: rss-proxy.nawilliams95.workers.dev
 
-const CACHE_VERSION = 'v11';
+const CACHE_VERSION = 'v12';
 const CACHE_TTL = 30 * 60 * 1000;
 const WORKER = 'https://rss-proxy.nawilliams95.workers.dev/?url=';
 const FRED_KEY = '4f73d187e5b0e664e9447b7d92972edc';
@@ -11,21 +11,28 @@ const RSS_CONFIG = {
     feeds: [
       'https://www.redfin.com/blog/feed',
       'https://zillow.mediaroom.com/press-releases?pagetemplate=rss&category=816',
-      'https://www.realtor.com/news/feed',
-      'https://keepingcurrentmatters.com/feed'
+      'https://realtytimes.com/archives?format=feed&type=rss',
+      'https://www.nar.realtor/blogs/economists-outlook/feed',
+      'https://keepingcurrentmatters.com/feed',
+      'https://eyeonhousing.org/feed/',
+      'https://www.worldpropertyjournal.com/feed/rss.xml'
     ],
     containerId: 'market-data-feed',
-    cacheKey: 'market-data'
+    cacheKey: 'market-data',
+    filterRelevant: false
   },
   investmentRental: {
     feeds: [
       'https://www.fortunebuilders.com/feed/',
       'https://retipster.com/feed/',
+      'https://www.biggerpockets.com/blog/feed',
       'https://keepingcurrentmatters.com/feed',
-      'https://www.redfin.com/blog/feed'
+      'https://www.apartmentlist.com/research/feed',
+      'https://therealdeal.com/feed/'
     ],
     containerId: 'investment-rental-feed',
-    cacheKey: 'investment-rental'
+    cacheKey: 'investment-rental',
+    filterRelevant: true
   }
 };
 
@@ -63,7 +70,7 @@ async function proxyFetch(url) {
 }
 
 // ── Parse RSS or Atom XML ─────────────────────────────────────────
-function parseXML(text, feedUrl) {
+function parseXML(text, feedUrl, filterRelevant = false) {
   try {
     const xml = new DOMParser().parseFromString(text, 'text/xml');
     if (xml.querySelector('parsererror')) return [];
@@ -117,7 +124,24 @@ function parseXML(text, feedUrl) {
         category,
         verified: true
       };
-    }).filter(a => a.title && a.link);
+    }).filter(a => {
+      if (!a.title || !a.link) return false;
+      if (!filterRelevant) return true;
+      const txt = (a.title + ' ' + (a.excerpt||'')).toLowerCase();
+      const keep = ['invest','rental','rent','landlord','property',
+        'multifamily','cash flow','cashflow','cap rate','roi',
+        'flip','brrrr','deal','market','housing','real estate',
+        'mortgage','appreciation','equity','portfolio',
+        'passive income','tenant','vacancy','airbnb',
+        'short-term rental','str','long-term','duplex',
+        'triplex','fourplex','syndication','wholesal'];
+      const skip = ['celebrity','kardashian','mansion','decor',
+        'design','renovation','diy','kitchen','bathroom',
+        'garden','curb appeal','staging','paint','furniture',
+        'interior','exterior','landscap'];
+      return keep.some(w => txt.includes(w)) &&
+             !skip.some(w => txt.includes(w));
+    });
   } catch(e) { return []; }
 }
 
@@ -165,10 +189,21 @@ function renderArticles(articles, container) {
   // Inline fallback
   container.innerHTML = articles.map(a => `
     <article class="article-card fade-in">
-      ${a.image ? `<div class="card-image-wrap">
-        <img src="${a.image}" loading="lazy" alt=""
-             onerror="this.parentElement.style.display='none'">
-      </div>` : ''}
+      ${a.image
+        ? `<div class="card-image-wrap">
+             <img src="${a.image}" loading="lazy" alt=""
+                  onerror="this.closest('.article-card').classList.add('no-image')">
+           </div>`
+        : `<div class="card-image-placeholder">
+             <span class="card-placeholder-source">${a.source}</span>
+             <span class="card-placeholder-date">${
+               a.pubDate > new Date(0)
+                 ? a.pubDate.toLocaleDateString('en-US',
+                     {month:'short',day:'numeric',year:'numeric'})
+                 : ''
+             }</span>
+           </div>`
+      }
       <div class="card-body">
         <div class="card-meta">
           <span class="badge badge-${a.category}">${a.source}</span>
@@ -216,7 +251,7 @@ async function loadFeeds(config) {
   const results = await Promise.allSettled(
     config.feeds.map(async url => {
       const text = await proxyFetch(url);
-      return text ? parseXML(text, url) : [];
+      return text ? parseXML(text, url, config.filterRelevant) : [];
     })
   );
 

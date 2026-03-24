@@ -71,9 +71,17 @@ function buildCard(article, featured = false) {
          alt=""
          loading="lazy"
          onload="this.classList.add('loaded')"
-         onerror="this.parentElement.innerHTML='<span class=\\"card-image-fallback\\">${cfg.emoji}</span>'"
+         onerror="this.closest('.article-card').classList.add('no-image')"
        />`
-    : `<span class="card-image-fallback">${cfg.emoji}</span>`;
+    : `<div class="card-image-placeholder">
+         <span class="card-placeholder-source">${article.source || ''}</span>
+         <span class="card-placeholder-date">${
+           article.pubDate
+             ? new Date(article.pubDate).toLocaleDateString('en-US',
+                 {month:'short',day:'numeric',year:'numeric'})
+             : ''
+         }</span>
+       </div>`;
 
   const verifiedBadge = article.verified
     ? `<span class="card-verified" title="Verified free source"></span>`
