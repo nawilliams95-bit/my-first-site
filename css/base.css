@@ -529,3 +529,95 @@ button {
     padding: 0 16px;
   }
 }
+
+/* ============================================================
+   AGENT CARD — canonical version used on contact, about, index
+   ============================================================ */
+.agent-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border-color, #2a2a3e);
+  border-radius: 14px;
+  padding: 28px 24px;
+  text-align: center;
+  max-width: 340px;
+}
+.agent-photo {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto 14px;
+  border: 2px solid var(--accent-teal, #4fd1c5);
+}
+.agent-name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary, #fff);
+  margin-bottom: 2px;
+}
+.agent-title {
+  font-size: 0.85rem;
+  color: var(--accent-teal, #4fd1c5);
+  margin-bottom: 2px;
+}
+.agent-location {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #888);
+  margin-bottom: 18px;
+}
+.agent-details {
+  text-align: left;
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.agent-detail-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.agent-detail-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary, #888);
+  min-width: 56px;
+  flex-shrink: 0;
+}
+.agent-detail-value {
+  font-size: 0.85rem;
+  color: var(--text-primary, #ddd);
+  text-decoration: none;
+}
+.agent-detail-value:hover { color: var(--accent-teal, #4fd1c5); }
+.agent-social {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+.agent-social-link {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.75rem;
+  color: var(--text-secondary, #888);
+  text-decoration: none;
+  padding: 4px 10px;
+  border: 1px solid var(--border-color, #2a2a3e);
+  border-radius: 20px;
+  transition: all 0.2s;
+}
+.agent-social-link:hover {
+  color: var(--accent-teal, #4fd1c5);
+  border-color: var(--accent-teal, #4fd1c5);
+}
+.agent-response-time {
+  font-size: 0.72rem;
+  color: var(--text-secondary, #666);
+  margin-top: 4px;
+}
