@@ -2,28 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <!-- Performance: resource hints -->
-  <link rel="preconnect" href="https://corsproxy.io" crossorigin>
-  <link rel="dns-prefetch" href="https://corsproxy.io">
-  <link rel="dns-prefetch" href="https://api.allorigins.win">
+  <link rel="dns-prefetch" href="https://api.stlouisfed.org">
   <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rates &amp; Market Data — RealtyDataLabs</title>
-  <meta name="description" content="Current mortgage rates including 30-year fixed, 15-year fixed, FHA, and VA loans. Compare lenders and track rate trends.">
+  <meta name="description" content="Live mortgage rates, Fed funds rate, 10-year Treasury yield, median home prices, and housing supply — pulled directly from the Federal Reserve FRED API.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://realtydatalabs.com/rates-market-data.html">
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="Rates &amp; Market Data — RealtyDataLabs">
-  <meta property="og:description" content="Current mortgage rates including 30-year fixed, 15-year fixed, FHA, and VA loans. Compare lenders and track rate trends.">
+  <meta property="og:description" content="Live mortgage rates, Fed funds rate, 10-year Treasury yield, median home prices, and housing supply — pulled directly from the Federal Reserve FRED API.">
   <meta property="og:url" content="https://realtydatalabs.com/rates-market-data.html">
   <meta property="og:site_name" content="RealtyDataLabs">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Rates &amp; Market Data — RealtyDataLabs">
-  <meta name="twitter:description" content="Current mortgage rates including 30-year fixed, 15-year fixed, FHA, and VA loans. Compare lenders and track rate trends.">
+  <meta name="twitter:description" content="Live mortgage rates, Fed funds rate, 10-year Treasury yield, median home prices, and housing supply — pulled directly from the Federal Reserve FRED API.">
 
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-96MTQL2F8G"></script>
@@ -34,7 +31,7 @@
     gtag('config', 'G-96MTQL2F8G');
   </script>
 
-    <!-- Google Fonts -->
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -47,6 +44,87 @@
   <link rel="stylesheet" href="css/category.css">
   <link rel="stylesheet" href="css/footer.css">
   <link rel="stylesheet" href="css/mobile.css">
+
+  <style>
+    .rates-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .rate-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border-color, #2a2a3e);
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: border-color 0.2s;
+    }
+    .rate-card:hover {
+      border-color: var(--accent-teal, #4fd1c5);
+    }
+    .rate-card-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-secondary, #888);
+    }
+    .rate-card-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text-primary, #fff);
+      font-family: 'JetBrains Mono', monospace;
+      line-height: 1;
+    }
+    .rate-card-value.loading {
+      color: var(--text-secondary, #888);
+      font-size: 1.2rem;
+    }
+    .rate-card-change {
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+      display: inline-block;
+      width: fit-content;
+    }
+    .rate-card-change.positive {
+      background: rgba(239,68,68,0.15);
+      color: #ef4444;
+    }
+    .rate-card-change.negative {
+      background: rgba(34,197,94,0.15);
+      color: #22c55e;
+    }
+    .rate-card-change.neutral {
+      background: rgba(156,163,175,0.15);
+      color: #9ca3af;
+    }
+    .rate-card-desc {
+      font-size: 0.8rem;
+      color: var(--text-secondary, #888);
+      line-height: 1.5;
+      margin-top: 4px;
+    }
+    .rate-card-date {
+      font-size: 0.7rem;
+      color: var(--text-secondary, #666);
+      margin-top: auto;
+      padding-top: 8px;
+      border-top: 1px solid var(--border-color, #2a2a3e);
+    }
+    .sparkline-wrap {
+      margin: 8px 0 4px;
+      height: 48px;
+      position: relative;
+    }
+    .sparkline-wrap canvas {
+      width: 100% !important;
+      height: 48px !important;
+    }
+  </style>
 
 </head>
 <body>
@@ -85,75 +163,49 @@
     </div>
   </div>
 
-  <!-- CATEGORY HERO -->
-  <div data-category="mortgage">
-    <section class="category-hero">
-      <div class="container">
-        <div class="category-hero-inner">
-          <div class="category-eyebrow">
-            <span class="badge badge-mortgage">Rates &amp; Market Data</span>
-          </div>
-          <h1>Rates &amp; Market Data</h1>
-          <p>Current mortgage rates, PMMS data, rate trends, and financing tools from top lenders and industry authorities.</p>
+  <!-- PAGE HERO -->
+  <section class="category-hero">
+    <div class="container">
+      <div class="category-hero-inner">
+        <div class="category-eyebrow">
+          <span class="badge badge-mortgage">Rates &amp; Market Data</span>
+        </div>
+        <h1>Rates &amp; Market Data</h1>
+        <p>Live mortgage rates, Fed policy, housing supply, and median home prices — pulled directly from the Federal Reserve Economic Data (FRED) API and updated automatically.</p>
+        <div class="category-meta">
+          <span>Source: <strong>Federal Reserve (FRED API)</strong></span>
+          <span>Last updated: <time id="rates-last-updated">loading...</time></span>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- RATE DASHBOARD -->
-    <div class="container" style="padding-bottom:56px;">
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin-bottom:40px;">
-
-        <div style="background:rgba(26,26,46,0.8);border:1px solid var(--border-color);border-radius:12px;padding:24px 20px;text-align:center;">
-          <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-secondary);margin-bottom:8px;">30-Year Fixed</div>
-          <div id="rate30-display" style="font-size:1.8rem;font-weight:700;color:var(--accent-teal);font-family:var(--font-mono);">--</div>
-          <div style="font-size:0.7rem;color:rgba(160,160,176,0.6);margin-top:6px;">National Avg</div>
-        </div>
-
-        <div style="background:rgba(26,26,46,0.8);border:1px solid var(--border-color);border-radius:12px;padding:24px 20px;text-align:center;">
-          <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-secondary);margin-bottom:8px;">15-Year Fixed</div>
-          <div id="rate15-display" style="font-size:1.8rem;font-weight:700;color:var(--accent-teal);font-family:var(--font-mono);">--</div>
-          <div style="font-size:0.7rem;color:rgba(160,160,176,0.6);margin-top:6px;">National Avg</div>
-        </div>
-
-        <div style="background:rgba(26,26,46,0.8);border:1px solid var(--border-color);border-radius:12px;padding:24px 20px;text-align:center;">
-          <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-secondary);margin-bottom:8px;">5/1 ARM</div>
-          <div style="font-size:1rem;font-weight:600;margin-top:8px;">
-            <a href="https://www.bankrate.com/mortgages/arm-loan-rates/" target="_blank" rel="noopener" style="color:var(--accent-teal);text-decoration:none;">See Rates &rarr;</a>
-          </div>
-          <div style="font-size:0.7rem;color:rgba(160,160,176,0.6);margin-top:6px;">Adjustable Rate</div>
-        </div>
-
-        <div style="background:rgba(26,26,46,0.8);border:1px solid var(--border-color);border-radius:12px;padding:24px 20px;text-align:center;">
-          <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-secondary);margin-bottom:8px;">FHA 30-Year</div>
-          <div style="font-size:1rem;font-weight:600;margin-top:8px;">
-            <a href="https://www.lendingtree.com/home/fha/" target="_blank" rel="noopener" style="color:var(--accent-teal);text-decoration:none;">See Rates &rarr;</a>
-          </div>
-          <div style="font-size:0.7rem;color:rgba(160,160,176,0.6);margin-top:6px;">FHA Loan</div>
-        </div>
-
-        <div style="background:rgba(26,26,46,0.8);border:1px solid var(--border-color);border-radius:12px;padding:24px 20px;text-align:center;">
-          <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-secondary);margin-bottom:8px;">VA 30-Year</div>
-          <div style="font-size:1rem;font-weight:600;margin-top:8px;">
-            <a href="https://www.benefits.va.gov/homeloans/" target="_blank" rel="noopener" style="color:var(--accent-teal);text-decoration:none;">See Rates &rarr;</a>
-          </div>
-          <div style="font-size:0.7rem;color:rgba(160,160,176,0.6);margin-top:6px;">VA Loan</div>
-        </div>
-
-      </div>
-
+  <!-- DATA CARDS GRID -->
+  <div class="container" style="padding:32px 0 48px">
+    <div class="rates-grid" id="rates-grid">
+      <!-- Populated by JavaScript below -->
     </div>
   </div>
 
-  <!-- RECOMMENDED RESOURCES -->
-  <div style="background:rgba(18,18,26,0.8);border-top:1px solid var(--border-color);padding:40px 0;">
-    <div class="container">
-      <p style="font-size:0.7rem;color:var(--text-secondary);margin-bottom:16px;opacity:0.75;">Advertising Disclosure: The following links are affiliate partnerships. We may earn a commission at no cost to you.</p>
-      <h3 style="font-size:var(--size-h3);margin-bottom:16px;color:var(--text-primary);">Recommended Resources</h3>
-      <div style="display:flex;flex-wrap:wrap;gap:12px;">
-        <a href="https://www.lendingtree.com/home/mortgage/" target="_blank" rel="noopener sponsored" class="btn-outline" style="font-size:0.85rem;">Compare Rates from Top Lenders &mdash; LendingTree</a>
-        <a href="https://www.bankrate.com/mortgages/" target="_blank" rel="noopener sponsored" class="btn-outline" style="font-size:0.85rem;">Find Today&rsquo;s Best Rates &mdash; Bankrate</a>
-        <a href="https://better.com/" target="_blank" rel="noopener sponsored" class="btn-outline" style="font-size:0.85rem;">Get Pre-Approved in Minutes &mdash; Better.com</a>
-      </div>
+  <!-- COMPARISON TOOLS -->
+  <div class="container" style="padding:0 0 48px">
+    <p style="font-size:0.7rem;color:var(--text-secondary);margin-bottom:16px;opacity:0.75;">Advertising Disclosure: The following links are affiliate partnerships. We may earn a commission at no cost to you.</p>
+    <h3 style="color:var(--text-primary);margin-bottom:20px;font-size:1.1rem;font-weight:700">
+      Compare Rates &amp; Get Pre-Qualified
+    </h3>
+    <div style="display:flex;flex-wrap:wrap;gap:12px">
+      <a href="https://www.lendingtree.com/home/mortgage/"
+         target="_blank" rel="noopener sponsored" class="btn-outline">
+         Compare Lenders &mdash; LendingTree
+      </a>
+      <a href="https://www.bankrate.com/mortgages/"
+         target="_blank" rel="noopener sponsored" class="btn-outline">
+         Find Today's Best Rates &mdash; Bankrate
+      </a>
+      <a href="https://better.com/"
+         target="_blank" rel="noopener sponsored" class="btn-outline">
+         Get Pre-Approved &mdash; Better.com
+      </a>
     </div>
   </div>
 
@@ -223,5 +275,249 @@
   <script data-cfasync="false" src="js/feeds.js"></script>
   <script data-cfasync="false" src="js/main.js" defer></script>
   <script data-cfasync="false" src="js/ticker.js" defer></script>
+
+  <script data-cfasync="false">
+  (function() {
+    const FRED_KEY = '4f73d187e5b0e664e9447b7d92972edc';
+    const CACHE_KEY = 'rdl_rates_page';
+    const CACHE_TTL = 60 * 60 * 1000; // 1 hour
+
+    const SERIES = [
+      {
+        id: 'MORTGAGE30US',
+        label: '30-Year Fixed Mortgage',
+        desc: 'Weekly national average for a 30-year fixed-rate mortgage. Primary Mortgage Market Survey (PMMS) via Freddie Mac.',
+        limit: 52,
+        format: function(v) { return v.toFixed(2) + '%'; },
+        unit: '%',
+        higherIsBad: true
+      },
+      {
+        id: 'MORTGAGE15US',
+        label: '15-Year Fixed Mortgage',
+        desc: 'Weekly national average for a 15-year fixed-rate mortgage. Lower than 30-year but requires higher monthly payments.',
+        limit: 52,
+        format: function(v) { return v.toFixed(2) + '%'; },
+        unit: '%',
+        higherIsBad: true
+      },
+      {
+        id: 'DGS10',
+        label: '10-Year Treasury Yield',
+        desc: 'The yield on 10-year U.S. Treasury notes. Closely tracks mortgage rates — when Treasury yields rise, mortgage rates typically follow.',
+        limit: 52,
+        format: function(v) { return v.toFixed(2) + '%'; },
+        unit: '%',
+        higherIsBad: true
+      },
+      {
+        id: 'FEDFUNDS',
+        label: 'Federal Funds Rate',
+        desc: 'The interest rate at which banks lend to each other overnight, set by the Federal Reserve. Directly influences all borrowing costs.',
+        limit: 24,
+        format: function(v) { return v.toFixed(2) + '%'; },
+        unit: '%',
+        higherIsBad: true
+      },
+      {
+        id: 'MSPUS',
+        label: 'Median Home Sale Price',
+        desc: 'Median sales price of houses sold in the United States. Updated quarterly by the U.S. Census Bureau via FRED.',
+        limit: 20,
+        format: function(v) { return '$' + Math.round(v).toLocaleString(); },
+        unit: '$',
+        higherIsBad: false
+      },
+      {
+        id: 'MSACSR',
+        label: 'Monthly Housing Supply',
+        desc: 'Months of supply of new houses. Measures how long it would take to sell all homes on the market at the current sales pace. Under 6 months = seller\'s market.',
+        limit: 24,
+        format: function(v) { return v.toFixed(1) + ' mo'; },
+        unit: 'mo',
+        higherIsBad: false
+      },
+      {
+        id: 'CPIAUCSL',
+        label: 'CPI Inflation Rate',
+        desc: 'Consumer Price Index for All Urban Consumers. Tracks inflation — the Fed uses this to guide interest rate decisions that directly affect mortgage rates.',
+        limit: 24,
+        format: function(v) { return v.toFixed(1); },
+        unit: 'index',
+        higherIsBad: true
+      }
+    ];
+
+    function fetchSeries(seriesId, limit) {
+      var url = 'https://api.stlouisfed.org/fred/series/observations' +
+        '?series_id=' + seriesId + '&api_key=' + FRED_KEY + '&file_type=json' +
+        '&sort_order=desc&limit=' + limit;
+      return fetch(url).then(function(res) {
+        if (!res.ok) throw new Error('FRED error ' + res.status);
+        return res.json();
+      }).then(function(json) {
+        return (json.observations || [])
+          .filter(function(o) { return o.value !== '.'; })
+          .map(function(o) { return { date: o.date, value: parseFloat(o.value) }; })
+          .filter(function(o) { return !isNaN(o.value); });
+      });
+    }
+
+    function drawSparkline(canvas, data, higherIsBad) {
+      var ctx = canvas.getContext('2d');
+      var w = canvas.width = canvas.offsetWidth || 260;
+      var h = canvas.height = 48;
+      var vals = data.map(function(d) { return d.value; });
+      var min = Math.min.apply(null, vals);
+      var max = Math.max.apply(null, vals);
+      var range = max - min || 1;
+
+      ctx.clearRect(0, 0, w, h);
+
+      var latest = vals[0];
+      var oldest = vals[vals.length - 1];
+      var trending = latest > oldest;
+      var color = higherIsBad
+        ? (trending ? '#ef4444' : '#22c55e')
+        : (trending ? '#22c55e' : '#ef4444');
+
+      var grad = ctx.createLinearGradient(0, 0, 0, h);
+      grad.addColorStop(0, color + '33');
+      grad.addColorStop(1, color + '00');
+
+      var points = vals.slice().reverse();
+      ctx.beginPath();
+      points.forEach(function(v, i) {
+        var x = (i / (points.length - 1)) * w;
+        var y = h - ((v - min) / range) * (h - 6) - 3;
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      });
+      ctx.lineTo(w, h);
+      ctx.lineTo(0, h);
+      ctx.closePath();
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      ctx.beginPath();
+      points.forEach(function(v, i) {
+        var x = (i / (points.length - 1)) * w;
+        var y = h - ((v - min) / range) * (h - 6) - 3;
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      });
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.5;
+      ctx.lineJoin = 'round';
+      ctx.stroke();
+    }
+
+    function buildCard(series, obs) {
+      var latest = obs[0];
+      var previous = obs[1];
+      var value = series.format(latest.value);
+
+      var changeText = '';
+      var changeClass = 'neutral';
+      if (previous) {
+        var diff = latest.value - previous.value;
+        var arrow = diff > 0 ? '&#9650;' : diff < 0 ? '&#9660;' : '&mdash;';
+        changeText = arrow + ' ' + Math.abs(diff).toFixed(2) + ' ' + series.unit + ' from last period';
+        if (diff > 0) changeClass = series.higherIsBad ? 'positive' : 'negative';
+        else if (diff < 0) changeClass = series.higherIsBad ? 'negative' : 'positive';
+      }
+
+      var canvasId = 'spark-' + series.id;
+      var d = new Date(latest.date);
+      var dateFormatted = d.toLocaleDateString('en-US', {year:'numeric', month:'short', day:'numeric'});
+
+      return '<div class="rate-card">' +
+        '<div class="rate-card-label">' + series.label + '</div>' +
+        '<div class="rate-card-value">' + value + '</div>' +
+        (changeText ? '<div class="rate-card-change ' + changeClass + '">' + changeText + '</div>' : '') +
+        '<div class="sparkline-wrap"><canvas id="' + canvasId + '"></canvas></div>' +
+        '<div class="rate-card-desc">' + series.desc + '</div>' +
+        '<div class="rate-card-date">Last updated: ' + dateFormatted + ' &middot; Source: FRED / Federal Reserve</div>' +
+        '</div>';
+    }
+
+    function buildSkeletonCard() {
+      return '<div class="rate-card">' +
+        '<div class="skeleton" style="height:11px;width:55%;border-radius:4px;margin-bottom:12px"></div>' +
+        '<div class="skeleton" style="height:36px;width:40%;border-radius:6px;margin-bottom:10px"></div>' +
+        '<div class="skeleton" style="height:10px;width:70%;border-radius:4px;margin-bottom:12px"></div>' +
+        '<div class="skeleton" style="height:48px;width:100%;border-radius:6px;margin-bottom:10px"></div>' +
+        '<div class="skeleton" style="height:10px;width:90%;border-radius:4px"></div>' +
+        '</div>';
+    }
+
+    function renderCards(data, grid, lastUpdatedEl) {
+      if (!data.length) {
+        grid.innerHTML = '<p style="color:#888;padding:40px;text-align:center">Unable to load rate data. Please check back soon.</p>';
+        return;
+      }
+
+      grid.innerHTML = data.map(function(d) { return buildCard(d.series, d.obs); }).join('');
+
+      if (lastUpdatedEl) {
+        lastUpdatedEl.textContent = new Date().toLocaleString('en-US',
+          {month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'});
+      }
+
+      requestAnimationFrame(function() {
+        data.forEach(function(d) {
+          var canvas = document.getElementById('spark-' + d.series.id);
+          if (canvas && d.obs.length > 1) {
+            drawSparkline(canvas, d.obs, d.series.higherIsBad);
+          }
+        });
+      });
+    }
+
+    function initRatesPage() {
+      var grid = document.getElementById('rates-grid');
+      var lastUpdatedEl = document.getElementById('rates-last-updated');
+      if (!grid) return;
+
+      grid.innerHTML = Array(7).fill(null).map(buildSkeletonCard).join('');
+
+      try {
+        var cached = localStorage.getItem(CACHE_KEY);
+        if (cached) {
+          var parsed = JSON.parse(cached);
+          if (Date.now() - parsed.ts < CACHE_TTL) {
+            renderCards(parsed.data, grid, lastUpdatedEl);
+            return;
+          }
+        }
+      } catch(e) {}
+
+      Promise.allSettled(
+        SERIES.map(function(s) {
+          return fetchSeries(s.id, s.limit).then(function(obs) {
+            return { series: s, obs: obs };
+          });
+        })
+      ).then(function(results) {
+        var data = results
+          .filter(function(r) { return r.status === 'fulfilled' && r.value.obs.length > 0; })
+          .map(function(r) { return r.value; });
+
+        if (data.length) {
+          try {
+            localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data: data }));
+          } catch(e) {}
+        }
+
+        renderCards(data, grid, lastUpdatedEl);
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initRatesPage);
+    } else {
+      initRatesPage();
+    }
+  })();
+  </script>
+
 </body>
 </html>
