@@ -1,4 +1,10 @@
-// feeds.js — RealtyDataLabs RSS Feed Engine
+// feeds.js — RealtyDataLabs
+// Cloudflare Worker proxy: rss-proxy.nawilliams95.workers.dev
+
+const CACHE_VERSION = 'v11';
+const CACHE_TTL = 30 * 60 * 1000;
+const WORKER = 'https://rss-proxy.nawilliams95.workers.dev/?url=';
+const FRED_KEY = '4f73d187e5b0e664e9447b7d92972edc';
 
 const RSS_CONFIG = {
   marketData: {
@@ -10,15 +16,6 @@ const RSS_CONFIG = {
     ],
     containerId: 'market-data-feed',
     cacheKey: 'market-data'
-  },
-  mortgageRates: {
-    feeds: [
-      'https://www.federalreserve.gov/feeds/press_all.xml',
-      'https://www.consumerfinance.gov/about-us/newsroom/feed/',
-      'https://blog.rismedia.com/feed'
-    ],
-    containerId: 'mortgage-rates-feed',
-    cacheKey: 'mortgage-rates'
   },
   investmentRental: {
     feeds: [
@@ -32,127 +29,119 @@ const RSS_CONFIG = {
   }
 };
 
-// ── Proxy fetch via RealtyDataLabs Cloudflare Worker ─────────────
-async function fetchWithProxy(url) {
-  // Use our own Cloudflare Worker proxy — no rate limits, no CORS issues
-  const WORKER_PROXY = 'https://rss-proxy.nawilliams95.workers.dev/?url=';
+// ── Clear stale cache on version bump ────────────────────────────
+(function clearOldCache() {
+  try {
+    if (localStorage.getItem('rdl_cache_ver') !== CACHE_VERSION) {
+      Object.keys(localStorage)
+        .filter(k => k.startsWith('rdl_'))
+        .forEach(k => localStorage.removeItem(k));
+      localStorage.setItem('rdl_cache_ver', CACHE_VERSION);
+      console.log('[RDL] Cache cleared for', CACHE_VERSION);
+    }
+  } catch(e) {}
+})();
 
+// ── Fetch via Cloudflare Worker ───────────────────────────────────
+async function proxyFetch(url) {
   try {
     const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 10000);
-    const res = await fetch(WORKER_PROXY + encodeURIComponent(url), {
-      signal: ctrl.signal
-    });
-    clearTimeout(timer);
-
-    if (!res.ok) {
-      console.warn('[RDL] Worker proxy returned', res.status, 'for', url);
-      return null;
-    }
-
+    const t = setTimeout(() => ctrl.abort(), 10000);
+    const res = await fetch(WORKER + encodeURIComponent(url), { signal: ctrl.signal });
+    clearTimeout(t);
+    if (!res.ok) { console.warn('[RDL] Worker', res.status, url); return null; }
     const text = await res.text();
-    if (text && (text.includes('<item') || text.includes('<entry') ||
-                 text.includes('<rss') || text.includes('<feed'))) {
-      console.log('[RDL] OK via Cloudflare Worker for', new URL(url).hostname);
-      return text;
-    }
-
-    console.warn('[RDL] Invalid RSS from worker for', url);
-    return null;
-
+    const valid = text && (text.includes('<item') || text.includes('<entry') ||
+                           text.includes('<rss') || text.includes('<channel'));
+    if (!valid) { console.warn('[RDL] Invalid XML for', url); return null; }
+    try { console.log('[RDL] OK:', new URL(url).hostname); } catch(e) {}
+    return text;
   } catch(e) {
-    console.warn('[RDL] Worker proxy failed for', url, e.message);
+    console.warn('[RDL] Fetch error:', url, e.message);
     return null;
   }
 }
 
-// ── Parse RSS or Atom feed ────────────────────────────────────────
-function parseFeed(xmlText, feedUrl) {
+// ── Parse RSS or Atom XML ─────────────────────────────────────────
+function parseXML(text, feedUrl) {
   try {
-    const xml = new DOMParser().parseFromString(xmlText, 'text/xml');
+    const xml = new DOMParser().parseFromString(text, 'text/xml');
     if (xml.querySelector('parsererror')) return [];
-    const items = Array.from(
-      xml.querySelectorAll('item').length
-        ? xml.querySelectorAll('item')
-        : xml.querySelectorAll('entry')
-    );
+    const isAtom = !xml.querySelectorAll('item').length;
+    const items = Array.from(xml.querySelectorAll(isAtom ? 'entry' : 'item'));
+
+    let host = '';
+    try { host = new URL(feedUrl).hostname.replace('www.', ''); } catch(e) {}
+
+    let category = 'market';
+    if (host.includes('fortunebuilders') || host.includes('retipster') ||
+        host.includes('keepingcurrent') || host.includes('norada'))
+      category = 'investment';
+
     return items.slice(0, 20).map(item => {
+      // Image
       const ns = 'http://search.yahoo.com/mrss/';
       const mc = item.getElementsByTagNameNS(ns,'content')[0] ||
                  item.getElementsByTagNameNS(ns,'thumbnail')[0];
       const enc = item.querySelector('enclosure[type^="image"]');
       let image = mc?.getAttribute('url') || enc?.getAttribute('url') || null;
       if (!image) {
-        const raw = item.querySelector('description,summary')?.textContent || '';
-        const m = raw.match(/<img[^>]+src=["']([^"']+)["']/i);
+        const d = item.querySelector('description,summary')?.textContent || '';
+        const m = d.match(/<img[^>]+src=["']([^"']+)["']/i);
         if (m && m[1].startsWith('http')) image = m[1];
       }
-      const rawDesc = item.querySelector('description,summary,content')?.textContent || '';
-      const tmp = document.createElement('div');
-      tmp.innerHTML = rawDesc;
-      const desc = (tmp.textContent||'').replace(/\s+/g,' ').trim();
+
+      // Description
+      const raw = item.querySelector('description,summary,content')?.textContent || '';
+      const div = document.createElement('div');
+      div.innerHTML = raw;
+      const desc = (div.textContent || '').replace(/\s+/g,' ').trim();
+      const excerpt = desc.length > 200 ? desc.slice(0,200)+'...' : desc;
+
+      // Link
       const linkEl = item.querySelector('link');
-      const link = linkEl?.getAttribute('href') || linkEl?.textContent?.trim() || '#';
+      const link = (linkEl?.getAttribute('href') || linkEl?.textContent || '').trim();
+
+      // Date
       const dateStr = item.querySelector('pubDate,published,updated')?.textContent || '';
+      const pubDate = dateStr ? new Date(dateStr) : new Date(0);
+
       return {
-        title: item.querySelector('title')?.textContent?.trim() || '',
-        link: link.startsWith('http') ? link : '#',
-        pubDate: dateStr ? new Date(dateStr) : new Date(0),
-        description: desc.length > 220 ? desc.slice(0,220)+'...' : desc,
-        excerpt: desc.length > 220 ? desc.slice(0,220)+'...' : desc,
+        title:    (item.querySelector('title')?.textContent || '').trim(),
+        link:     link.startsWith('http') ? link : '',
+        pubDate,
+        excerpt,
+        description: excerpt,
         image,
-        source: (() => {
-          try { return new URL(feedUrl).hostname.replace('www.',''); }
-          catch { return ''; }
-        })(),
-        category: (() => {
-          try {
-            const h = new URL(feedUrl).hostname.replace('www.','');
-            if (h.includes('redfin') || h.includes('zillow') ||
-                h.includes('realtor')) return 'market';
-            if (h.includes('mortgagenewsdaily') ||
-                h.includes('federalreserve') ||
-                h.includes('consumerfinance')) return 'mortgage';
-            if (h.includes('norada') || h.includes('retipster') ||
-                h.includes('keepingcurrent') ||
-                h.includes('fortunebuilders')) return 'investment';
-            if (h.includes('rismedia') || h.includes('forbes') ||
-                h.includes('cnbc')) return 'media';
-            return 'market';
-          } catch { return 'market'; }
-        })()
+        source:   host,
+        category,
+        verified: true
       };
-    }).filter(a => a.title && a.link !== '#');
+    }).filter(a => a.title && a.link);
   } catch(e) { return []; }
 }
 
-// ── Cache helpers ─────────────────────────────────────────────────
-const CACHE_TTL = 30 * 60 * 1000;
-
-function getCached(key) {
+// ── Cache ─────────────────────────────────────────────────────────
+function readCache(key) {
   try {
     const raw = localStorage.getItem('rdl_' + key);
     if (!raw) return null;
     const { ts, data } = JSON.parse(raw);
-    if (Date.now() - ts > CACHE_TTL) return null;
-    return data;
+    return (Date.now() - ts < CACHE_TTL) ? data : null;
   } catch(e) { return null; }
 }
-
-function setCache(key, data) {
-  try {
-    localStorage.setItem('rdl_' + key, JSON.stringify({ ts: Date.now(), data }));
-  } catch(e) {}
+function writeCache(key, data) {
+  try { localStorage.setItem('rdl_'+key, JSON.stringify({ts:Date.now(), data})); }
+  catch(e) {}
 }
 
-// ── Skeleton loading ──────────────────────────────────────────────
-function showSkeletons(container, count = 6) {
-  if (window.RDLCards && window.RDLCards.renderSkeletons) {
-    window.RDLCards.renderSkeletons(container, count);
+// ── Skeleton cards ────────────────────────────────────────────────
+function showSkeletons(container, n=6) {
+  if (window.RDLCards?.renderSkeletons) {
+    window.RDLCards.renderSkeletons(container, n);
     return;
   }
-  // Fallback skeleton
-  container.innerHTML = Array(count).fill(`
+  container.innerHTML = Array(n).fill(`
     <div class="article-card card-skeleton">
       <div class="card-image-wrap skeleton-image skeleton"></div>
       <div class="card-body">
@@ -162,33 +151,30 @@ function showSkeletons(container, count = 6) {
     </div>`).join('');
 }
 
-// ── Render article cards ──────────────────────────────────────────
+// ── Render articles ───────────────────────────────────────────────
 function renderArticles(articles, container) {
-  if (!articles || !articles.length) {
-    container.innerHTML = '<p class="feed-notice" style="padding:40px;text-align:center;color:#888">Unable to load articles right now. Please check back soon.</p>';
+  if (!articles?.length) {
+    container.innerHTML = '<p style="padding:40px;text-align:center;color:#888">Unable to load articles. Please check back soon.</p>';
     return;
   }
-
-  // Use cards.js RDLCards if available (preferred — uses full card styles)
-  if (window.RDLCards && window.RDLCards.renderCards) {
-    window.RDLCards.renderCards(container, articles, false);
+  // Use RDLCards if available
+  if (window.RDLCards?.renderCards) {
+    window.RDLCards.renderCards(container, articles);
     return;
   }
-
-  // Fallback inline render if cards.js not yet loaded
+  // Inline fallback
   container.innerHTML = articles.map(a => `
     <article class="article-card fade-in">
-      ${a.image ? `
-        <div class="card-image-wrap">
-          <img src="${a.image}" loading="lazy" alt=""
-               onerror="this.parentElement.style.display='none'">
-        </div>` : ''}
+      ${a.image ? `<div class="card-image-wrap">
+        <img src="${a.image}" loading="lazy" alt=""
+             onerror="this.parentElement.style.display='none'">
+      </div>` : ''}
       <div class="card-body">
         <div class="card-meta">
-          <span class="badge badge-${a.category || 'market'}">${a.source}</span>
+          <span class="badge badge-${a.category}">${a.source}</span>
           <span class="card-timestamp">${a.pubDate > new Date(0)
             ? a.pubDate.toLocaleDateString('en-US',
-                {year:'numeric',month:'short',day:'numeric'})
+                {month:'short',day:'numeric',year:'numeric'})
             : ''}</span>
         </div>
         <h3 class="card-headline">
@@ -197,36 +183,45 @@ function renderArticles(articles, container) {
         ${a.excerpt ? `<p class="card-excerpt">${a.excerpt}</p>` : ''}
         <div class="card-footer">
           <span class="card-source">${a.source}</span>
-          <span class="card-read-more">Read More</span>
+          <span class="card-read-more">Read More →</span>
         </div>
       </div>
     </article>`).join('');
 }
 
 // ── Main load function ────────────────────────────────────────────
-async function loadFeeds(feedUrls, container, statusEl, cacheKey) {
-  const cached = getCached(cacheKey);
-  if (cached && cached.length) {
+async function loadFeeds(config) {
+  const container = document.getElementById(config.containerId);
+  if (!container) return;
+
+  const statusEl = document.getElementById('last-updated');
+  const countEl  = document.getElementById('results-count');
+
+  // Try cache first
+  const cached = readCache(config.cacheKey);
+  if (cached?.length) {
     if (window.RDLSearch && document.getElementById('search-input')) {
       window.RDLSearch.initSearch(cached);
     } else {
-      renderArticles(cached.slice(0, 10), container);
+      renderArticles(cached, container);
     }
-    if (statusEl) statusEl.textContent = new Date().toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'});
+    if (statusEl) statusEl.textContent = 'From cache — ' +
+      new Date().toLocaleTimeString();
+    if (countEl) countEl.textContent = cached.length + ' articles';
     return;
   }
 
-  showSkeletons(container, 6);
+  showSkeletons(container);
 
   const results = await Promise.allSettled(
-    feedUrls.map(async url => {
-      const text = await fetchWithProxy(url);
-      return text ? parseFeed(text, url) : [];
+    config.feeds.map(async url => {
+      const text = await proxyFetch(url);
+      return text ? parseXML(text, url) : [];
     })
   );
 
-  console.log('[RDL] Feed results:', results.map((r,i) => ({
-    url: feedUrls[i],
+  console.log('[RDL] Results:', results.map((r,i) => ({
+    url: config.feeds[i],
     ok: r.status === 'fulfilled',
     count: r.value?.length ?? 0
   })));
@@ -236,112 +231,118 @@ async function loadFeeds(feedUrls, container, statusEl, cacheKey) {
     .flatMap(r => r.value)
     .sort((a,b) => b.pubDate - a.pubDate);
 
-  // If search module is loaded, hand off all articles to it
-  // so filtering/sorting/pagination all work correctly
+  if (countEl) countEl.textContent = articles.length + ' articles';
+  if (statusEl) statusEl.textContent = new Date().toLocaleString('en-US',
+    {month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'});
+
+  if (!articles.length) {
+    renderArticles([], container);
+    return;
+  }
+
+  writeCache(config.cacheKey, articles);
+
+  // Hand off to search if available, else render with load-more
   if (window.RDLSearch && document.getElementById('search-input')) {
     window.RDLSearch.initSearch(articles);
   } else {
-    // Direct render with load-more pagination
     const PAGE = 10;
     let shown = Math.min(PAGE, articles.length);
     renderArticles(articles.slice(0, shown), container);
-
     const btn = document.getElementById('load-more-btn');
     if (btn) {
-      if (articles.length > PAGE) {
-        btn.style.display = 'flex';
-        btn.onclick = () => {
-          shown = Math.min(shown + PAGE, articles.length);
-          renderArticles(articles.slice(0, shown), container);
-          if (shown >= articles.length) btn.style.display = 'none';
-        };
-      } else {
-        btn.style.display = 'none';
-      }
+      btn.style.display = articles.length > PAGE ? 'flex' : 'none';
+      btn.onclick = () => {
+        shown = Math.min(shown + PAGE, articles.length);
+        renderArticles(articles.slice(0, shown), container);
+        if (shown >= articles.length) btn.style.display = 'none';
+      };
     }
   }
-
-  // Update count display
-  const countEl = document.getElementById('results-count');
-  if (countEl) countEl.textContent = articles.length + ' articles';
-
-  if (articles.length) setCache(cacheKey, articles);
-  if (statusEl) statusEl.textContent = new Date().toLocaleString(
-    'en-US',{month:'short',day:'numeric',year:'numeric',
-              hour:'numeric',minute:'2-digit'});
 }
 
-// ── Mortgage Rate Widget ──────────────────────────────────────────
-async function fetchMortgageRateWidget() {
+// ── Mortgage rate widget (FRED API — same as ticker.js) ───────────
+async function loadMortgageRates() {
   const el30 = document.getElementById('rate30-display');
   const el15 = document.getElementById('rate15-display');
   if (!el30 && !el15) return;
 
-  const fallback = '<a href="https://www.mortgagenewsdaily.com/mortgage-rates.aspx" target="_blank" rel="noopener" style="font-size:0.8rem;color:var(--accent-teal)">See Current Rates</a>';
-
-  try {
-    const text = await fetchWithProxy('https://www.mortgagenewsdaily.com/rss/mortgage_rates.aspx');
-    if (!text) throw new Error('no data');
-    const xml = new DOMParser().parseFromString(text, 'text/xml');
-    if (xml.querySelector('parsererror')) throw new Error('parse error');
-
-    const items = [...xml.querySelectorAll('item')];
-    let r30 = null, r15 = null;
-    for (const item of items.slice(0, 10)) {
-      const content = (item.querySelector('title')?.textContent || '') + ' ' +
-                      (item.querySelector('description')?.textContent || '');
-      if (!r30 && /30[^%\d]*(\d+\.\d+)%/i.test(content)) {
-        const m = content.match(/30[^%\d]*(\d+\.\d+)%/i);
-        if (m) r30 = m[1] + '%';
-      }
-      if (!r15 && /15[^%\d]*(\d+\.\d+)%/i.test(content)) {
-        const m = content.match(/15[^%\d]*(\d+\.\d+)%/i);
-        if (m) r15 = m[1] + '%';
-      }
-      if (r30 && r15) break;
-    }
-    if (el30) el30.textContent = r30 || '—';
-    if (el15) el15.textContent = r15 || '—';
-  } catch(e) {
-    if (el30) el30.innerHTML = fallback;
-    if (el15) el15.innerHTML = fallback;
-  }
-}
-
-// ── Auto-init ─────────────────────────────────────────────────────
-function rdlFeedsInit() {
-  const CACHE_VERSION = 'v8';
-  if (localStorage.getItem('rdl_cache_ver') !== CACHE_VERSION) {
-    Object.keys(localStorage)
-      .filter(k => k.startsWith('rdl_'))
-      .forEach(k => localStorage.removeItem(k));
-    localStorage.setItem('rdl_cache_ver', CACHE_VERSION);
-    console.log('[RDL] Cache cleared');
+  async function fredRate(series) {
+    try {
+      const url = `https://api.stlouisfed.org/fred/series/observations` +
+        `?series_id=${series}&api_key=${FRED_KEY}&file_type=json` +
+        `&sort_order=desc&limit=2`;
+      const res = await fetch(url);
+      if (!res.ok) return null;
+      const data = await res.json();
+      const obs = (data.observations||[]).filter(o => o.value !== '.');
+      return obs[0]?.value ? parseFloat(obs[0].value).toFixed(2)+'%' : null;
+    } catch(e) { return null; }
   }
 
-  const statusEl = document.getElementById('last-updated');
-  console.log('[RDL] feeds init on:', window.location.pathname);
-  console.log('[RDL] RDLCards available:', !!window.RDLCards);
-  console.log('[RDL] RDLSearch available:', !!window.RDLSearch);
+  const [r30, r15] = await Promise.all([
+    fredRate('MORTGAGE30US'),
+    fredRate('MORTGAGE15US')
+  ]);
 
-  Object.values(RSS_CONFIG).forEach(config => {
-    const container = document.getElementById(config.containerId);
-    console.log('[RDL]', config.containerId, container ? 'FOUND' : 'NOT FOUND');
-    if (container) {
-      loadFeeds(config.feeds, container, statusEl, config.cacheKey);
-    }
-  });
-
-  fetchMortgageRateWidget();
+  if (el30) el30.textContent = r30 || '—';
+  if (el15) el15.textContent = r15 || '—';
+  console.log('[RDL] Rates:', r30, r15);
 }
 
-// Wait for all deferred scripts to finish loading
-// before initializing feeds
-document.addEventListener('DOMContentLoaded', () => {
-  // Small timeout ensures cards.js and search.js
-  // (also deferred) have fully executed
-  setTimeout(rdlFeedsInit, 50);
-});
+// ── Homepage feed previews ────────────────────────────────────────
+async function loadHomepagePreview(feedUrl, containerId, limit=3) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  const text = await proxyFetch(feedUrl);
+  if (!text) return;
+  const articles = parseXML(text, feedUrl).slice(0, limit);
+  if (!articles.length) return;
+  container.innerHTML = articles.map(a => `
+    <a href="${a.link}" target="_blank" rel="noopener" class="preview-card">
+      ${a.image ? `<div class="preview-img">
+        <img src="${a.image}" loading="lazy" alt=""
+             onerror="this.parentElement.style.display='none'">
+      </div>` : ''}
+      <div class="preview-body">
+        <span class="preview-source">${a.source}</span>
+        <h4>${a.title}</h4>
+        <time>${a.pubDate > new Date(0)
+          ? a.pubDate.toLocaleDateString('en-US',
+              {month:'short',day:'numeric',year:'numeric'})
+          : ''}</time>
+      </div>
+    </a>`).join('');
+}
 
-// ── Public API ────────────────────────────────────────────────────
-window.RDLFeeds = { RSS_CONFIG, fetchWithProxy, parseFeed, loadFeeds };
+// ── Init ──────────────────────────────────────────────────────────
+function init() {
+  console.log('[RDL] init on:', window.location.pathname);
+  console.log('[RDL] RDLCards:', !!window.RDLCards);
+  console.log('[RDL] RDLSearch:', !!window.RDLSearch);
+
+  // Section pages
+  Object.values(RSS_CONFIG).forEach(cfg => loadFeeds(cfg));
+
+  // Mortgage rates widget (works on homepage + mortgage page)
+  loadMortgageRates();
+
+  // Homepage article previews
+  loadHomepagePreview(
+    'https://www.redfin.com/blog/feed',
+    'homepage-news-preview'
+  );
+  loadHomepagePreview(
+    'https://www.fortunebuilders.com/feed/',
+    'homepage-invest-preview'
+  );
+}
+
+// Wait for all deferred scripts then init
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => setTimeout(init, 100));
+} else {
+  setTimeout(init, 100);
+}
+
+window.RDLFeeds = { loadFeeds, loadMortgageRates, proxyFetch, parseXML };
