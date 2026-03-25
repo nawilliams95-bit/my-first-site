@@ -43,7 +43,7 @@
     .about-content ul li::before { content: '→'; position: absolute; left: 0; color: var(--accent-teal); font-weight: 700; }
     .about-content ul li:last-child { border-bottom: none; }
     .sources-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-bottom: 32px; }
-    .source-group { background: rgba(26,26,46,0.6); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 20px; }
+    .source-group { background: rgba(10,10,22,0.95); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-md); padding: 20px; }
     .source-group h4 { font-size: var(--size-small); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
     .source-group h4.market-color { color: #6B8EF0; }
     .source-group h4.mortgage-color { color: var(--accent-teal); }
@@ -53,7 +53,7 @@
     .source-group h4.regional-color { color: #EF4444; }
     .source-group ul { margin: 0; }
     .source-group ul li { font-size: var(--size-small); border-bottom-color: rgba(42,42,58,0.3); }
-    .agent-bio-card { background: rgba(26,26,46,0.8); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 32px; display: flex; gap: 24px; align-items: flex-start; margin-bottom: 32px; }
+    .agent-bio-card { background: rgba(10,10,22,0.96); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-lg); padding: 32px; display: flex; gap: 24px; align-items: flex-start; margin-bottom: 32px; }
     .agent-bio-photo { width: 96px; height: 96px; border-radius: 50%; background: rgba(45,91,227,0.12); border: 2px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; flex-shrink: 0; overflow: hidden; }
     .agent-bio-photo img { width: 100%; height: 100%; object-fit: cover; }
     .agent-bio-info h3 { font-size: var(--size-h3); margin-bottom: 4px; }
@@ -63,7 +63,8 @@
     .free-commitment p { font-size: var(--size-small); color: var(--text-secondary); margin: 0; }
     @media (max-width: 640px) {
       .sources-grid { grid-template-columns: 1fr; }
-      .agent-bio-card { flex-direction: column; }
+      .agent-bio-card { flex-direction: column; align-items: center; text-align: center; }
+      .agent-bio-info .agent-social { justify-content: center; }
     }
   </style>
   <!-- Google tag (gtag.js) -->
@@ -193,7 +194,7 @@
         <p>License Number: <strong>447455</strong></p>
         <p>Website: <a href="https://nicknorthga.com" target="_blank" rel="noopener" style="color:var(--accent-teal);">nicknorthga.com</a></p>
         <p>Nick Williams is a licensed real estate agent serving buyers, sellers, and investors across North Georgia, including the Blue Ridge, Ellijay, and surrounding mountain communities. RealtyDataLabs is an independent information platform operated by Nick to help everyday people access objective real estate data and market intelligence &mdash; for free.</p>
-        <div class="agent-social" style="margin-top:16px;justify-content:flex-start;">
+        <div class="agent-social" style="margin-top:16px;">
           <a href="https://youtube.com/@realtydatalabs" target="_blank" rel="noopener" aria-label="YouTube">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
             YouTube

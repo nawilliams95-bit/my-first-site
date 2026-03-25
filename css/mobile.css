@@ -192,7 +192,8 @@ html, body {
   .rate-strip-row {
     gap: 12px;
     flex-wrap: wrap;
-    align-items: flex-start;
+    align-items: center;
+    justify-content: center;
   }
 
   .rate-divider,
@@ -203,6 +204,15 @@ html, body {
   .rate-strip-cta {
     margin-left: 0;
     width: 100%;
+    text-align: center;
+  }
+
+  /* Center agent section heading when it stacks to 1-column */
+  .home-form-side h2,
+  .home-form-side > p,
+  .agent-form-side h2,
+  .agent-form-side > p {
+    text-align: center;
   }
 
   /* Affiliate banners */

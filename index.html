@@ -112,7 +112,10 @@
       border-bottom:1px solid var(--border-color,#2a2a3e)}
     .home-agent-inner{display:grid;
       grid-template-columns:1fr 340px;gap:48px;align-items:start}
-    @media(max-width:768px){.home-agent-inner{grid-template-columns:1fr}}
+    @media(max-width:768px){
+      .home-agent-inner{grid-template-columns:1fr}
+      .home-form-side h2,.home-form-side>p:not(.lead-disclosure){text-align:center}
+    }
     .home-form-side h2{font-size:1.5rem;font-weight:700;
       color:var(--text-primary,#fff);margin-bottom:10px}
     .home-form-side>p{color:var(--text-secondary,#aaa);

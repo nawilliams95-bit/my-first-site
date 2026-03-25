@@ -228,6 +228,23 @@
     grid-template-columns: 1fr;
   }
 
+  /* Center the category hero on mobile */
+  .category-hero {
+    text-align: center;
+  }
+
+  .category-hero-inner {
+    max-width: 100%;
+  }
+
+  .category-eyebrow {
+    justify-content: center;
+  }
+
+  .category-meta {
+    justify-content: center;
+  }
+
   .filter-bar {
     flex-direction: column;
     align-items: stretch;
