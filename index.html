@@ -455,7 +455,6 @@
   <script data-cfasync="false">
   (function(){
     const W='https://rss-proxy.nawilliams95.workers.dev/?url=';
-    const K='4f73d187e5b0e664e9447b7d92972edc';
 
     async function loadPreview(feedUrl,containerId,limit){
       const el=document.getElementById(containerId);
@@ -513,22 +512,26 @@
     }
 
     async function loadRates(){
-      async function fred(s){
-        try{
-          const api=`https://api.stlouisfed.org/fred/series/observations`+
-            `?series_id=${s}&api_key=${K}&file_type=json&sort_order=desc&limit=5`;
-          const r=await fetch('https://api.allorigins.win/get?url='+encodeURIComponent(api));
-          const wrapper=await r.json();
-          const d=JSON.parse(wrapper.contents);
-          const obs=(d.observations||[]).filter(o=>o.value!=='.');
-          return obs[0]?.value?parseFloat(obs[0].value).toFixed(2)+'%':null;
-        }catch(e){return null;}
-      }
-      const[r30,r15]=await Promise.all([fred('MORTGAGE30US'),fred('MORTGAGE15US')]);
       const e30=document.getElementById('rate30-display');
       const e15=document.getElementById('rate15-display');
-      if(e30)e30.textContent=r30||'—';
-      if(e15)e15.textContent=r15||'—';
+      if(!e30&&!e15)return;
+      try{
+        const ctrl=new AbortController();
+        const timer=setTimeout(()=>ctrl.abort(),10000);
+        const res=await fetch('/api/rates',{signal:ctrl.signal});
+        clearTimeout(timer);
+        if(!res.ok)throw new Error('rates API '+res.status);
+        const data=await res.json();
+        const pick=(id)=>{
+          const obs=(data[id]||[]).filter(o=>o.value!=='.'&&!isNaN(parseFloat(o.value)));
+          return obs[0]?.value!=null?parseFloat(obs[0].value).toFixed(2)+'%':null;
+        };
+        if(e30)e30.textContent=pick('MORTGAGE30US')||'—';
+        if(e15)e15.textContent=pick('MORTGAGE15US')||'—';
+      }catch(e){
+        if(e30)e30.textContent='—';
+        if(e15)e15.textContent='—';
+      }
     }
 
     document.addEventListener('DOMContentLoaded',function(){

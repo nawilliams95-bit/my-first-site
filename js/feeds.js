@@ -326,21 +326,23 @@ async function loadMortgageRates() {
   const el30 = document.getElementById('rate30-display');
   const el15 = document.getElementById('rate15-display');
   if (!el30 && !el15) return;
-  const KEY = '4f73d187e5b0e664e9447b7d92972edc';
-  async function fred(s) {
-    try {
-      const api = `https://api.stlouisfed.org/fred/series/observations` +
-        `?series_id=${s}&api_key=${KEY}&file_type=json&sort_order=desc&limit=5`;
-      const r = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(api));
-      const wrapper = await r.json();
-      const d = JSON.parse(wrapper.contents);
-      const obs = (d.observations||[]).filter(o => o.value !== '.');
-      return obs[0]?.value ? parseFloat(obs[0].value).toFixed(2) + '%' : null;
-    } catch(e) { return null; }
+  try {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 10000);
+    const res = await fetch('/api/rates', { signal: ctrl.signal });
+    clearTimeout(timer);
+    if (!res.ok) throw new Error('rates API ' + res.status);
+    const data = await res.json();
+    const pick = (id) => {
+      const obs = (data[id] || []).filter(o => o.value !== '.' && !isNaN(parseFloat(o.value)));
+      return obs[0]?.value != null ? parseFloat(obs[0].value).toFixed(2) + '%' : null;
+    };
+    if (el30) el30.textContent = pick('MORTGAGE30US') || '—';
+    if (el15) el15.textContent = pick('MORTGAGE15US') || '—';
+  } catch(e) {
+    if (el30) el30.textContent = '—';
+    if (el15) el15.textContent = '—';
   }
-  const [r30, r15] = await Promise.all([fred('MORTGAGE30US'), fred('MORTGAGE15US')]);
-  if (el30) el30.textContent = r30 || '—';
-  if (el15) el15.textContent = r15 || '—';
 }
 
 // ─── Init ─────────────────────────────────────────────────────────────────────

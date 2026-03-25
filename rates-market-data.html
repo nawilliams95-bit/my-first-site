@@ -2,8 +2,6 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <link rel="dns-prefetch" href="https://api.stlouisfed.org">
-  <link rel="dns-prefetch" href="https://api.allorigins.win">
   <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rates &amp; Market Data — RealtyDataLabs</title>
@@ -279,7 +277,6 @@
 
   <script data-cfasync="false">
   (function() {
-    const FRED_KEY = '4f73d187e5b0e664e9447b7d92972edc';
     const CACHE_KEY = 'rdl_rates_page';
     const CACHE_TTL = 60 * 60 * 1000; // 1 hour
 
@@ -349,21 +346,16 @@
       }
     ];
 
-    function fetchSeries(seriesId, limit) {
-      var api = 'https://api.stlouisfed.org/fred/series/observations' +
-        '?series_id=' + seriesId + '&api_key=' + FRED_KEY + '&file_type=json' +
-        '&sort_order=desc&limit=' + limit;
-      var url = 'https://api.allorigins.win/get?url=' + encodeURIComponent(api);
-      return fetch(url).then(function(res) {
-        if (!res.ok) throw new Error('FRED error ' + res.status);
-        return res.json();
-      }).then(function(wrapper) {
-        var json = JSON.parse(wrapper.contents);
-        return (json.observations || [])
-          .filter(function(o) { return o.value !== '.'; })
-          .map(function(o) { return { date: o.date, value: parseFloat(o.value) }; })
-          .filter(function(o) { return !isNaN(o.value); });
-      });
+    function fetchAllRates() {
+      var ctrl = new AbortController();
+      var timer = setTimeout(function() { ctrl.abort(); }, 10000);
+      return fetch('/api/rates', { signal: ctrl.signal })
+        .then(function(res) {
+          clearTimeout(timer);
+          if (!res.ok) throw new Error('rates API ' + res.status);
+          return res.json();
+        })
+        .catch(function(e) { clearTimeout(timer); throw e; });
     }
 
     function drawSparkline(canvas, data, higherIsBad) {
@@ -493,16 +485,13 @@
         }
       } catch(e) {}
 
-      Promise.allSettled(
-        SERIES.map(function(s) {
-          return fetchSeries(s.id, s.limit).then(function(obs) {
+      fetchAllRates().then(function(ratesData) {
+        var data = SERIES
+          .map(function(s) {
+            var obs = ratesData[s.id] || [];
             return { series: s, obs: obs };
-          });
-        })
-      ).then(function(results) {
-        var data = results
-          .filter(function(r) { return r.status === 'fulfilled' && r.value.obs.length > 0; })
-          .map(function(r) { return r.value; });
+          })
+          .filter(function(d) { return d.obs.length > 0; });
 
         if (data.length) {
           try {
@@ -511,6 +500,8 @@
         }
 
         renderCards(data, grid, lastUpdatedEl);
+      }).catch(function() {
+        renderCards([], grid, lastUpdatedEl);
       });
     }
 
