@@ -516,7 +516,7 @@
       async function fred(s){
         try{
           const api=`https://api.stlouisfed.org/fred/series/observations`+
-            `?series_id=${s}&api_key=${K}&file_type=json&sort_order=desc&limit=1`;
+            `?series_id=${s}&api_key=${K}&file_type=json&sort_order=desc&limit=5`;
           const r=await fetch('https://api.allorigins.win/get?url='+encodeURIComponent(api));
           const wrapper=await r.json();
           const d=JSON.parse(wrapper.contents);
