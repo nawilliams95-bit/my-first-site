@@ -515,10 +515,11 @@
     async function loadRates(){
       async function fred(s){
         try{
-          const r=await fetch(
-            `https://api.stlouisfed.org/fred/series/observations`+
-            `?series_id=${s}&api_key=${K}&file_type=json&sort_order=desc&limit=1`);
-          const d=await r.json();
+          const api=`https://api.stlouisfed.org/fred/series/observations`+
+            `?series_id=${s}&api_key=${K}&file_type=json&sort_order=desc&limit=1`;
+          const r=await fetch('https://api.allorigins.win/get?url='+encodeURIComponent(api));
+          const wrapper=await r.json();
+          const d=JSON.parse(wrapper.contents);
           const obs=(d.observations||[]).filter(o=>o.value!=='.');
           return obs[0]?.value?parseFloat(obs[0].value).toFixed(2)+'%':null;
         }catch(e){return null;}

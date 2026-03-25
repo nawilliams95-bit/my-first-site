@@ -227,19 +227,23 @@ async function initTicker() {
   // Show skeleton while loading
   showSkeleton(track);
 
+  let points;
   try {
-    const points = await fetchTickerData();
+    points = await fetchTickerData();
     track.innerHTML = buildTickerHTML(points);
   } catch (e) {
     // On total failure, show fallback values
-    const fallback = TICKER_POINTS.map(p => ({
+    points = TICKER_POINTS.map(p => ({
       label:          p.label,
       value:          p.fallback,
       changeClass:    'neutral',
       freshnessClass: 'fresh-unknown'
     }));
-    track.innerHTML = buildTickerHTML(fallback);
+    track.innerHTML = buildTickerHTML(points);
   }
+
+  // Notify other page components that ticker data is available
+  document.dispatchEvent(new CustomEvent('rdl:tickerReady', { detail: points }));
 
   // Pause/resume on hover (CSS rule also handles this; JS ensures
   // dynamically re-rendered content respects the interaction)

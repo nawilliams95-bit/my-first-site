@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <link rel="dns-prefetch" href="https://api.stlouisfed.org">
+  <link rel="dns-prefetch" href="https://api.allorigins.win">
   <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rates &amp; Market Data — RealtyDataLabs</title>
@@ -349,13 +350,15 @@
     ];
 
     function fetchSeries(seriesId, limit) {
-      var url = 'https://api.stlouisfed.org/fred/series/observations' +
+      var api = 'https://api.stlouisfed.org/fred/series/observations' +
         '?series_id=' + seriesId + '&api_key=' + FRED_KEY + '&file_type=json' +
         '&sort_order=desc&limit=' + limit;
+      var url = 'https://api.allorigins.win/get?url=' + encodeURIComponent(api);
       return fetch(url).then(function(res) {
         if (!res.ok) throw new Error('FRED error ' + res.status);
         return res.json();
-      }).then(function(json) {
+      }).then(function(wrapper) {
+        var json = JSON.parse(wrapper.contents);
         return (json.observations || [])
           .filter(function(o) { return o.value !== '.'; })
           .map(function(o) { return { date: o.date, value: parseFloat(o.value) }; })
