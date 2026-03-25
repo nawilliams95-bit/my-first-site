@@ -1,8 +1,9 @@
 // feeds.js — RealtyDataLabs
-// Cloudflare Worker: rss-proxy.nawilliams95.workers.dev
+// Primary: /api/articles (Cloudflare Pages Function + KV cache)
+// Fallback: direct RSS fetch via Cloudflare Worker proxy
 
-const CACHE_VERSION = 'v20';
-const CACHE_TTL = 2 * 60 * 60 * 1000; // 2 hours
+const CACHE_VERSION = 'v21';
+const CACHE_TTL = 2 * 60 * 60 * 1000; // 2 hours client-side
 const WORKER = 'https://rss-proxy.nawilliams95.workers.dev/?url=';
 
 // Clear stale cache on version change
@@ -29,6 +30,7 @@ const RSS_CONFIG = {
     ],
     containerId: 'market-data-feed',
     cacheKey: 'market-data',
+    category: 'market',
     filterRelevant: false
   },
   investmentRental: {
@@ -42,6 +44,7 @@ const RSS_CONFIG = {
     ],
     containerId: 'investment-rental-feed',
     cacheKey: 'investment-rental',
+    category: 'investment',
     filterRelevant: true
   }
 };
@@ -62,8 +65,36 @@ const INVEST_SKIP = [
   'interior design','landscap','best mattress','gift guide'
 ];
 
+// ─── API fetch (Pages Function) ───────────────────────────────────────────────
+async function fetchFromAPI() {
+  // Check unified client-side cache first
+  const allCached = readCache('all-articles');
+  if (allCached?.length) return allCached;
+
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 10000);
+  try {
+    const res = await fetch('/api/articles', { signal: ctrl.signal });
+    clearTimeout(timer);
+    if (!res.ok) throw new Error('API ' + res.status);
+    const articles = await res.json();
+    if (articles?.length) {
+      // Normalize dates from API (strings → Date objects)
+      articles.forEach(a => {
+        a.pubDate = a.pubDate ? new Date(a.pubDate) : new Date(0);
+      });
+      writeCache('all-articles', articles);
+      return articles;
+    }
+    throw new Error('Empty response');
+  } catch (e) {
+    clearTimeout(timer);
+    throw e;
+  }
+}
+
+// ─── Fallback: direct proxy fetch ────────────────────────────────────────────
 async function proxyFetch(url) {
-  // Scraper endpoints go direct, no ?url= wrapping
   const fetchUrl = url.startsWith('https://rss-proxy.nawilliams95.workers.dev/')
     ? url
     : WORKER + encodeURIComponent(url);
@@ -72,17 +103,12 @@ async function proxyFetch(url) {
     const t = setTimeout(() => ctrl.abort(), 7000);
     const res = await fetch(fetchUrl, { signal: ctrl.signal });
     clearTimeout(t);
-    if (!res.ok) {
-      console.warn('[RDL] Worker', res.status, 'for', url);
-      return null;
-    }
+    if (!res.ok) { console.warn('[RDL] Worker', res.status, 'for', url); return null; }
     const text = await res.text();
     if (!text || (!text.includes('<item') && !text.includes('<entry') &&
         !text.includes('<rss') && !text.includes('<channel'))) {
-      console.warn('[RDL] Invalid XML for', url);
-      return null;
+      console.warn('[RDL] Invalid XML for', url); return null;
     }
-    try { console.log('[RDL] OK:', new URL(url).hostname); } catch(e) {}
     return text;
   } catch(e) {
     console.warn('[RDL] Failed:', url, e.message);
@@ -95,8 +121,7 @@ function parseXML(text, feedUrl, filterRelevant) {
     const xml = new DOMParser().parseFromString(text, 'text/xml');
     if (xml.querySelector('parsererror')) return [];
     const isAtom = !xml.querySelectorAll('item').length;
-    const items = Array.from(
-      xml.querySelectorAll(isAtom ? 'entry' : 'item'));
+    const items = Array.from(xml.querySelectorAll(isAtom ? 'entry' : 'item'));
 
     let host = '';
     try { host = new URL(feedUrl).hostname.replace('www.',''); } catch(e) {}
@@ -109,36 +134,28 @@ function parseXML(text, feedUrl, filterRelevant) {
 
     return items.slice(0, 25).map(item => {
       const ns = 'http://search.yahoo.com/mrss/';
-      const mc = item.getElementsByTagNameNS(ns,'content')[0] ||
-                 item.getElementsByTagNameNS(ns,'thumbnail')[0];
+      const mc  = item.getElementsByTagNameNS(ns,'content')[0] ||
+                  item.getElementsByTagNameNS(ns,'thumbnail')[0];
       const enc = item.querySelector('enclosure[type^="image"]');
       let image = mc?.getAttribute('url') || enc?.getAttribute('url') || null;
       if (!image) {
-        const d = item.querySelector('description,summary')?.textContent||'';
+        const d = item.querySelector('description,summary')?.textContent || '';
         const m = d.match(/<img[^>]+src=["']([^"']+)["']/i);
         if (m && m[1].startsWith('http')) image = m[1];
       }
-
-      const raw = item.querySelector(
-        'description,summary,content')?.textContent || '';
+      const raw = item.querySelector('description,summary,content')?.textContent || '';
       const div = document.createElement('div');
       div.innerHTML = raw;
-      const desc = (div.textContent||'').replace(/\s+/g,' ').trim();
+      const desc    = (div.textContent||'').replace(/\s+/g,' ').trim();
       const excerpt = desc.length > 200 ? desc.slice(0,200)+'...' : desc;
-
-      const linkEl = item.querySelector('link');
-      const link = (linkEl?.getAttribute('href') ||
-                    linkEl?.textContent || '').trim();
-
-      const dateStr = item.querySelector(
-        'pubDate,published,updated')?.textContent || '';
-
+      const linkEl  = item.querySelector('link');
+      const link    = (linkEl?.getAttribute('href') || linkEl?.textContent || '').trim();
+      const dateStr = item.querySelector('pubDate,published,updated')?.textContent || '';
       return {
         title:    (item.querySelector('title')?.textContent||'').trim(),
         link:     link.startsWith('http') ? link : '',
         pubDate:  dateStr ? new Date(dateStr) : new Date(0),
-        excerpt, description: excerpt, image,
-        source:   host, category, verified: true
+        excerpt, image, source: host, category, verified: true
       };
     }).filter(a => {
       if (!a.title || !a.link) return false;
@@ -150,26 +167,42 @@ function parseXML(text, feedUrl, filterRelevant) {
   } catch(e) { return []; }
 }
 
+async function fetchFallback(config) {
+  const results = await Promise.allSettled(
+    config.feeds.map(async url => {
+      const text = await proxyFetch(url);
+      return text ? parseXML(text, url, config.filterRelevant) : [];
+    })
+  );
+  return results
+    .filter(r => r.status === 'fulfilled')
+    .flatMap(r => r.value)
+    .sort((a, b) => b.pubDate - a.pubDate);
+}
+
+// ─── Cache helpers ────────────────────────────────────────────────────────────
 function readCache(key) {
   try {
     const raw = localStorage.getItem('rdl_' + key);
     if (!raw) return null;
     const { ts, data } = JSON.parse(raw);
-    return (Date.now() - ts < CACHE_TTL) ? data : null;
+    if (Date.now() - ts > CACHE_TTL) return null;
+    // Re-hydrate date strings to Date objects
+    data.forEach(a => { if (typeof a.pubDate === 'string') a.pubDate = new Date(a.pubDate); });
+    return data;
   } catch(e) { return null; }
 }
 
 function writeCache(key, data) {
   try {
-    localStorage.setItem('rdl_'+key,
-      JSON.stringify({ ts: Date.now(), data }));
+    localStorage.setItem('rdl_' + key, JSON.stringify({ ts: Date.now(), data }));
   } catch(e) {}
 }
 
+// ─── Render helpers ───────────────────────────────────────────────────────────
 function showSkeletons(container, n=6) {
   if (window.RDLCards?.renderSkeletons) {
-    window.RDLCards.renderSkeletons(container, n);
-    return;
+    window.RDLCards.renderSkeletons(container, n); return;
   }
   container.innerHTML = Array(n).fill(`
     <div class="article-card card-skeleton">
@@ -189,8 +222,7 @@ function renderArticles(articles, container) {
     return;
   }
   if (window.RDLCards?.renderCards) {
-    window.RDLCards.renderCards(container, articles);
-    return;
+    window.RDLCards.renderCards(container, articles); return;
   }
   container.innerHTML = articles.map(a => `
     <article class="article-card fade-in">
@@ -203,8 +235,7 @@ function renderArticles(articles, container) {
              <span class="card-placeholder-source">${a.source}</span>
              <span class="card-placeholder-date">${
                a.pubDate > new Date(0)
-                 ? a.pubDate.toLocaleDateString('en-US',
-                     {month:'short',day:'numeric',year:'numeric'})
+                 ? a.pubDate.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})
                  : ''
              }</span>
            </div>`
@@ -214,8 +245,7 @@ function renderArticles(articles, container) {
           <span class="badge badge-${a.category||'market'}">${a.source}</span>
           <span class="card-timestamp">${
             a.pubDate > new Date(0)
-              ? a.pubDate.toLocaleDateString('en-US',
-                  {month:'short',day:'numeric',year:'numeric'})
+              ? a.pubDate.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})
               : ''
           }</span>
         </div>
@@ -231,53 +261,47 @@ function renderArticles(articles, container) {
     </article>`).join('');
 }
 
+// ─── Main loadFeeds ───────────────────────────────────────────────────────────
 async function loadFeeds(config) {
   const container = document.getElementById(config.containerId);
   if (!container) return;
   const statusEl = document.getElementById('last-updated');
   const countEl  = document.getElementById('results-count');
 
-  const cached = readCache(config.cacheKey);
-  if (cached?.length) {
-    if (window.RDLSearch && document.getElementById('search-input')) {
-      window.RDLSearch.initSearch(cached);
-    } else {
-      renderArticles(cached, container);
-    }
-    if (statusEl) statusEl.textContent =
-      'Cached · ' + new Date().toLocaleTimeString();
-    if (countEl) countEl.textContent = cached.length + ' articles';
+  // 1. Per-feed client cache (instant)
+  const perCached = readCache(config.cacheKey);
+  if (perCached?.length) {
+    finalize(perCached, container, statusEl, countEl, config, true);
     return;
   }
 
   showSkeletons(container);
 
-  const results = await Promise.allSettled(
-    config.feeds.map(async url => {
-      const text = await proxyFetch(url);
-      return text ? parseXML(text, url, config.filterRelevant) : [];
-    })
-  );
+  let articles = [];
 
-  console.log('[RDL] Feed results:', results.map((r,i) => ({
-    url: config.feeds[i],
-    ok: r.status === 'fulfilled',
-    count: r.value?.length ?? 0
-  })));
+  // 2. Try Pages Function API (edge KV cache ~50ms after first hit)
+  try {
+    const all = await fetchFromAPI();
+    articles = all.filter(a => a.category === config.category);
+    console.log('[RDL] API hit:', articles.length, config.category);
+  } catch (e) {
+    // 3. Fallback: direct RSS via Worker proxy
+    console.warn('[RDL] API failed, falling back to RSS proxy:', e.message);
+    articles = await fetchFallback(config);
+  }
 
-  const articles = results
-    .filter(r => r.status === 'fulfilled')
-    .flatMap(r => r.value)
-    .sort((a,b) => b.pubDate - a.pubDate);
+  if (articles.length) writeCache(config.cacheKey, articles);
+  finalize(articles, container, statusEl, countEl, config, false);
+}
 
+function finalize(articles, container, statusEl, countEl, config, fromCache) {
   if (countEl) countEl.textContent = articles.length + ' articles';
-  if (statusEl) statusEl.textContent = new Date().toLocaleString('en-US',
-    {month:'short',day:'numeric',year:'numeric',
-     hour:'numeric',minute:'2-digit'});
+  if (statusEl) statusEl.textContent = fromCache
+    ? 'Cached · ' + new Date().toLocaleTimeString()
+    : new Date().toLocaleString('en-US',
+        {month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'});
 
   if (!articles.length) { renderArticles([], container); return; }
-
-  writeCache(config.cacheKey, articles);
 
   if (window.RDLSearch && document.getElementById('search-input')) {
     window.RDLSearch.initSearch(articles);
@@ -297,6 +321,7 @@ async function loadFeeds(config) {
   }
 }
 
+// ─── Mortgage rates ───────────────────────────────────────────────────────────
 async function loadMortgageRates() {
   const el30 = document.getElementById('rate30-display');
   const el15 = document.getElementById('rate15-display');
@@ -309,21 +334,17 @@ async function loadMortgageRates() {
       const r = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(api));
       const wrapper = await r.json();
       const d = JSON.parse(wrapper.contents);
-      const obs = (d.observations||[]).filter(o=>o.value!=='.');
-      return obs[0]?.value
-        ? parseFloat(obs[0].value).toFixed(2)+'%' : null;
+      const obs = (d.observations||[]).filter(o => o.value !== '.');
+      return obs[0]?.value ? parseFloat(obs[0].value).toFixed(2) + '%' : null;
     } catch(e) { return null; }
   }
-  const [r30,r15] = await Promise.all([
-    fred('MORTGAGE30US'), fred('MORTGAGE15US')]);
+  const [r30, r15] = await Promise.all([fred('MORTGAGE30US'), fred('MORTGAGE15US')]);
   if (el30) el30.textContent = r30 || '—';
   if (el15) el15.textContent = r15 || '—';
 }
 
+// ─── Init ─────────────────────────────────────────────────────────────────────
 function init() {
-  console.log('[RDL] init:', window.location.pathname);
-  console.log('[RDL] RDLCards:', !!window.RDLCards);
-  console.log('[RDL] RDLSearch:', !!window.RDLSearch);
   Object.values(RSS_CONFIG).forEach(cfg => loadFeeds(cfg));
   loadMortgageRates();
 }
