@@ -59,8 +59,8 @@
   margin-bottom: 36px;
   flex-wrap: wrap;
   padding: 16px 20px;
-  background: rgba(18,18,26,0.6);
-  border: 1px solid var(--border-color);
+  background: rgba(10, 10, 20, 0.96);
+  border: 1px solid rgba(255,255,255,0.1);
   border-radius: var(--radius-md);
 }
 
@@ -164,8 +164,8 @@
   align-items: center;
   gap: 10px;
   padding: 14px 40px;
-  background: rgba(26,26,46,0.8);
-  border: 1px solid var(--border-color);
+  background: rgba(10, 10, 22, 0.96);
+  border: 1px solid rgba(255,255,255,0.12);
   border-radius: var(--radius-full);
   color: var(--text-secondary);
   font-size: var(--size-small);
@@ -185,8 +185,8 @@
 .category-affiliate {
   margin: 32px 0 48px;
   padding: 24px 28px;
-  background: rgba(26,26,46,0.5);
-  border: 1px solid var(--border-color);
+  background: rgba(10, 10, 22, 0.96);
+  border: 1px solid rgba(255,255,255,0.1);
   border-radius: var(--radius-lg);
   display: flex;
   align-items: center;

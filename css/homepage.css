@@ -72,8 +72,8 @@
   align-items: center;
   justify-content: center;
   padding: 28px 32px;
-  background: rgba(26,26,46,0.6);
-  border: 1px solid var(--border-color);
+  background: rgba(10, 10, 22, 0.95);
+  border: 1px solid rgba(255,255,255,0.1);
   border-radius: var(--radius-lg);
   margin-top: 32px;
   flex-wrap: wrap;
@@ -114,8 +114,8 @@
 --------------------------------------------------------------- */
 .affiliate-banner {
   padding: 28px 32px;
-  background: rgba(26,26,46,0.5);
-  border: 1px solid var(--border-color);
+  background: rgba(10, 10, 22, 0.95);
+  border: 1px solid rgba(255,255,255,0.1);
   border-radius: var(--radius-lg);
   margin: 32px 0;
   display: flex;
@@ -172,9 +172,9 @@
 }
 
 .lead-form-wrap {
-  background: rgba(26,26,46,0.8);
+  background: rgba(10, 10, 22, 0.97);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.1);
   border-radius: var(--radius-lg);
   padding: 40px;
   text-align: left;
@@ -317,9 +317,9 @@
    RATE STRIP (new homepage strip)
 --------------------------------------------------------------- */
 .rate-strip {
-  background: rgba(26,26,46,0.7);
-  border-top: 1px solid var(--border-color);
-  border-bottom: 1px solid var(--border-color);
+  background: rgba(10, 10, 22, 0.95);
+  border-top: 1px solid rgba(255,255,255,0.1);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
   padding: 20px 0;
 }
 
@@ -407,8 +407,8 @@
 .preview-card {
   display: flex;
   flex-direction: column;
-  background: rgba(26,26,46,0.6);
-  border: 1px solid var(--border-color);
+  background: rgba(10, 10, 22, 0.95);
+  border: 1px solid rgba(255,255,255,0.1);
   border-radius: var(--radius-md);
   overflow: hidden;
   text-decoration: none;
@@ -424,7 +424,7 @@
 .preview-img {
   height: 160px;
   overflow: hidden;
-  background: rgba(45,45,65,0.8);
+  background: rgba(20, 20, 40, 0.95);
 }
 
 .preview-img img {
@@ -451,7 +451,7 @@
 }
 
 .preview-body h4 {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 600;
   line-height: 1.4;
   color: var(--text-primary);
@@ -468,8 +468,8 @@
    AGENT SPLIT LAYOUT (homepage lead capture)
 --------------------------------------------------------------- */
 .home-section-dark {
-  background: rgba(14,14,22,0.8);
-  border-top: 1px solid var(--border-color);
+  background: rgba(6, 6, 14, 0.97);
+  border-top: 1px solid rgba(255,255,255,0.1);
 }
 
 .agent-split {
@@ -496,8 +496,8 @@
 }
 
 .agent-profile-card {
-  background: rgba(26,26,46,0.8);
-  border: 1px solid var(--border-color);
+  background: rgba(10, 10, 22, 0.97);
+  border: 1px solid rgba(255,255,255,0.1);
   border-radius: var(--radius-lg);
   padding: 28px;
   text-align: center;

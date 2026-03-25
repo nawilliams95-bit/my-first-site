@@ -24,7 +24,7 @@
 
   /* Text */
   --text-primary:   #FFFFFF;
-  --text-secondary: #A0A0B0;
+  --text-secondary: #C2C2D4;
 
   /* Borders */
   --border-color: #2A2A3A;
@@ -92,7 +92,7 @@ body {
   line-height: 1.6;
   color: var(--text-primary);
   background-color: transparent;
-  background-image: linear-gradient(rgba(10, 10, 15, 0.6), rgba(10, 10, 15, 0.6)),
+  background-image: linear-gradient(rgba(8, 8, 14, 0.84), rgba(8, 8, 14, 0.84)),
                     url('../images/background.jpg');
   background-size: cover;
   background-position: center top;
@@ -407,10 +407,10 @@ button {
    GLASSMORPHISM CARD
    ============================================================ */
 .glassmorphism {
-  background: rgba(26, 26, 46, 0.8);
+  background: rgba(12, 12, 26, 0.95);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
   transition: var(--transition);
@@ -534,8 +534,8 @@ button {
    AGENT CARD — canonical version used on contact, about, index
    ============================================================ */
 .agent-card {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid var(--border-color, #2a2a3e);
+  background: rgba(12, 12, 26, 0.94);
+  border: 1px solid rgba(255,255,255,0.1);
   border-radius: 14px;
   padding: 28px 24px;
   text-align: center;
