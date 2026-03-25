@@ -2,7 +2,7 @@
 // Cloudflare Worker: rss-proxy.nawilliams95.workers.dev
 
 const CACHE_VERSION = 'v20';
-const CACHE_TTL = 30 * 60 * 1000;
+const CACHE_TTL = 2 * 60 * 60 * 1000; // 2 hours
 const WORKER = 'https://rss-proxy.nawilliams95.workers.dev/?url=';
 
 // Clear stale cache on version change
@@ -69,7 +69,7 @@ async function proxyFetch(url) {
     : WORKER + encodeURIComponent(url);
   try {
     const ctrl = new AbortController();
-    const t = setTimeout(() => ctrl.abort(), 12000);
+    const t = setTimeout(() => ctrl.abort(), 7000);
     const res = await fetch(fetchUrl, { signal: ctrl.signal });
     clearTimeout(t);
     if (!res.ok) {
@@ -304,11 +304,11 @@ async function loadMortgageRates() {
   const KEY = '4f73d187e5b0e664e9447b7d92972edc';
   async function fred(s) {
     try {
-      const r = await fetch(
-        `https://api.stlouisfed.org/fred/series/observations` +
-        `?series_id=${s}&api_key=${KEY}&file_type=json` +
-        `&sort_order=desc&limit=1`);
-      const d = await r.json();
+      const api = `https://api.stlouisfed.org/fred/series/observations` +
+        `?series_id=${s}&api_key=${KEY}&file_type=json&sort_order=desc&limit=5`;
+      const r = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(api));
+      const wrapper = await r.json();
+      const d = JSON.parse(wrapper.contents);
       const obs = (d.observations||[]).filter(o=>o.value!=='.');
       return obs[0]?.value
         ? parseFloat(obs[0].value).toFixed(2)+'%' : null;
@@ -329,10 +329,9 @@ function init() {
 }
 
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded',
-    () => setTimeout(init, 150));
+  document.addEventListener('DOMContentLoaded', init);
 } else {
-  setTimeout(init, 150);
+  init();
 }
 
 window.RDLFeeds = { loadFeeds, loadMortgageRates, proxyFetch };
