@@ -43,9 +43,10 @@
 .category-meta {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 12px 20px;
   font-size: var(--size-tiny);
   color: rgba(160,160,176,0.6);
+  flex-wrap: wrap;
 }
 
 /* ---------------------------------------------------------------
@@ -223,6 +224,10 @@
    RESPONSIVE — 768px
 --------------------------------------------------------------- */
 @media (max-width: 768px) {
+  .articles-grid {
+    grid-template-columns: 1fr;
+  }
+
   .filter-bar {
     flex-direction: column;
     align-items: stretch;
@@ -239,14 +244,5 @@
   .category-affiliate {
     flex-direction: column;
     text-align: center;
-  }
-}
-
-/* ---------------------------------------------------------------
-   RESPONSIVE — 480px
---------------------------------------------------------------- */
-@media (max-width: 480px) {
-  .articles-grid {
-    grid-template-columns: 1fr;
   }
 }

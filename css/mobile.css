@@ -187,15 +187,22 @@ html, body {
     grid-template-columns: 1fr;
   }
 
-  /* Rates strip */
-  .rates-strip {
-    flex-direction: column;
+  /* Rates strip (both homepage class names) */
+  .rates-strip,
+  .rate-strip-row {
     gap: 12px;
+    flex-wrap: wrap;
     align-items: flex-start;
   }
 
-  .rate-divider {
+  .rate-divider,
+  .rate-strip-divider {
     display: none;
+  }
+
+  .rate-strip-cta {
+    margin-left: 0;
+    width: 100%;
   }
 
   /* Affiliate banners */
@@ -352,6 +359,22 @@ html, body {
   .instagram-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  /* Rates data cards — force single column on small screens */
+  .rates-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Homepage preview grids — single column on small screens */
+  .home-preview-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Category meta — stack vertically */
+  .category-meta {
+    flex-direction: column;
+    gap: 6px;
+  }
 }
 
 /* ── Additional 768px rules (Issue 9 supplement) ──────────────────────── */
@@ -359,8 +382,7 @@ html, body {
   /* Generic grid / multi-column class variants */
   .grid,
   [class*="two-col"],
-  [class*="card-row"],
-  [class*="grid-"] {
+  [class*="card-row"] {
     grid-template-columns: 1fr;
     flex-direction: column;
   }
