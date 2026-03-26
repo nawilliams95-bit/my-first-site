@@ -306,7 +306,7 @@ function finalize(articles, container, statusEl, countEl, config, fromCache) {
   if (window.RDLSearch && document.getElementById('search-input')) {
     window.RDLSearch.initSearch(articles);
   } else {
-    const PAGE = 10;
+    const PAGE = 9;
     let shown = Math.min(PAGE, articles.length);
     renderArticles(articles.slice(0, shown), container);
     const btn = document.getElementById('load-more-btn');
