@@ -14,7 +14,7 @@ html, body {
   display: none;
   position: fixed;
   inset: 0;
-  z-index: 999;
+  z-index: 1001;
   background: rgba(10, 10, 15, 0.98);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -355,8 +355,9 @@ html, body {
   /* Section headers */
   .section-header {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     gap: 8px;
+    text-align: center;
   }
 
   /* Media page */

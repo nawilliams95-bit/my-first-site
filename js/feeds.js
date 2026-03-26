@@ -2,7 +2,7 @@
 // Primary: /api/articles (Cloudflare Pages Function + KV cache)
 // Fallback: direct RSS fetch via Cloudflare Worker proxy
 
-const CACHE_VERSION = 'v21';
+const CACHE_VERSION = 'v22';
 const CACHE_TTL = 2 * 60 * 60 * 1000; // 2 hours client-side
 const WORKER = 'https://rss-proxy.nawilliams95.workers.dev/?url=';
 
@@ -22,11 +22,11 @@ const RSS_CONFIG = {
   marketData: {
     feeds: [
       'https://www.redfin.com/blog/feed',
-      'https://rss-proxy.nawilliams95.workers.dev/zillow-research',
-      'https://rss-proxy.nawilliams95.workers.dev/realtor-news',
+      'https://www.housingwire.com/feed/',
+      'https://www.rismedia.com/feed/',
       'https://keepingcurrentmatters.com/feed',
       'https://eyeonhousing.org/feed/',
-      'https://www.worldpropertyjournal.com/feed/rss.xml'
+      'https://calculatedriskblog.com/feeds/posts/default'
     ],
     containerId: 'market-data-feed',
     cacheKey: 'market-data',
@@ -39,8 +39,8 @@ const RSS_CONFIG = {
       'https://retipster.com/feed/',
       'https://www.biggerpockets.com/blog/feed',
       'https://keepingcurrentmatters.com/feed',
-      'https://www.apartmentlist.com/research/feed',
-      'https://therealdeal.com/feed/'
+      'https://www.multifamilydive.com/feeds/news/',
+      'https://www.rismedia.com/feed/'
     ],
     containerId: 'investment-rental-feed',
     cacheKey: 'investment-rental',
