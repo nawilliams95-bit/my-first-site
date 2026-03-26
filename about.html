@@ -43,6 +43,7 @@
     .about-content ul li::before { content: '→'; position: absolute; left: 0; color: var(--accent-teal); font-weight: 700; }
     .about-content ul li:last-child { border-bottom: none; }
     .sources-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-bottom: 32px; }
+    @media (min-width: 769px) { .sources-grid { grid-template-columns: repeat(4, 1fr); } }
     .source-group { background: rgba(10,10,22,0.95); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-md); padding: 20px; }
     .source-group h4 { font-size: var(--size-small); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
     .source-group h4.market-color { color: #6B8EF0; }
@@ -61,7 +62,7 @@
     .free-commitment { background: linear-gradient(135deg, rgba(45,91,227,0.1) 0%, rgba(0,212,170,0.1) 100%); border: 1px solid rgba(0,212,170,0.2); border-radius: var(--radius-lg); padding: 32px; text-align: center; margin-bottom: 48px; }
     .free-commitment h3 { font-size: var(--size-h3); margin-bottom: 10px; }
     .free-commitment p { font-size: var(--size-small); color: var(--text-secondary); margin: 0; }
-    @media (max-width: 640px) {
+    @media (max-width: 480px) {
       .sources-grid { grid-template-columns: 1fr; }
       .agent-bio-card { flex-direction: column; align-items: center; text-align: center; }
       .agent-bio-info .agent-social { justify-content: center; }
@@ -175,6 +176,15 @@
           <li>Keeping Current Matters (keepingcurrentmatters.com)</li>
         </ul>
       </div>
+      <div class="source-group">
+        <h4 class="industry-color">Media &amp; Insights</h4>
+        <ul>
+          <li>YouTube (@realtydatalabs)</li>
+          <li>Instagram (@realtydatalabs)</li>
+          <li>X / Twitter (@realtydatalabs)</li>
+          <li>TikTok (@realtydatalabs)</li>
+        </ul>
+      </div>
     </div>
 
     <div class="free-commitment">
@@ -212,7 +222,7 @@
             TikTok
           </a>
         </div>
-        <p style="color:rgba(160,160,176,0.6); font-size:var(--size-tiny);margin-top:12px">Nothing on this site constitutes real estate, investment, financial, or legal advice.</p>
+        <p style="color:rgba(160,160,176,0.85); font-size:var(--size-tiny);margin-top:12px">Nothing on this site constitutes real estate, investment, financial, or legal advice.</p>
       </div>
     </div>
 
@@ -276,15 +286,12 @@
     </div>
     <div class="footer-bottom">
       <p>&copy; <span id="footer-year" class="copyright-year"></span> RealtyDataLabs. All rights reserved.</p>
-      <p>Information provided for educational purposes only.</p>
-      <p>Not financial, legal, or real estate advice.</p>
+      <p>For educational purposes only &mdash; not financial, legal, or real estate advice.</p>
     </div>
   </footer>
 
   <!-- SCRIPTS -->
   <script src="js/ticker.js" defer></script>
-  <script src="js/feeds.js" defer></script>
-  <script src="js/cards.js" defer></script>
   <script src="js/main.js" defer></script>
 
 <script>

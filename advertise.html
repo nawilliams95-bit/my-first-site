@@ -51,17 +51,14 @@
     .tag-available { background: rgba(0,212,170,0.15); color: var(--accent-teal); }
     .tag-limited { background: rgba(245,158,11,0.15); color: #F59E0B; }
     .tag-inquire { background: rgba(45,91,227,0.15); color: #6B8EF0; }
-    .stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; background: rgba(26,26,46,0.5); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 32px; margin-bottom: 48px; text-align: center; }
-    .stat-item {}
-    .stat-value { font-size: 1.75rem; font-weight: 700; font-family: var(--font-mono); color: var(--accent-teal); display: block; line-height: 1; margin-bottom: 6px; }
-    .stat-label { font-size: var(--size-tiny); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-secondary); }
-    .stat-note { font-size: var(--size-tiny); color: rgba(160,160,176,0.4); display: block; margin-top: 4px; }
+    .form-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 20px; }
+    @media (max-width: 768px) { .form-grid-2 { grid-template-columns: 1fr; } }
     .advertise-form-wrap { background: rgba(26,26,46,0.8); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-lg); padding: 40px; }
     .affiliate-section { background: linear-gradient(135deg, rgba(45,91,227,0.08) 0%, rgba(0,212,170,0.08) 100%); border: 1px solid rgba(0,212,170,0.15); border-radius: var(--radius-lg); padding: 32px; margin-bottom: 40px; }
     .affiliate-section h3 { font-size: var(--size-h3); margin-bottom: 10px; }
     .affiliate-section p { font-size: var(--size-small); color: var(--text-secondary); }
-    @media (max-width: 900px) { .placements-grid { grid-template-columns: repeat(2, 1fr); } .stats-bar { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 640px) { .audience-grid, .placements-grid { grid-template-columns: 1fr; } .stats-bar { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 768px) { .placements-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 480px) { .audience-grid, .placements-grid { grid-template-columns: 1fr; } }
   </style>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-96MTQL2F8G"></script>
@@ -123,10 +120,10 @@
     <p>RealtyDataLabs is a real estate data intelligence platform that aggregates housing market data, mortgage rate news, economic indicators, and investment analytics from the most trusted sources in the industry. Our readers are not passive scrollers &mdash; they are active decision-makers at every stage of the real estate process.</p>
     <p>We maintain a strict editorial standard: all advertising and affiliate placements are clearly disclosed, and no advertiser influences our content presentation or data aggregation. This commitment to objectivity is what drives audience trust &mdash; and that trust is what makes advertising here effective.</p>
 
-    <h2>Platform Traffic Statistics</h2>
+    <h2>About the Audience</h2>
     <div style="background:rgba(26,26,46,0.5);border:1px solid var(--border-color);border-radius:12px;padding:24px;margin-bottom:48px;text-align:center;">
       <p style="font-size:var(--size-body);color:var(--text-secondary);line-height:1.7;margin:0;">
-        RealtyDataLabs is a growing platform in active development. Traffic and audience data are available upon request for serious advertising inquiries. Our audience consists of real estate buyers, sellers, investors, and agents actively researching market conditions.
+        RealtyDataLabs is a growing platform in active development. Detailed traffic and demographic data are available to qualified advertising partners upon request. Our audience consists of active real estate decision-makers &mdash; buyers, sellers, investors, and agents &mdash; who are engaged with current market conditions.
       </p>
     </div>
 
@@ -203,7 +200,11 @@
 
     <div class="advertise-form-wrap">
       <form id="advertiser-form" novalidate>
-        <div class="form-grid-2" style="display:grid; grid-template-columns:1fr 1fr; gap:0 20px;">
+        <input type="hidden" name="access_key" value="7f4b72d6-e68a-42ff-807b-ba1b43284937">
+        <input type="hidden" name="subject" value="Advertiser Inquiry — RealtyDataLabs">
+        <input type="hidden" name="from_name" value="RealtyDataLabs Advertise">
+        <input type="checkbox" name="botcheck" style="display:none;">
+        <div class="form-grid-2">
           <div class="form-group">
             <label class="form-label" for="adv-name">Full Name <span class="required">*</span></label>
             <input class="form-input" type="text" id="adv-name" name="advName" placeholder="Jane Smith" required>
@@ -321,35 +322,41 @@
     </div>
     <div class="footer-bottom">
       <p>&copy; <span id="footer-year" class="copyright-year"></span> RealtyDataLabs. All rights reserved.</p>
-      <p>Information provided for educational purposes only.</p>
-      <p>Not financial, legal, or real estate advice.</p>
+      <p>For educational purposes only &mdash; not financial, legal, or real estate advice.</p>
     </div>
   </footer>
 
   <script src="js/ticker.js" defer></script>
-  <script src="js/feeds.js" defer></script>
-  <script src="js/cards.js" defer></script>
   <script src="js/main.js" defer></script>
 
   <script>
-  // Advertiser form handler
   (function() {
     const form = document.getElementById('advertiser-form');
     const statusEl = document.getElementById('advertiser-form-status');
     if (!form) return;
-    form.addEventListener('submit', function(e) {
+    form.addEventListener('submit', async function(e) {
       e.preventDefault();
       const btn = form.querySelector('.form-submit');
       btn.disabled = true;
       btn.classList.add('loading');
-      // Simulate submission — wire up to your backend or form service
-      setTimeout(function() {
+      try {
+        const res = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(Object.fromEntries(new FormData(form)))
+        });
+        if (res.ok) {
+          statusEl.className = 'form-status form-status-success';
+          statusEl.textContent = 'Thank you for your inquiry. We will be in touch within 2 business days.';
+          form.reset();
+        } else { throw new Error(); }
+      } catch(err) {
+        statusEl.className = 'form-status form-status-error';
+        statusEl.textContent = 'Something went wrong. Please try again or email us directly.';
+      } finally {
         btn.disabled = false;
         btn.classList.remove('loading');
-        statusEl.className = 'form-status form-status-success';
-        statusEl.textContent = 'Thank you for your inquiry. We will be in touch within 2 business days.';
-        form.reset();
-      }, 1200);
+      }
     });
   })();
   </script>

@@ -43,7 +43,6 @@
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/header.css">
   <link rel="stylesheet" href="css/ticker.css">
-  <link rel="stylesheet" href="css/homepage.css">
   <link rel="stylesheet" href="css/forms.css">
   <link rel="stylesheet" href="css/footer.css">
   <link rel="stylesheet" href="css/mobile.css">
@@ -79,7 +78,7 @@
     }
     .response-card h4 { font-size: var(--size-small); color: var(--accent-teal); margin-bottom: 6px; font-weight: 600; }
     .response-card p { font-size: var(--size-small); color: var(--text-secondary); margin: 0; }
-    @media (max-width: 900px) {
+    @media (max-width: 768px) {
       .contact-layout { grid-template-columns: 1fr; }
       .contact-sidebar { position: static; }
     }
@@ -125,7 +124,7 @@
   <div class="container">
     <section class="contact-hero">
       <h1>Get Connected With an Agent</h1>
-      <p>Submit your information below and a licensed agent will reach out within 24 hours.</p>
+      <p>Fill out the form below and a licensed Georgia REALTOR&reg; will be in touch to discuss your real estate needs.</p>
     </section>
 
     <!-- CONTACT LAYOUT -->
@@ -134,6 +133,10 @@
       <!-- FORM COLUMN -->
       <div>
         <form id="lead-form" class="lead-form-wrap" novalidate>
+          <input type="hidden" name="access_key" value="7f4b72d6-e68a-42ff-807b-ba1b43284937">
+          <input type="hidden" name="subject" value="New Lead — Contact Page — RealtyDataLabs">
+          <input type="hidden" name="from_name" value="RealtyDataLabs Contact">
+          <input type="checkbox" name="botcheck" style="display:none;">
           <div class="form-grid-2">
             <div class="form-group">
               <label class="form-label" for="full-name">Full Name <span class="required">*</span></label>
@@ -314,8 +317,7 @@
     </div>
     <div class="footer-bottom">
       <p>&copy; <span id="footer-year" class="copyright-year"></span> RealtyDataLabs. All rights reserved.</p>
-      <p>Information provided for educational purposes only.</p>
-      <p>Not financial, legal, or real estate advice.</p>
+      <p>For educational purposes only &mdash; not financial, legal, or real estate advice.</p>
     </div>
   </footer>
 
