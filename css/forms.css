@@ -61,7 +61,7 @@
   border-radius: var(--radius-md);
   color: var(--text-primary);
   font-family: var(--font-main);
-  font-size: var(--size-small);
+  font-size: 1rem; /* min 16px prevents iOS auto-zoom on focus */
   transition: var(--transition);
   outline: none;
   appearance: none;

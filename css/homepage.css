@@ -231,7 +231,7 @@
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   color: var(--text-primary);
-  font-size: var(--size-small);
+  font-size: 1rem; /* min 16px prevents iOS auto-zoom */
   font-family: var(--font-main);
   outline: none;
   transition: var(--transition);
