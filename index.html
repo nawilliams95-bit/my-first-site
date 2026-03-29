@@ -63,7 +63,7 @@
       flex-wrap:wrap}
     .home-rate-strip{border-top:1px solid rgba(255,255,255,0.1);
       border-bottom:1px solid rgba(255,255,255,0.1);
-      padding:20px 0;background:rgba(10,10,22,0.95)}
+      padding:24px 0;background:rgba(10,10,22,0.95)}
     .rate-strip-row{display:flex;align-items:center;gap:24px;
       flex-wrap:wrap}
     .rate-strip-item{display:flex;flex-direction:column;gap:2px}
@@ -87,8 +87,8 @@
     .view-all-link{font-size:.85rem;color:var(--accent-teal,#4fd1c5);
       text-decoration:none;font-weight:600}
     .home-preview-grid{display:grid;
-      grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
-      gap:16px}
+      grid-template-columns:repeat(auto-fit,minmax(280px,340px));
+      gap:16px;justify-content:center}
     .preview-skeleton{height:220px;border-radius:10px}
     .preview-card{display:block;text-decoration:none;
       border:1px solid rgba(255,255,255,0.1);border-radius:10px;
@@ -177,6 +177,10 @@
   <!-- LIVE RATE STRIP -->
   <section class="home-rate-strip">
     <div class="container">
+      <div class="home-section-header" style="margin-bottom:12px">
+        <h2 style="font-size:1.3rem;font-weight:700;color:var(--text-primary,#fff)">Live Mortgage Rates</h2>
+        <a href="rates-market-data.html" class="view-all-link">Full Rate Dashboard &rarr;</a>
+      </div>
       <div class="rate-strip-row">
         <div class="rate-strip-item">
           <span class="rate-strip-label">30-Year Fixed</span>
@@ -192,7 +196,6 @@
           <span class="rate-strip-label">Source</span>
           <span class="rate-strip-value" style="font-size:0.75rem;opacity:0.7">Freddie Mac / FRED</span>
         </div>
-        <a href="rates-market-data.html" class="rate-strip-cta">Full Rate Dashboard &rarr;</a>
       </div>
     </div>
   </section>
