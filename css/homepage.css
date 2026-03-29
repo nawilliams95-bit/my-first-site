@@ -274,6 +274,144 @@
 }
 
 /* ---------------------------------------------------------------
+   MAILERLITE ml-embedded — site style overrides
+   Scoped to .newsletter-inner so other embeds aren't affected
+--------------------------------------------------------------- */
+
+/* Strip ML's wrapper chrome */
+.newsletter-inner .ml-form-embedContainer,
+.newsletter-inner .ml-form-align-center,
+.newsletter-inner .ml-form-embedWrapper {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+/* Hide ML's own heading/description — we have ours outside */
+.newsletter-inner .ml-form-embedContent {
+  display: none !important;
+}
+
+/* Horizontal flex row: input + button */
+.newsletter-inner .ml-form-embedBody,
+.newsletter-inner .ml-block-form {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+  padding: 0 !important;
+}
+
+.newsletter-inner .ml-form-formContent {
+  flex: 1 !important;
+}
+
+.newsletter-inner .ml-form-fieldRow {
+  margin: 0 !important;
+}
+
+/* Hide the "Email" label */
+.newsletter-inner .ml-field-group label {
+  display: none !important;
+}
+
+/* Make form row horizontal */
+.newsletter-inner .ml-block-form {
+  flex-direction: row !important;
+  align-items: stretch !important;
+  gap: 12px !important;
+}
+
+/* Input — match .newsletter-form input */
+.newsletter-inner .ml-field-group input[type="email"] {
+  flex: 1 !important;
+  width: 100% !important;
+  padding: 13px 16px !important;
+  background: var(--bg-secondary) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: var(--radius-md) !important;
+  color: var(--text-primary) !important;
+  font-size: 1rem !important;
+  font-family: var(--font-main) !important;
+  outline: none !important;
+  transition: var(--transition) !important;
+  box-shadow: none !important;
+}
+
+.newsletter-inner .ml-field-group input[type="email"]::placeholder {
+  color: rgba(160,160,176,0.5) !important;
+}
+
+.newsletter-inner .ml-field-group input[type="email"]:focus {
+  border-color: var(--accent-teal) !important;
+  box-shadow: 0 0 0 3px rgba(0,212,170,0.1) !important;
+}
+
+/* Submit button — match .newsletter-form button with site gradient */
+.newsletter-inner .ml-form-embedSubmit {
+  flex-shrink: 0 !important;
+}
+
+.newsletter-inner .ml-form-embedSubmit button[type="submit"] {
+  white-space: nowrap !important;
+  padding: 13px 28px !important;
+  background: linear-gradient(135deg, #2D5BE3 0%, #00D4AA 100%) !important;
+  color: white !important;
+  font-weight: 700 !important;
+  font-size: var(--size-small) !important;
+  font-family: var(--font-main) !important;
+  border-radius: var(--radius-md) !important;
+  border: none !important;
+  cursor: pointer !important;
+  transition: var(--transition) !important;
+  height: 100% !important;
+  letter-spacing: 0.02em !important;
+}
+
+.newsletter-inner .ml-form-embedSubmit button[type="submit"]:hover {
+  opacity: 0.9 !important;
+}
+
+/* Hide the loading/spinner button */
+.newsletter-inner .ml-form-embedSubmit button.loading {
+  display: none !important;
+}
+
+/* Success state */
+.newsletter-inner .ml-form-successBody {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  text-align: center !important;
+}
+
+.newsletter-inner .ml-form-successContent h4 {
+  color: var(--accent-teal) !important;
+  font-family: var(--font-main) !important;
+  font-size: 1.1rem !important;
+  margin-bottom: 6px !important;
+}
+
+.newsletter-inner .ml-form-successContent p {
+  color: var(--text-secondary) !important;
+  font-family: var(--font-main) !important;
+  font-size: var(--size-small) !important;
+}
+
+/* Mobile: stack vertically */
+@media (max-width: 560px) {
+  .newsletter-inner .ml-block-form {
+    flex-direction: column !important;
+  }
+  .newsletter-inner .ml-form-embedSubmit button[type="submit"] {
+    width: 100% !important;
+  }
+}
+
+/* ---------------------------------------------------------------
    NEW HERO SECTION
 --------------------------------------------------------------- */
 .home-hero {

@@ -312,16 +312,17 @@ input, select, textarea {
   outline: none !important;
 }
 #mlb2-39162027.ml-form-embedContainer .ml-form-embedWrapper .ml-form-embedBody .ml-form-embedSubmit button {
-  background-color: #2563eb !important;
+  background: linear-gradient(135deg, #2D5BE3 0%, #00D4AA 100%) !important;
   border-radius: 4px !important;
   font-family: 'DM Sans', sans-serif !important;
   font-size: 15px !important;
-  font-weight: 600 !important;
+  font-weight: 700 !important;
   padding: 12px !important;
-  letter-spacing: 0.01em !important;
+  letter-spacing: 0.02em !important;
 }
 #mlb2-39162027.ml-form-embedContainer .ml-form-embedWrapper .ml-form-embedBody .ml-form-embedSubmit button:hover {
-  background-color: #1d4ed8 !important;
+  opacity: 0.92 !important;
+  background: linear-gradient(135deg, #2D5BE3 0%, #00D4AA 100%) !important;
 }
 #mlb2-39162027.ml-form-embedContainer .ml-form-embedWrapper .ml-form-successBody {
   padding: 24px !important;
