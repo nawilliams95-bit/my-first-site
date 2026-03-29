@@ -297,20 +297,30 @@
 }
 
 /* Horizontal flex row: input + button */
-.newsletter-inner .ml-form-embedBody,
+.newsletter-inner .ml-form-embedBody {
+  padding: 0 !important;
+}
+
 .newsletter-inner .ml-block-form {
   display: flex !important;
-  flex-direction: column !important;
-  gap: 0 !important;
+  flex-direction: row !important;
+  align-items: stretch !important;
+  gap: 12px !important;
   padding: 0 !important;
 }
 
 .newsletter-inner .ml-form-formContent {
   flex: 1 !important;
+  min-width: 0 !important;
 }
 
 .newsletter-inner .ml-form-fieldRow {
   margin: 0 !important;
+  height: 100% !important;
+}
+
+.newsletter-inner .ml-field-group {
+  height: 100% !important;
 }
 
 /* Hide the "Email" label */
@@ -318,17 +328,10 @@
   display: none !important;
 }
 
-/* Make form row horizontal */
-.newsletter-inner .ml-block-form {
-  flex-direction: row !important;
-  align-items: stretch !important;
-  gap: 12px !important;
-}
-
 /* Input — match .newsletter-form input */
 .newsletter-inner .ml-field-group input[type="email"] {
-  flex: 1 !important;
   width: 100% !important;
+  min-width: 0 !important;
   padding: 13px 16px !important;
   background: var(--bg-secondary) !important;
   border: 1px solid var(--border-color) !important;
