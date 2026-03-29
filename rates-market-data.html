@@ -344,7 +344,21 @@
       }
     ];
 
+    var RATES_RAW_KEY = 'rdl_rates_raw';   // shared with ticker.js
+    var RATES_RAW_TTL = 60 * 60 * 1000;
+
     function fetchAllRates() {
+      // Use shared raw cache so rates page and ticker always show the same data
+      try {
+        var raw = localStorage.getItem(RATES_RAW_KEY);
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (Date.now() - parsed.timestamp < RATES_RAW_TTL) {
+            return Promise.resolve(parsed.data);
+          }
+        }
+      } catch(e) {}
+
       var ctrl = new AbortController();
       var timer = setTimeout(function() { ctrl.abort(); }, 10000);
       return fetch('/api/rates', { signal: ctrl.signal })
@@ -352,6 +366,12 @@
           clearTimeout(timer);
           if (!res.ok) throw new Error('rates API ' + res.status);
           return res.json();
+        })
+        .then(function(data) {
+          try {
+            localStorage.setItem(RATES_RAW_KEY, JSON.stringify({ data: data, timestamp: Date.now() }));
+          } catch(e) {}
+          return data;
         })
         .catch(function(e) { clearTimeout(timer); throw e; });
     }

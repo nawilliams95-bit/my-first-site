@@ -3,6 +3,7 @@
 // Freshness dot CSS is in css/ticker.css — classes: .ticker-fresh.fresh-green, .fresh-yellow, .fresh-gray, .fresh-unknown
 
 const TICKER_CACHE_KEY = 'rdl_ticker_v2';
+const RATES_RAW_KEY   = 'rdl_rates_raw';   // shared with rates page
 const TICKER_CACHE_TTL = 60 * 60 * 1000; // 1 hour
 
 // Returns a CSS class based on how recently the data was published
@@ -94,9 +95,10 @@ const TICKER_POINTS = [
       const previous = parseFloat(obs[1]?.value);
       return {
         value:       isNaN(latest)   ? 'N/A' : '$' + Math.round(latest).toLocaleString(),
+        // higherIsBad: false — price up is good (green/negative), price down is bad (red/positive)
         changeClass: isNaN(latest) || isNaN(previous) ? 'neutral'
-                     : latest > previous ? 'positive'
-                     : latest < previous ? 'negative' : 'neutral',
+                     : latest > previous ? 'negative'
+                     : latest < previous ? 'positive' : 'neutral',
         timestamp:   obs[0]?.date
       };
     }
@@ -114,7 +116,8 @@ const TICKER_POINTS = [
       const yoy = isNaN(yearAgo) ? null : ((latest - yearAgo) / yearAgo * 100);
       return {
         value:       latest.toFixed(1) + 'mo' + (yoy !== null ? ' (' + (yoy >= 0 ? '+' : '') + yoy.toFixed(1) + '% YoY)' : ''),
-        changeClass: yoy === null ? 'neutral' : yoy > 0 ? 'positive' : yoy < 0 ? 'negative' : 'neutral',
+        // higherIsBad: false — more supply is good (green/negative), less supply is bad (red/positive)
+        changeClass: yoy === null ? 'neutral' : yoy > 0 ? 'negative' : yoy < 0 ? 'positive' : 'neutral',
         timestamp:   obs[0]?.date
       };
     }
@@ -148,22 +151,35 @@ async function fetchTickerData() {
     }
   } catch (e) {}
 
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 8000);
-
+  // Use shared raw cache so ticker always shows the same data as the rates page
   let apiData;
   try {
-    const res = await fetch('/api/rates', { signal: controller.signal });
-    clearTimeout(timeout);
-    apiData = await res.json();
-  } catch {
-    clearTimeout(timeout);
-    return TICKER_POINTS.map(p => ({
-      label:          p.label,
-      value:          p.fallback,
-      changeClass:    'neutral',
-      freshnessClass: 'fresh-unknown'
-    }));
+    const raw = localStorage.getItem(RATES_RAW_KEY);
+    if (raw) {
+      const { data, timestamp } = JSON.parse(raw);
+      if (Date.now() - timestamp < TICKER_CACHE_TTL) apiData = data;
+    }
+  } catch (e) {}
+
+  if (!apiData) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
+    try {
+      const res = await fetch('/api/rates', { signal: controller.signal });
+      clearTimeout(timeout);
+      apiData = await res.json();
+      try {
+        localStorage.setItem(RATES_RAW_KEY, JSON.stringify({ data: apiData, timestamp: Date.now() }));
+      } catch (e) {}
+    } catch {
+      clearTimeout(timeout);
+      return TICKER_POINTS.map(p => ({
+        label:          p.label,
+        value:          p.fallback,
+        changeClass:    'neutral',
+        freshnessClass: 'fresh-unknown'
+      }));
+    }
   }
 
   const results = TICKER_POINTS.map(point => {
