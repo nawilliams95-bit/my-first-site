@@ -87,7 +87,7 @@ body {
   line-height: 1.6;
   color: var(--text-primary);
   background-color: transparent;
-  background-image: linear-gradient(rgba(8, 8, 14, 0.84), rgba(8, 8, 14, 0.84)),
+  background-image: linear-gradient(rgba(8, 8, 14, 0.78), rgba(8, 8, 14, 0.78)),
                     url('../images/background.jpg');
   background-size: cover;
   background-position: center top;
