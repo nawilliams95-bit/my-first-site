@@ -1,7 +1,7 @@
 // RealtyDataLabs — Main JS
 // Initializes all page-level behaviors on DOMContentLoaded
 
-document.addEventListener('DOMContentLoaded', () => {
+function rdlInit() {
 
   // ============================================================
   // HEADER SCROLL BEHAVIOR
@@ -22,11 +22,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const mobileMenu = document.querySelector('.mobile-menu');
   const closeBtn   = document.querySelector('.mobile-menu-close');
 
+  let _menuScrollY = 0;
+
   function openMenu() {
     if (!mobileMenu) return;
+    _menuScrollY = window.scrollY;
     mobileMenu.classList.add('open');
     if (hamburger) hamburger.classList.add('open');
+    // iOS Safari: position:fixed is required to prevent background scroll
     document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.top = '-' + _menuScrollY + 'px';
+    document.body.style.width = '100%';
   }
 
   function closeMenu() {
@@ -34,6 +41,10 @@ document.addEventListener('DOMContentLoaded', () => {
     mobileMenu.classList.remove('open');
     if (hamburger) hamburger.classList.remove('open');
     document.body.style.overflow = '';
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.width = '';
+    window.scrollTo(0, _menuScrollY);
   }
 
   if (hamburger) hamburger.addEventListener('click', () => {
@@ -299,4 +310,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-});
+}
+
+// Run immediately if DOM is already parsed (handles Rocket Loader / async injection),
+// otherwise wait for DOMContentLoaded.
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', rdlInit);
+} else {
+  rdlInit();
+}

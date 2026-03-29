@@ -81,11 +81,11 @@
 }
 
 .ticker-value.positive {
-  color: var(--accent-teal);
+  color: #ef4444;
 }
 
 .ticker-value.negative {
-  color: #FF4D4D;
+  color: #22c55e;
 }
 
 /* ── Dot Separator ─────────────────────────────────────────────────────── */

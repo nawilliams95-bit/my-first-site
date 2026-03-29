@@ -24,6 +24,7 @@ html, body {
   padding: 80px 32px 40px;
   gap: 4px;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .mobile-menu.open {
@@ -135,6 +136,11 @@ html, body {
 
 /* ── Tablet (≤ 768px) ──────────────────────────────────────────────────── */
 @media (max-width: 768px) {
+
+  /* iOS Safari: background-attachment:fixed causes rendering bugs on mobile */
+  body {
+    background-attachment: scroll;
+  }
 
   /* Header */
   .header-nav,
