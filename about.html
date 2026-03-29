@@ -42,31 +42,28 @@
     .about-content ul li { color: var(--text-secondary); font-size: var(--size-body); padding: 8px 0 8px 24px; position: relative; border-bottom: 1px solid rgba(42,42,58,0.5); }
     .about-content ul li::before { content: '→'; position: absolute; left: 0; color: var(--accent-teal); font-weight: 700; }
     .about-content ul li:last-child { border-bottom: none; }
-    .sources-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-bottom: 32px; }
-    @media (min-width: 769px) { .sources-grid { grid-template-columns: repeat(4, 1fr); } }
-    .source-group { background: rgba(10,10,22,0.95); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-md); padding: 20px; }
-    .source-group h4 { font-size: var(--size-small); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
-    .source-group h4.market-color { color: #6B8EF0; }
-    .source-group h4.mortgage-color { color: var(--accent-teal); }
-    .source-group h4.economic-color { color: #F59E0B; }
-    .source-group h4.investment-color { color: #10B981; }
-    .source-group h4.industry-color { color: #8B5CF6; }
-    .source-group h4.regional-color { color: #EF4444; }
-    .source-group ul { margin: 0; }
-    .source-group ul li { font-size: var(--size-small); border-bottom-color: rgba(42,42,58,0.3); }
-    .agent-bio-card { background: rgba(10,10,22,0.96); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-lg); padding: 32px; display: flex; gap: 24px; align-items: flex-start; margin-bottom: 32px; }
-    .agent-bio-photo { width: 96px; height: 96px; border-radius: 50%; background: rgba(45,91,227,0.12); border: 2px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; flex-shrink: 0; overflow: hidden; }
-    .agent-bio-photo img { width: 100%; height: 100%; object-fit: cover; }
-    .agent-bio-info h3 { font-size: var(--size-h3); margin-bottom: 4px; }
-    .agent-bio-info p { margin-bottom: 8px; font-size: var(--size-small); }
-    .free-commitment { background: linear-gradient(135deg, rgba(45,91,227,0.1) 0%, rgba(0,212,170,0.1) 100%); border: 1px solid rgba(0,212,170,0.2); border-radius: var(--radius-lg); padding: 32px; text-align: center; margin-bottom: 48px; }
+    .sources-stack { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 32px; }
+    .source-card { background: rgba(10,10,22,0.95); border: 1px solid rgba(255,255,255,0.08); border-top-width: 3px; border-radius: var(--radius-md); padding: 18px 16px; display: flex; flex-direction: column; gap: 12px; }
+    .source-card.market     { border-top-color: #6B8EF0; }
+    .source-card.rates      { border-top-color: var(--accent-teal); }
+    .source-card.investment { border-top-color: #10B981; }
+    .source-card.media      { border-top-color: #8B5CF6; }
+    .source-card-label { font-size: var(--size-small); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+    .source-card.market     .source-card-label { color: #6B8EF0; }
+    .source-card.rates      .source-card-label { color: var(--accent-teal); }
+    .source-card.investment .source-card-label { color: #10B981; }
+    .source-card.media      .source-card-label { color: #8B5CF6; }
+    .source-card-items { display: flex; flex-wrap: wrap; gap: 6px; }
+    .source-chip { font-size: 0.75rem; color: var(--text-secondary); background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-sm); padding: 4px 8px; }
+    @media (max-width: 900px) {
+      .sources-stack { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 540px) {
+      .sources-stack { grid-template-columns: 1fr; }
+    }
+.free-commitment { background: linear-gradient(135deg, rgba(45,91,227,0.1) 0%, rgba(0,212,170,0.1) 100%); border: 1px solid rgba(0,212,170,0.2); border-radius: var(--radius-lg); padding: 32px; text-align: center; margin-bottom: 48px; }
     .free-commitment h3 { font-size: var(--size-h3); margin-bottom: 10px; }
     .free-commitment p { font-size: var(--size-small); color: var(--text-secondary); margin: 0; }
-    @media (max-width: 640px) {
-      .sources-grid { grid-template-columns: 1fr; }
-      .agent-bio-card { flex-direction: column; align-items: center; text-align: center; }
-      .agent-bio-info .agent-social { justify-content: center; }
-    }
   </style>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-96MTQL2F8G"></script>
@@ -151,88 +148,54 @@
     <h2>Data Sources</h2>
     <p>RealtyDataLabs aggregates headlines, summaries, and links from publicly available RSS feeds, and displays live economic data from government and institutional APIs. All original content remains the property of the respective publishers. We link directly to every source article &mdash; we never reproduce full articles without permission.</p>
 
-    <div class="sources-grid">
-      <div class="source-group">
-        <h4 class="market-color">Real Estate News</h4>
-        <ul>
-          <li>Redfin (redfin.com)</li>
-          <li>HousingWire (housingwire.com)</li>
-          <li>RISMedia (rismedia.com)</li>
-          <li>Keeping Current Matters (keepingcurrentmatters.com)</li>
-          <li>Eye on Housing &mdash; NAHB (eyeonhousing.org)</li>
-          <li>Calculated Risk (calculatedriskblog.com)</li>
-        </ul>
+    <div class="sources-stack">
+      <div class="source-card market">
+        <div class="source-card-label">Real Estate News</div>
+        <div class="source-card-items">
+          <span class="source-chip">Redfin (redfin.com)</span>
+          <span class="source-chip">HousingWire (housingwire.com)</span>
+          <span class="source-chip">RISMedia (rismedia.com)</span>
+          <span class="source-chip">Keeping Current Matters (keepingcurrentmatters.com)</span>
+          <span class="source-chip">Eye on Housing &mdash; NAHB (eyeonhousing.org)</span>
+          <span class="source-chip">Calculated Risk (calculatedriskblog.com)</span>
+        </div>
       </div>
-      <div class="source-group">
-        <h4 class="mortgage-color">Rates &amp; Economic Data</h4>
-        <ul>
-          <li>Federal Reserve Bank of St. Louis &mdash; FRED API (stlouisfed.org)</li>
-          <li>Freddie Mac Primary Mortgage Market Survey (30yr &amp; 15yr fixed rates)</li>
-          <li>Federal Reserve Board H.15 Release (10-yr Treasury yield)</li>
-          <li>Federal Open Market Committee &mdash; FOMC (Fed Funds Rate)</li>
-          <li>U.S. Census Bureau &amp; HUD (median home prices, housing supply)</li>
-          <li>Bureau of Labor Statistics &mdash; BLS (Consumer Price Index)</li>
-        </ul>
+      <div class="source-card rates">
+        <div class="source-card-label">Rates &amp; Economic Data</div>
+        <div class="source-card-items">
+          <span class="source-chip">Federal Reserve &mdash; FRED API (stlouisfed.org)</span>
+          <span class="source-chip">Freddie Mac PMMS (30yr &amp; 15yr fixed)</span>
+          <span class="source-chip">Fed H.15 Release (10-yr Treasury)</span>
+          <span class="source-chip">FOMC (Fed Funds Rate)</span>
+          <span class="source-chip">U.S. Census Bureau &amp; HUD (home prices, supply)</span>
+          <span class="source-chip">BLS (Consumer Price Index)</span>
+        </div>
       </div>
-      <div class="source-group">
-        <h4 class="investment-color">Investment &amp; Rental</h4>
-        <ul>
-          <li>FortuneBuilders (fortunebuilders.com)</li>
-          <li>REtipster (retipster.com)</li>
-          <li>BiggerPockets (biggerpockets.com)</li>
-          <li>Multifamily Dive (multifamilydive.com)</li>
-          <li>RISMedia (rismedia.com)</li>
-          <li>Keeping Current Matters (keepingcurrentmatters.com)</li>
-        </ul>
+      <div class="source-card investment">
+        <div class="source-card-label">Investment &amp; Rental</div>
+        <div class="source-card-items">
+          <span class="source-chip">FortuneBuilders (fortunebuilders.com)</span>
+          <span class="source-chip">REtipster (retipster.com)</span>
+          <span class="source-chip">BiggerPockets (biggerpockets.com)</span>
+          <span class="source-chip">Multifamily Dive (multifamilydive.com)</span>
+          <span class="source-chip">RISMedia (rismedia.com)</span>
+          <span class="source-chip">Keeping Current Matters (keepingcurrentmatters.com)</span>
+        </div>
       </div>
-      <div class="source-group">
-        <h4 class="industry-color">Media &amp; Insights</h4>
-        <ul>
-          <li>YouTube (@realtydatalabs)</li>
-          <li>Instagram (@realtydatalabs)</li>
-          <li>X (Twitter) (@realtydatalabs)</li>
-          <li>TikTok (@realtydatalabs)</li>
-        </ul>
+      <div class="source-card media">
+        <div class="source-card-label">Media &amp; Insights</div>
+        <div class="source-card-items">
+          <span class="source-chip">YouTube (@realtydatalabs)</span>
+          <span class="source-chip">Instagram (@realtydatalabs)</span>
+          <span class="source-chip">X / Twitter (@realtydatalabs)</span>
+          <span class="source-chip">TikTok (@realtydatalabs)</span>
+        </div>
       </div>
     </div>
 
     <div class="free-commitment">
       <h3>Commitment to Free Access</h3>
       <p>RealtyDataLabs will always be free to access. We are funded through disclosed affiliate partnerships and advertising. We never accept payment to alter our data presentation, and we do not editorialize or manipulate third-party source content. Our goal is to be the most trustworthy real estate data aggregator on the internet.</p>
-    </div>
-
-    <h2>About the Author</h2>
-    <div class="agent-bio-card">
-      <div class="agent-bio-photo" aria-label="Agent photo">
-        <img src="images/nick-williams.jpeg" alt="Nick Williams" loading="lazy" onerror="this.style.display='none'">
-      </div>
-      <div class="agent-bio-info">
-        <h3>Nick Williams</h3>
-        <p><strong>REALTOR&reg; &mdash; Licensed in Georgia</strong></p>
-        <p>Affiliated with Keller Williams Elevate &mdash; Blue Ridge, GA</p>
-        <p>License Number: <strong>447455</strong></p>
-        <p>Website: <a href="https://nicknorthga.com" target="_blank" rel="noopener" style="color:var(--accent-teal);">nicknorthga.com</a></p>
-        <p>Nick Williams is a licensed real estate agent serving buyers, sellers, and investors across North Georgia, including the Blue Ridge, Ellijay, and surrounding mountain communities. RealtyDataLabs is an independent information platform operated by Nick to help everyday people access objective real estate data and market intelligence &mdash; for free.</p>
-        <div class="agent-social" style="margin-top:16px;">
-          <a href="https://youtube.com/@realtydatalabs" target="_blank" rel="noopener" aria-label="YouTube">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-            YouTube
-          </a>
-          <a href="https://www.instagram.com/realtydatalabs" target="_blank" rel="noopener" aria-label="Instagram">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-            Instagram
-          </a>
-          <a href="https://x.com/realtydatalabs" target="_blank" rel="noopener" aria-label="Twitter/X">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.742l7.737-8.835L1.254 2.25H8.08l4.259 5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-            X
-          </a>
-          <a href="https://www.tiktok.com/@realtydatalabs" target="_blank" rel="noopener" aria-label="TikTok">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.88a8.28 8.28 0 004.84 1.54V7.01a4.85 4.85 0 01-1.07-.32z"/></svg>
-            TikTok
-          </a>
-        </div>
-        <p style="color:rgba(160,160,176,0.85); font-size:var(--size-tiny);margin-top:12px">Nothing on this site constitutes real estate, investment, financial, or legal advice.</p>
-      </div>
     </div>
 
     <h2>Contact Us</h2>
