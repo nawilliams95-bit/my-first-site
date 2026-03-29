@@ -2,17 +2,8 @@
 // Fetches live market data, builds ticker HTML, handles animation
 // Freshness dot CSS is in css/ticker.css — classes: .ticker-fresh.fresh-green, .fresh-yellow, .fresh-gray, .fresh-unknown
 
-const TICKER_CACHE_KEY = 'rdl_ticker_cache';
+const TICKER_CACHE_KEY = 'rdl_ticker_v2';
 const TICKER_CACHE_TTL = 60 * 60 * 1000; // 1 hour
-
-// FRED API key
-const FRED_API_KEY = '4f73d187e5b0e664e9447b7d92972edc';
-const FRED_PROXY = 'https://api.allorigins.win/get?url=';
-
-function fredUrl(seriesId, limit) {
-  const base = `https://api.stlouisfed.org/fred/series/observations?series_id=${seriesId}&api_key=${FRED_API_KEY}&file_type=json&sort_order=desc&limit=${limit}`;
-  return FRED_PROXY + encodeURIComponent(base);
-}
 
 // Returns a CSS class based on how recently the data was published
 function freshnessClass(dateStr) {
@@ -147,15 +138,6 @@ const TICKER_POINTS = [
   }
 ];
 
-async function fetchTickerValue(fetchFn, fallback) {
-  try {
-    const val = await fetchFn();
-    return (val !== null && val !== undefined && val !== '') ? val : fallback;
-  } catch {
-    return fallback;
-  }
-}
-
 async function fetchTickerData() {
   // Check cache
   try {
@@ -166,29 +148,37 @@ async function fetchTickerData() {
     }
   } catch (e) {}
 
-  const results = await Promise.all(
-    TICKER_POINTS.map(point =>
-      fetch(fredUrl(point.series, point.limit))
-        .then(r => r.json())
-        .then(wrapper => {
-          const data = JSON.parse(wrapper.contents);
-          const obs = (data.observations || []).filter(o => o.value !== '.');
-          const formatted = obs.length ? point.format(obs) : { value: point.fallback, changeClass: 'neutral', timestamp: null };
-          return {
-            label:          point.label,
-            value:          formatted.value,
-            changeClass:    formatted.changeClass,
-            freshnessClass: freshnessClass(formatted.timestamp)
-          };
-        })
-        .catch(() => ({
-          label:          point.label,
-          value:          point.fallback,
-          changeClass:    'neutral',
-          freshnessClass: 'fresh-unknown'
-        }))
-    )
-  );
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 8000);
+
+  let apiData;
+  try {
+    const res = await fetch('/api/rates', { signal: controller.signal });
+    clearTimeout(timeout);
+    apiData = await res.json();
+  } catch {
+    clearTimeout(timeout);
+    return TICKER_POINTS.map(p => ({
+      label:          p.label,
+      value:          p.fallback,
+      changeClass:    'neutral',
+      freshnessClass: 'fresh-unknown'
+    }));
+  }
+
+  const results = TICKER_POINTS.map(point => {
+    const obs = apiData[point.series] || [];
+    if (!obs.length) {
+      return { label: point.label, value: point.fallback, changeClass: 'neutral', freshnessClass: 'fresh-unknown' };
+    }
+    const formatted = point.format(obs);
+    return {
+      label:          point.label,
+      value:          formatted.value,
+      changeClass:    formatted.changeClass,
+      freshnessClass: freshnessClass(formatted.timestamp)
+    };
+  });
 
   try {
     localStorage.setItem(TICKER_CACHE_KEY, JSON.stringify({ data: results, timestamp: Date.now() }));
