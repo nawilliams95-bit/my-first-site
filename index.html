@@ -112,12 +112,7 @@
       display:block}
     .home-agent-section{padding:60px 0;
       border-bottom:1px solid var(--border-color,#2a2a3e)}
-    .home-agent-inner{display:grid;
-      grid-template-columns:1fr 340px;gap:48px;align-items:start}
-    @media(max-width:768px){
-      .home-agent-inner{grid-template-columns:1fr}
-      .home-form-side h2,.home-form-side>p:not(.lead-disclosure){text-align:center}
-    }
+    .home-agent-inner{max-width:700px;margin:0 auto}
     .home-form-side h2{font-size:1.5rem;font-weight:700;
       color:var(--text-primary,#fff);margin-bottom:10px}
     .home-form-side>p{color:var(--text-secondary,#aaa);
@@ -236,7 +231,7 @@
       <div class="home-agent-inner">
         <div class="home-form-side">
           <h2>Need an Agent?</h2>
-          <p>Connect with a licensed real estate expert in your market. Serving North Georgia directly — all other markets connected via referral.</p>
+          <p>Fill out the form and a licensed real estate agent will reach out to help with your buying, selling, or investing goals.</p>
 
           <form id="lead-form" class="lead-form-wrap" novalidate>
             <!-- Web3Forms -->
