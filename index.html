@@ -233,11 +233,10 @@
           <h2>Need an Agent?</h2>
           <p>Fill out the form and a licensed real estate agent will reach out to help with your buying, selling, or investing goals.</p>
 
-          <form id="lead-form" class="lead-form-wrap" novalidate>
-            <!-- Web3Forms -->
-            <input type="hidden" name="access_key" value="7f4b72d6-e68a-42ff-807b-ba1b43284937">
-            <input type="hidden" name="subject" value="New Lead — RealtyDataLabs">
-            <input type="hidden" name="from_name" value="RealtyDataLabs">
+          <form id="lead-form" class="lead-form-wrap" action="https://api.web3forms.com/submit" method="POST" novalidate>
+            <input type="hidden" name="access_key" value="6cbe3586-36b4-4267-87e1-e8ab0de96e20">
+            <input type="hidden" name="subject" value="New Agent Lead — RealtyDataLabs">
+            <input type="hidden" name="redirect" value="https://realtydatalabs.com/thank-you.html">
             <input type="checkbox" name="botcheck" style="display:none;">
             <div class="form-grid-2">
               <div class="form-group">
@@ -311,17 +310,8 @@
     <div class="newsletter-inner">
       <h2>Stay Ahead of the Market</h2>
       <p>Get the most important real estate, mortgage, and economic data delivered to your inbox every week. Free, always.</p>
-      <form class="newsletter-form" id="newsletter-form" novalidate>
-        <!-- Web3Forms -->
-        <input type="hidden" name="access_key" value="7f4b72d6-e68a-42ff-807b-ba1b43284937">
-        <input type="hidden" name="subject" value="Newsletter Signup — RealtyDataLabs">
-        <input type="hidden" name="from_name" value="RealtyDataLabs Newsletter">
-        <input type="checkbox" name="botcheck" style="display:none;">
-        <input type="email" placeholder="Your email address" aria-label="Email address" name="email" required>
-        <button type="submit">Subscribe</button>
-      </form>
+      <div class="ml-embedded" data-form="2230483"></div>
       <p class="newsletter-privacy">No spam. Unsubscribe anytime. We never sell your data.</p>
-      <div class="newsletter-status" id="newsletter-status" aria-live="polite"></div>
     </div>
   </section>
 
@@ -403,6 +393,15 @@
   <script data-cfasync="false" src="js/feeds.js" defer></script>
   <script data-cfasync="false" src="js/main.js" defer></script>
   <script data-cfasync="false" src="js/ticker.js" defer></script>
+
+  <!-- MailerLite Universal -->
+  <script>
+    (function(w,d,e,u,f,l,n){w[f]=w[f]||function(){(w[f].q=w[f].q||[])
+    .push(arguments);},l=d.createElement(e),l.async=1,l.src=u,
+    n=d.getElementsByTagName(e)[0],n.parentNode.insertBefore(l,n);})
+    (window,document,'script','https://assets.mailerlite.com/js/universal.js','ml');
+    ml('account', '2230483');
+  </script>
 
   <script data-cfasync="false">
   (function(){

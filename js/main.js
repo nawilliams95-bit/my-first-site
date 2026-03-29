@@ -226,19 +226,7 @@ function rdlInit() {
         });
 
         if (response.ok) {
-          // Success — hide form fields, show confirmation
-          const formGrid = leadForm.querySelector('.form-grid-2');
-          if (formGrid) formGrid.style.display = 'none';
-          if (submitBtn) submitBtn.style.display = 'none';
-          if (statusMsg) {
-            statusMsg.innerHTML = `
-              <div class="form-success-state">
-                <div class="form-success-icon">&#10003;</div>
-                <h3>Thank you!</h3>
-                <p>A licensed agent will contact you within 24 hours.</p>
-              </div>`;
-            statusMsg.className = 'form-status form-status-success';
-          }
+          window.location.href = 'thank-you.html';
         } else {
           throw new Error('Server error');
         }

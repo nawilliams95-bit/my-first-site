@@ -199,10 +199,10 @@
     <p>Fill out the form below and we will respond within 2 business days to discuss available placements, audience data, and pricing.</p>
 
     <div class="advertise-form-wrap">
-      <form id="advertiser-form" novalidate>
-        <input type="hidden" name="access_key" value="7f4b72d6-e68a-42ff-807b-ba1b43284937">
-        <input type="hidden" name="subject" value="Advertiser Inquiry — RealtyDataLabs">
-        <input type="hidden" name="from_name" value="RealtyDataLabs Advertise">
+      <form id="advertiser-form" action="https://api.web3forms.com/submit" method="POST" novalidate>
+        <input type="hidden" name="access_key" value="756fb816-79b3-4796-bcac-cdaa3177cf43">
+        <input type="hidden" name="subject" value="New Advertise Inquiry — RealtyDataLabs">
+        <input type="hidden" name="redirect" value="https://realtydatalabs.com/thank-you.html">
         <input type="checkbox" name="botcheck" style="display:none;">
         <div class="form-grid-2">
           <div class="form-group">
@@ -210,43 +210,40 @@
             <input class="form-input" type="text" id="adv-name" name="advName" placeholder="Jane Smith" required>
           </div>
           <div class="form-group">
-            <label class="form-label" for="adv-company">Company Name <span class="required">*</span></label>
-            <input class="form-input" type="text" id="adv-company" name="advCompany" placeholder="Acme Mortgage Co." required>
-          </div>
-          <div class="form-group">
             <label class="form-label" for="adv-email">Email Address <span class="required">*</span></label>
             <input class="form-input" type="email" id="adv-email" name="advEmail" placeholder="jane@acmemortgage.com" required>
           </div>
           <div class="form-group">
-            <label class="form-label" for="adv-phone">Phone Number</label>
-            <input class="form-input" type="tel" id="adv-phone" name="advPhone" placeholder="(555) 000-0000">
+            <label class="form-label" for="adv-company">Company Name</label>
+            <input class="form-input" type="text" id="adv-company" name="advCompany" placeholder="Acme Mortgage Co.">
           </div>
           <div class="form-group">
-            <label class="form-label" for="adv-type">Inquiry Type <span class="required">*</span></label>
+            <label class="form-label" for="adv-website">Website URL</label>
+            <input class="form-input" type="url" id="adv-website" name="advWebsite" placeholder="https://yourcompany.com">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="adv-type">Type of Partnership <span class="required">*</span></label>
             <select class="form-select" id="adv-type" name="advType" required>
-              <option value="" disabled selected>Select inquiry type</option>
-              <option value="display-ad">Display Advertising</option>
-              <option value="native-ad">Native / In-Feed Ad</option>
+              <option value="" disabled selected>Select partnership type</option>
+              <option value="sponsored-content">Sponsored Content</option>
+              <option value="banner-ad">Banner Ad</option>
               <option value="newsletter">Newsletter Sponsorship</option>
               <option value="affiliate">Affiliate Partnership</option>
-              <option value="category-sponsor">Category Sponsorship</option>
-              <option value="lead-form">Lead Form Partnership</option>
-              <option value="custom">Custom / Other</option>
+              <option value="other">Other</option>
             </select>
           </div>
           <div class="form-group">
             <label class="form-label" for="adv-budget">Monthly Budget</label>
             <select class="form-select" id="adv-budget" name="advBudget">
               <option value="" disabled selected>Select budget range</option>
-              <option value="under500">Under $500/month</option>
-              <option value="500-1500">$500 &ndash; $1,500/month</option>
-              <option value="1500-5000">$1,500 &ndash; $5,000/month</option>
-              <option value="over5000">Over $5,000/month</option>
-              <option value="discuss">Prefer to discuss</option>
+              <option value="under500">Under $500</option>
+              <option value="500-1000">$500 &ndash; $1,000</option>
+              <option value="1000-2500">$1,000 &ndash; $2,500</option>
+              <option value="2500plus">$2,500+</option>
             </select>
           </div>
           <div class="form-group" style="grid-column:1/-1">
-            <label class="form-label" for="adv-message">Tell Us About Your Product or Service <span class="required">*</span></label>
+            <label class="form-label" for="adv-message">Message / Details <span class="required">*</span></label>
             <textarea class="form-textarea" id="adv-message" name="advMessage" placeholder="Briefly describe your product or service, your target audience, and what you hope to achieve through advertising on RealtyDataLabs..." style="min-height:140px;" required></textarea>
           </div>
         </div>
@@ -346,9 +343,7 @@
           body: JSON.stringify(Object.fromEntries(new FormData(form)))
         });
         if (res.ok) {
-          statusEl.className = 'form-status form-status-success';
-          statusEl.textContent = 'Thank you for your inquiry. We will be in touch within 2 business days.';
-          form.reset();
+          window.location.href = 'thank-you.html';
         } else { throw new Error(); }
       } catch(err) {
         statusEl.className = 'form-status form-status-error';
