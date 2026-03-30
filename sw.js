@@ -8,7 +8,6 @@ const PRECACHE_URLS = [
   '/disclaimer.html',
   '/investment-rental.html',
   '/market-data.html',
-  '/media-insights.html',
   '/privacy-policy.html',
   '/rates-market-data.html',
   '/terms-of-service.html',
