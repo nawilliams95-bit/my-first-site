@@ -49,17 +49,15 @@
     .about-content ul li { color: var(--text-secondary); font-size: var(--size-body); padding: 8px 0 8px 24px; position: relative; border-bottom: 1px solid rgba(42,42,58,0.5); }
     .about-content ul li::before { content: '→'; position: absolute; left: 0; color: var(--accent-teal); font-weight: 700; }
     .about-content ul li:last-child { border-bottom: none; }
-    .sources-stack { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 32px; }
+    .sources-stack { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 32px; }
     .source-card { background: rgba(10,10,22,0.95); border: 1px solid rgba(255,255,255,0.08); border-top-width: 3px; border-radius: var(--radius-md); padding: 18px 16px; display: flex; flex-direction: column; gap: 12px; }
     .source-card.market     { border-top-color: #6B8EF0; }
     .source-card.rates      { border-top-color: var(--accent-teal); }
     .source-card.investment { border-top-color: #10B981; }
-    .source-card.media      { border-top-color: #8B5CF6; }
     .source-card-label { font-size: var(--size-small); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
     .source-card.market     .source-card-label { color: #6B8EF0; }
     .source-card.rates      .source-card-label { color: var(--accent-teal); }
     .source-card.investment .source-card-label { color: #10B981; }
-    .source-card.media      .source-card-label { color: #8B5CF6; }
     .source-card-items { display: flex; flex-wrap: wrap; gap: 6px; }
     .source-chip { font-size: 0.75rem; color: var(--text-secondary); background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-sm); padding: 4px 8px; }
     @media (max-width: 900px) {
@@ -151,7 +149,6 @@
       <li><strong>Real Estate News</strong> &mdash; Breaking housing market news, home price trends, inventory data, and market analysis aggregated from Redfin, Zillow, and Realtor.com.</li>
       <li><strong>Rates &amp; Market Data</strong> &mdash; Live 30-year and 15-year fixed mortgage rate data sourced from Freddie Mac via the Federal Reserve FRED API, plus CFPB and RISMedia updates.</li>
       <li><strong>Investment &amp; Rental</strong> &mdash; Free investing guides, rental market data, and real estate investment strategies from FortuneBuilders, REtipster, and Keeping Current Matters.</li>
-      <li><strong>Media &amp; Insights</strong> &mdash; Follow RealtyDataLabs across YouTube, Instagram, Twitter/X, and TikTok for daily market updates, rate alerts, and real estate intelligence in short form.</li>
       <li><strong>Contact a Licensed Agent</strong> &mdash; Connect directly with Nick Williams, a licensed Georgia REALTOR&reg; affiliated with KW Elevate, for buying, selling, or investing in North Georgia real estate.</li>
       <li><strong>Free Access, Always</strong> &mdash; No paywalls, no subscriptions, no accounts required.</li>
     </ul>
@@ -201,15 +198,6 @@
           <span class="source-chip">Multifamily Dive (multifamilydive.com)</span>
           <span class="source-chip">RISMedia (rismedia.com)</span>
           <span class="source-chip">Keeping Current Matters (keepingcurrentmatters.com)</span>
-        </div>
-      </div>
-      <div class="source-card media">
-        <div class="source-card-label">Media &amp; Insights</div>
-        <div class="source-card-items">
-          <span class="source-chip">YouTube (@realtydatalabs)</span>
-          <span class="source-chip">Instagram (@realtydatalabs)</span>
-          <span class="source-chip">X / Twitter (@realtydatalabs)</span>
-          <span class="source-chip">TikTok (@realtydatalabs)</span>
         </div>
       </div>
     </div>
