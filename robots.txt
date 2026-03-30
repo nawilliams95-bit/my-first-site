@@ -1,5 +1,7 @@
 User-agent: *
 Allow: /
+
+Disallow: /thank-you.html
 Disallow: /cdn-cgi/
 
-Sitemap: https://realtydatalabs.com/sitemap.xml
+Sitemap: https://www.realtydatalabs.com/sitemap.xml
