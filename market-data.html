@@ -6,6 +6,13 @@
   <link rel="preconnect" href="https://corsproxy.io" crossorigin>
   <link rel="dns-prefetch" href="https://corsproxy.io">
   <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com">
+  <link rel="preconnect" href="https://assets.mailerlite.com">
+  <link rel="preconnect" href="https://api.web3forms.com">
+  <link rel="preconnect" href="https://api.stlouisfed.org">
+  <link rel="preconnect" href="https://pagead2.googlesyndication.com">
+  <link rel="preconnect" href="https://groot.mailerlite.com">
+  <link rel="dns-prefetch" href="https://assets.mailerlite.com">
+  <link rel="dns-prefetch" href="https://api.stlouisfed.org">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Real Estate News &amp; Housing Market Trends — RealtyDataLabs</title>
   <meta name="description" content="Latest real estate news and housing market updates from Redfin, Zillow, and Realtor.com. Free, no account required.">
@@ -49,7 +56,20 @@
 
   <!-- Google AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6311643231345943" crossorigin="anonymous"></script>
-
+  <link rel="prefetch" href="/index.html">
+  <link rel="prefetch" href="/rates-market-data.html">
+  <link rel="prefetch" href="/investment-rental.html">
+  <link rel="prefetch" href="/media-insights.html">
+  <link rel="prefetch" href="/contact.html">
+  <link rel="prefetch" href="/about.html">
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js')
+          .catch(function(err) { console.log('SW registration failed:', err); });
+      });
+    }
+  </script>
 </head>
 <body>
 
@@ -187,9 +207,9 @@
   </footer>
 
   <!-- SCRIPTS -->
-  <script data-cfasync="false" src="js/cards.js"></script>
-  <script data-cfasync="false" src="js/search.js"></script>
-  <script data-cfasync="false" src="js/feeds.js"></script>
+  <script data-cfasync="false" src="js/cards.js" defer></script>
+  <script data-cfasync="false" src="js/search.js" defer></script>
+  <script data-cfasync="false" src="js/feeds.js" defer></script>
   <script data-cfasync="false" src="js/main.js" defer></script>
   <script data-cfasync="false" src="js/ticker.js" defer></script>
 </body>

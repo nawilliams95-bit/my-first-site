@@ -7,6 +7,13 @@
   <link rel="dns-prefetch" href="https://corsproxy.io">
   <link rel="dns-prefetch" href="https://api.allorigins.win">
   <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com">
+  <link rel="preconnect" href="https://assets.mailerlite.com">
+  <link rel="preconnect" href="https://api.web3forms.com">
+  <link rel="preconnect" href="https://api.stlouisfed.org">
+  <link rel="preconnect" href="https://pagead2.googlesyndication.com">
+  <link rel="preconnect" href="https://groot.mailerlite.com">
+  <link rel="dns-prefetch" href="https://assets.mailerlite.com">
+  <link rel="dns-prefetch" href="https://api.stlouisfed.org">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Find an Agent — RealtyDataLabs</title>
   <meta name="description" content="Connect with a licensed real estate agent in your market. Fill out the form and we'll be in touch within 24 hours.">
@@ -78,6 +85,20 @@
     .response-card h4 { font-size: var(--size-small); color: var(--accent-teal); margin-bottom: 6px; font-weight: 600; }
     .response-card p { font-size: var(--size-small); color: var(--text-secondary); margin: 0; }
   </style>
+  <link rel="prefetch" href="/index.html">
+  <link rel="prefetch" href="/market-data.html">
+  <link rel="prefetch" href="/rates-market-data.html">
+  <link rel="prefetch" href="/investment-rental.html">
+  <link rel="prefetch" href="/media-insights.html">
+  <link rel="prefetch" href="/about.html">
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js')
+          .catch(function(err) { console.log('SW registration failed:', err); });
+      });
+    }
+  </script>
 </head>
 <body>
 

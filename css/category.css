@@ -1,265 +1,203 @@
-/* =============================================================
-   category.css — RealtyDataLabs Category Page Styles
-   Depends on: base.css (CSS custom properties)
-   ============================================================= */
-
-/* ---------------------------------------------------------------
-   CATEGORY HERO
---------------------------------------------------------------- */
 .category-hero {
-  padding: 48px 0 40px;
-  border-bottom: 1px solid var(--border-color);
-  margin-bottom: 48px;
+padding: 48px 0 40px;
+border-bottom: 1px solid var(--border-color);
+margin-bottom: 48px;
 }
-
 .category-hero-inner {
-  max-width: 760px;
+max-width: 760px;
 }
-
 .category-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-  margin-bottom: 12px;
+display: inline-flex;
+align-items: center;
+gap: 8px;
+font-size: 0.7rem;
+font-weight: 700;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+color: var(--text-secondary);
+margin-bottom: 12px;
 }
-
 .category-hero h1 {
-  font-size: var(--size-hero);
-  margin-bottom: 14px;
+font-size: var(--size-hero);
+margin-bottom: 14px;
 }
-
 .category-hero p {
-  font-size: 1.05rem;
-  color: var(--text-secondary);
-  margin-bottom: 16px;
-  max-width: 600px;
+font-size: 1.05rem;
+color: var(--text-secondary);
+margin-bottom: 16px;
+max-width: 600px;
 }
-
 .category-meta {
-  display: flex;
-  align-items: center;
-  gap: 12px 20px;
-  font-size: var(--size-tiny);
-  color: rgba(160,160,176,0.6);
-  flex-wrap: wrap;
+display: flex;
+align-items: center;
+gap: 12px 20px;
+font-size: var(--size-tiny);
+color: rgba(160,160,176,0.6);
+flex-wrap: wrap;
 }
-
-/* ---------------------------------------------------------------
-   FILTER BAR
---------------------------------------------------------------- */
 .filter-bar {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 36px;
-  flex-wrap: wrap;
-  padding: 16px 20px;
-  background: rgba(10, 10, 20, 0.96);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: var(--radius-md);
+display: flex;
+align-items: center;
+gap: 16px;
+margin-bottom: 36px;
+flex-wrap: wrap;
+padding: 16px 20px;
+background: rgba(10, 10, 20, 0.96);
+border: 1px solid rgba(255,255,255,0.1);
+border-radius: var(--radius-md);
 }
-
 .filter-group {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+display: flex;
+align-items: center;
+gap: 10px;
 }
-
 .filter-group label {
-  font-size: var(--size-tiny);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--text-secondary);
-  white-space: nowrap;
+font-size: var(--size-tiny);
+font-weight: 600;
+text-transform: uppercase;
+letter-spacing: 0.06em;
+color: var(--text-secondary);
+white-space: nowrap;
 }
-
 .filter-search {
-  flex: 1;
-  min-width: 200px;
-  position: relative;
+flex: 1;
+min-width: 200px;
+position: relative;
 }
-
 .filter-search input {
-  width: 100%;
-  padding: 9px 14px 9px 36px;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-full);
-  color: var(--text-primary);
-  font-size: var(--size-small);
-  font-family: var(--font-main);
-  outline: none;
-  transition: var(--transition);
+width: 100%;
+padding: 9px 14px 9px 36px;
+background: var(--bg-secondary);
+border: 1px solid var(--border-color);
+border-radius: var(--radius-full);
+color: var(--text-primary);
+font-size: var(--size-small);
+font-family: var(--font-main);
+outline: none;
+transition: var(--transition);
 }
-
 .filter-search input:focus {
-  border-color: var(--accent-teal);
+border-color: var(--accent-teal);
 }
-
 .filter-search::before {
-  content: '🔍';
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 0.7rem;
-  pointer-events: none;
+content: '🔍';
+position: absolute;
+left: 12px;
+top: 50%;
+transform: translateY(-50%);
+font-size: 0.7rem;
+pointer-events: none;
 }
-
 .filter-select {
-  padding: 9px 30px 9px 14px;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  color: var(--text-primary);
-  font-size: var(--size-small);
-  font-family: var(--font-main);
-  cursor: pointer;
-  outline: none;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23A0A0B0' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-  transition: var(--transition);
+padding: 9px 30px 9px 14px;
+background: var(--bg-secondary);
+border: 1px solid var(--border-color);
+border-radius: var(--radius-md);
+color: var(--text-primary);
+font-size: var(--size-small);
+font-family: var(--font-main);
+cursor: pointer;
+outline: none;
+appearance: none;
+background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23A0A0B0' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+background-repeat: no-repeat;
+background-position: right 10px center;
+transition: var(--transition);
 }
-
 .filter-select:focus {
-  border-color: var(--accent-teal);
+border-color: var(--accent-teal);
 }
-
 .results-count {
-  font-size: var(--size-small);
-  color: var(--text-secondary);
-  margin-left: auto;
-  white-space: nowrap;
+font-size: var(--size-small);
+color: var(--text-secondary);
+margin-left: auto;
+white-space: nowrap;
 }
-
-/* ---------------------------------------------------------------
-   ARTICLE GRID
---------------------------------------------------------------- */
 .articles-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  margin-bottom: 48px;
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 24px;
+margin-bottom: 48px;
 }
-
-/* ---------------------------------------------------------------
-   LOAD MORE
---------------------------------------------------------------- */
 .load-more-wrap {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 48px;
+display: flex;
+justify-content: center;
+margin-bottom: 48px;
 }
-
 #load-more-btn {
-  display: none;
-  align-items: center;
-  gap: 10px;
-  padding: 14px 40px;
-  background: rgba(10, 10, 22, 0.96);
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: var(--radius-full);
-  color: var(--text-secondary);
-  font-size: var(--size-small);
-  font-weight: 500;
-  cursor: pointer;
-  transition: var(--transition);
+display: none;
+align-items: center;
+gap: 10px;
+padding: 14px 40px;
+background: rgba(10, 10, 22, 0.96);
+border: 1px solid rgba(255,255,255,0.12);
+border-radius: var(--radius-full);
+color: var(--text-secondary);
+font-size: var(--size-small);
+font-weight: 500;
+cursor: pointer;
+transition: var(--transition);
 }
-
 #load-more-btn:hover {
-  border-color: var(--accent-teal);
-  color: var(--accent-teal);
+border-color: var(--accent-teal);
+color: var(--accent-teal);
 }
-
-/* ---------------------------------------------------------------
-   CATEGORY AFFILIATE STRIP
---------------------------------------------------------------- */
 .category-affiliate {
-  margin: 32px 0 48px;
-  padding: 24px 28px;
-  background: rgba(10, 10, 22, 0.96);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: var(--radius-lg);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  flex-wrap: wrap;
+margin: 32px 0 48px;
+padding: 24px 28px;
+background: rgba(10, 10, 22, 0.96);
+border: 1px solid rgba(255,255,255,0.1);
+border-radius: var(--radius-lg);
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 20px;
+flex-wrap: wrap;
 }
-
 .category-affiliate p {
-  font-size: var(--size-small);
-  color: var(--text-secondary);
-  margin: 0;
+font-size: var(--size-small);
+color: var(--text-secondary);
+margin: 0;
 }
-
-/* ---------------------------------------------------------------
-   CATEGORY ACCENT COLORS
---------------------------------------------------------------- */
 [data-category="market"]     .category-accent { color: #6B8EF0; }
 [data-category="mortgage"]   .category-accent { color: var(--accent-teal); }
 [data-category="economic"]   .category-accent { color: #F59E0B; }
 [data-category="investment"] .category-accent { color: #10B981; }
 [data-category="industry"]   .category-accent { color: #8B5CF6; }
 [data-category="regional"]   .category-accent { color: #EF4444; }
-
-/* ---------------------------------------------------------------
-   RESPONSIVE — 1024px
---------------------------------------------------------------- */
 @media (max-width: 1024px) {
-  .articles-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+.articles-grid {
+grid-template-columns: repeat(2, 1fr);
 }
-
-/* ---------------------------------------------------------------
-   RESPONSIVE — 768px
---------------------------------------------------------------- */
+}
 @media (max-width: 768px) {
-  .articles-grid {
-    grid-template-columns: 1fr;
-  }
-
-  /* Center the category hero on mobile */
-  .category-hero {
-    text-align: center;
-  }
-
-  .category-hero-inner {
-    max-width: 100%;
-  }
-
-  .category-eyebrow {
-    justify-content: center;
-  }
-
-  .category-meta {
-    justify-content: center;
-  }
-
-  .filter-bar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .filter-search {
-    min-width: unset;
-  }
-
-  .results-count {
-    margin-left: 0;
-  }
-
-  .category-affiliate {
-    flex-direction: column;
-    text-align: center;
-  }
+.articles-grid {
+grid-template-columns: 1fr;
+}
+.category-hero {
+text-align: center;
+}
+.category-hero-inner {
+max-width: 100%;
+}
+.category-eyebrow {
+justify-content: center;
+}
+.category-meta {
+justify-content: center;
+}
+.filter-bar {
+flex-direction: column;
+align-items: stretch;
+}
+.filter-search {
+min-width: unset;
+}
+.results-count {
+margin-left: 0;
+}
+.category-affiliate {
+flex-direction: column;
+text-align: center;
+}
 }

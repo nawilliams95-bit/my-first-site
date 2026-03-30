@@ -1,162 +1,127 @@
-/* ============================================================
-   RealtyDataLabs — Footer Styles
-   ============================================================ */
-
-/* ----- Site Footer ----- */
 .site-footer {
-  background: var(--bg-primary);
-  border-top: 1px solid var(--border-color);
-  padding-top: 56px;
+background: var(--bg-primary);
+border-top: 1px solid var(--border-color);
+padding-top: 56px;
 }
-
-/* ----- Footer Grid ----- */
 .footer-grid {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: 48px;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 24px;
+display: grid;
+grid-template-columns: 2fr 1fr 1fr 1fr;
+gap: 48px;
+max-width: 1280px;
+margin: 0 auto;
+padding: 0 24px;
 }
-
 .footer-col h4 {
-  font-size: var(--size-small);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--text-secondary);
-  margin-bottom: 16px;
+font-size: var(--size-small);
+font-weight: 700;
+text-transform: uppercase;
+letter-spacing: 0.08em;
+color: var(--text-secondary);
+margin-bottom: 16px;
 }
-
-/* ----- Footer Logo ----- */
 .footer-logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
-  text-decoration: none;
+display: flex;
+align-items: center;
+gap: 10px;
+margin-bottom: 12px;
+text-decoration: none;
 }
-
 .footer-logo img {
-  height: 32px;
-  width: auto;
+height: 32px;
+width: auto;
 }
-
 .footer-logo .wordmark {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: var(--text-primary);
+font-size: 1.05rem;
+font-weight: 700;
+color: var(--text-primary);
 }
-
 .footer-logo .wordmark span {
-  color: var(--accent-teal);
+color: var(--accent-teal);
 }
-
-/* ----- Footer Text ----- */
 .footer-tagline {
-  font-size: var(--size-small);
-  color: var(--text-secondary);
-  line-height: 1.6;
-  margin-bottom: 12px;
+font-size: var(--size-small);
+color: var(--text-secondary);
+line-height: 1.6;
+margin-bottom: 12px;
 }
-
 .footer-disclosure {
-  font-size: var(--size-tiny);
-  color: rgba(160, 160, 176, 0.6);
-  line-height: 1.5;
+font-size: var(--size-tiny);
+color: rgba(160, 160, 176, 0.6);
+line-height: 1.5;
 }
-
-/* ----- Footer Nav List ----- */
 .footer-nav-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+display: flex;
+flex-direction: column;
+gap: 10px;
 }
-
 .footer-nav-list a {
-  font-size: var(--size-small);
-  color: var(--text-secondary);
-  text-decoration: none;
-  transition: var(--transition);
+font-size: var(--size-small);
+color: var(--text-secondary);
+text-decoration: none;
+transition: var(--transition);
 }
-
 .footer-nav-list a:hover {
-  color: var(--accent-teal);
+color: var(--accent-teal);
 }
-
-/* ----- Footer Social ----- */
 .footer-social {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+display: flex;
+flex-direction: column;
+gap: 12px;
 }
-
 .footer-social-link {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: var(--size-small);
-  color: var(--text-secondary);
-  text-decoration: none;
-  transition: var(--transition);
+display: flex;
+align-items: center;
+gap: 10px;
+font-size: var(--size-small);
+color: var(--text-secondary);
+text-decoration: none;
+transition: var(--transition);
 }
-
 .footer-social-link:hover {
-  color: var(--accent-teal);
+color: var(--accent-teal);
 }
-
 .footer-social-link svg {
-  width: 18px;
-  height: 18px;
-  fill: currentColor;
-  flex-shrink: 0;
+width: 18px;
+height: 18px;
+fill: currentColor;
+flex-shrink: 0;
 }
-
-/* ----- Footer Bottom Bar ----- */
 .footer-bottom {
-  border-top: 1px solid var(--border-color);
-  margin-top: 48px;
-  padding: 20px 24px;
-  max-width: 1280px;
-  margin-left: auto;
-  margin-right: auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
+border-top: 1px solid var(--border-color);
+margin-top: 48px;
+padding: 20px 24px;
+max-width: 1280px;
+margin-left: auto;
+margin-right: auto;
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 16px;
+flex-wrap: wrap;
 }
-
 .footer-bottom p {
-  font-size: var(--size-tiny);
-  color: rgba(160, 160, 176, 0.5);
-  margin: 0;
+font-size: var(--size-tiny);
+color: rgba(160, 160, 176, 0.5);
+margin: 0;
 }
-
-/* ----- Responsive: 768px ----- */
 @media (max-width: 768px) {
-  .footer-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 32px;
-  }
-
-  .footer-col:first-child {
-    grid-column: span 2;
-  }
+.footer-grid {
+grid-template-columns: 1fr 1fr;
+gap: 32px;
 }
-
-/* ----- Responsive: 480px ----- */
+.footer-col:first-child {
+grid-column: span 2;
+}
+}
 @media (max-width: 480px) {
-  .footer-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .footer-col:first-child {
-    grid-column: span 1;
-  }
-
-  .footer-bottom {
-    flex-direction: column;
-    text-align: center;
-  }
+.footer-grid {
+grid-template-columns: 1fr;
+}
+.footer-col:first-child {
+grid-column: span 1;
+}
+.footer-bottom {
+flex-direction: column;
+text-align: center;
+}
 }

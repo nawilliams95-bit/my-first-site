@@ -2,6 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <!-- Performance: resource hints -->
+  <link rel="preconnect" href="https://assets.mailerlite.com">
+  <link rel="preconnect" href="https://api.web3forms.com">
+  <link rel="preconnect" href="https://api.stlouisfed.org">
+  <link rel="preconnect" href="https://pagead2.googlesyndication.com">
+  <link rel="preconnect" href="https://groot.mailerlite.com">
+  <link rel="dns-prefetch" href="https://assets.mailerlite.com">
+  <link rel="dns-prefetch" href="https://api.stlouisfed.org">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Thank You — RealtyDataLabs</title>
   <meta name="description" content="Thank you for reaching out to RealtyDataLabs. We'll be in touch shortly.">
@@ -69,6 +77,21 @@
       margin-bottom: 32px;
     }
   </style>
+  <link rel="prefetch" href="/index.html">
+  <link rel="prefetch" href="/market-data.html">
+  <link rel="prefetch" href="/rates-market-data.html">
+  <link rel="prefetch" href="/investment-rental.html">
+  <link rel="prefetch" href="/media-insights.html">
+  <link rel="prefetch" href="/contact.html">
+  <link rel="prefetch" href="/about.html">
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js')
+          .catch(function(err) { console.log('SW registration failed:', err); });
+      });
+    }
+  </script>
 </head>
 <body>
 

@@ -8,6 +8,11 @@
   <link rel="preconnect" href="https://api.allorigins.win" crossorigin>
   <link rel="preconnect" href="https://api.web3forms.com" crossorigin>
   <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com">
+  <link rel="preconnect" href="https://assets.mailerlite.com">
+  <link rel="preconnect" href="https://pagead2.googlesyndication.com">
+  <link rel="preconnect" href="https://groot.mailerlite.com">
+  <link rel="dns-prefetch" href="https://assets.mailerlite.com">
+  <link rel="dns-prefetch" href="https://api.stlouisfed.org">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RealtyDataLabs — Free Real Estate Market Intelligence</title>
   <meta name="description" content="Free real estate market intelligence for buyers, sellers, and investors. Live mortgage rates, housing news, and investment data — always free, no signup required.">
@@ -121,6 +126,20 @@
     .home-form-side>p{color:var(--text-secondary,#aaa);
       font-size:.9rem;margin-bottom:24px;line-height:1.6}
   </style>
+  <link rel="prefetch" href="/market-data.html">
+  <link rel="prefetch" href="/rates-market-data.html">
+  <link rel="prefetch" href="/investment-rental.html">
+  <link rel="prefetch" href="/media-insights.html">
+  <link rel="prefetch" href="/contact.html">
+  <link rel="prefetch" href="/about.html">
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js')
+          .catch(function(err) { console.log('SW registration failed:', err); });
+      });
+    }
+  </script>
 </head>
 <body>
 
@@ -460,7 +479,7 @@
           try{src=new URL(feedUrl).hostname.replace('www.','');}catch(e){}
           return`<a href="${link}" target="_blank" rel="noopener" class="preview-card">
             ${img
-              ?`<img src="${img}" class="preview-card-img" loading="lazy" alt=""
+              ?`<img src="${img}" class="preview-card-img" loading="lazy" decoding="async" alt=""
                      onerror="this.parentElement.classList.add('no-img');this.style.display='none'">`
               :`<div class="preview-card-img-placeholder">
                   <span style="font-size:.65rem;font-weight:700;text-transform:uppercase;
