@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rdl-cache-v1';
+const CACHE_NAME = 'rdl-cache-v2';
 const PRECACHE_URLS = [
   '/',
   '/index.html',
@@ -33,12 +33,18 @@ const PRECACHE_URLS = [
 ];
 
 self.addEventListener('install', function(event) {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then(function(cache) {
-      return cache.addAll(PRECACHE_URLS);
+      return Promise.allSettled(
+        PRECACHE_URLS.map(function(url) {
+          return cache.add(url).catch(function(err) {
+            console.warn('[SW] Failed to cache:', url, err);
+          });
+        })
+      );
     })
   );
-  self.skipWaiting();
 });
 
 self.addEventListener('activate', function(event) {
@@ -51,28 +57,53 @@ self.addEventListener('activate', function(event) {
           return caches.delete(name);
         })
       );
+    }).then(function() {
+      return self.clients.claim();
     })
   );
-  self.clients.claim();
 });
 
 self.addEventListener('fetch', function(event) {
+  var url = new URL(event.request.url);
+
+  // Only handle same-origin requests
+  if (url.origin !== self.location.origin) return;
+
+  // Navigation requests: network first, cache fallback
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request).then(function(response) {
+        if (response && response.ok) {
+          var clone = response.clone();
+          caches.open(CACHE_NAME).then(function(cache) {
+            cache.put(event.request, clone);
+          });
+        }
+        return response;
+      }).catch(function() {
+        return caches.match(event.request).then(function(cached) {
+          return cached || caches.match('/index.html');
+        });
+      })
+    );
+    return;
+  }
+
+  // Assets (CSS, JS, images): cache first, network fallback
   event.respondWith(
     caches.match(event.request).then(function(cached) {
       if (cached) return cached;
       return fetch(event.request).then(function(response) {
-        if (!response || response.status !== 200 || response.type === 'opaque') {
+        if (!response || !response.ok || response.type === 'opaque') {
           return response;
         }
-        var responseClone = response.clone();
+        var clone = response.clone();
         caches.open(CACHE_NAME).then(function(cache) {
-          cache.put(event.request, responseClone);
+          cache.put(event.request, clone);
         });
         return response;
       }).catch(function() {
-        if (event.request.mode === 'navigate') {
-          return caches.match('/index.html');
-        }
+        return new Response('', { status: 503, statusText: 'Offline' });
       });
     })
   );
