@@ -1,11 +1,11 @@
 const CATEGORY_CONFIG = {
-market:     { label: 'Market Data',      badgeClass: 'badge-market',     fallback: 'images/fallback-market.svg',     emoji: '📊' },
-mortgage:   { label: 'Mortgage & Rates', badgeClass: 'badge-mortgage',   fallback: 'images/fallback-mortgage.svg',   emoji: '🏠' },
-economic:   { label: 'Economic News',    badgeClass: 'badge-economic',   fallback: 'images/fallback-economic.svg',   emoji: '📈' },
-investment: { label: 'Investment & Rental', badgeClass: 'badge-investment', fallback: 'images/fallback-investment.svg', emoji: '💼' },
-industry:   { label: 'Industry News',    badgeClass: 'badge-industry',   fallback: 'images/fallback-industry.svg',   emoji: '🏢' },
-regional:   { label: 'Regional Data',    badgeClass: 'badge-regional',   fallback: 'images/fallback-regional.svg',   emoji: '🗺️' },
-media:      { label: 'Media & Insights', badgeClass: 'badge-industry',   fallback: 'images/fallback-industry.svg',   emoji: '📰' }
+market:     { label: 'Market Data',      badgeClass: 'badge-market',     fallback: '/images/fallback-market.svg',     emoji: '📊' },
+mortgage:   { label: 'Mortgage & Rates', badgeClass: 'badge-mortgage',   fallback: '/images/fallback-mortgage.svg',   emoji: '🏠' },
+economic:   { label: 'Economic News',    badgeClass: 'badge-economic',   fallback: '/images/fallback-economic.svg',   emoji: '📈' },
+investment: { label: 'Investment & Rental', badgeClass: 'badge-investment', fallback: '/images/fallback-investment.svg', emoji: '💼' },
+industry:   { label: 'Industry News',    badgeClass: 'badge-industry',   fallback: '/images/fallback-industry.svg',   emoji: '🏢' },
+regional:   { label: 'Regional Data',    badgeClass: 'badge-regional',   fallback: '/images/fallback-regional.svg',   emoji: '🗺️' },
+media:      { label: 'Media & Insights', badgeClass: 'badge-industry',   fallback: '/images/fallback-industry.svg',   emoji: '📰' }
 };
 function formatRelativeTime(pubDate) {
 if (!pubDate) return '';

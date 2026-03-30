@@ -164,7 +164,7 @@ headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
 body:    JSON.stringify(Object.fromEntries(new FormData(leadForm)))
 });
 if (response.ok) {
-window.location.href = 'thank-you.html';
+window.location.href = '/thank-you';
 } else {
 throw new Error('Server error');
 }

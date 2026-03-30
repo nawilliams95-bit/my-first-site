@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v22';
+const CACHE_VERSION = 'v23';
 const CACHE_TTL = 2 * 60 * 60 * 1000; // 2 hours client-side
 const WORKER = 'https://rss-proxy.nawilliams95.workers.dev/?url=';
 (function() {
