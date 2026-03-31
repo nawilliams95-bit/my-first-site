@@ -345,6 +345,26 @@ color: var(--text-secondary, #888);
 .article-card.no-image .card-image-wrap {
 display: none;
 }
+.card-img-source {
+position: absolute;
+bottom: 8px;
+left: 8px;
+background: rgba(0, 0, 0, 0.62);
+backdrop-filter: blur(4px);
+-webkit-backdrop-filter: blur(4px);
+color: rgba(255, 255, 255, 0.9);
+font-size: 0.62rem;
+font-weight: 700;
+text-transform: uppercase;
+letter-spacing: 0.08em;
+padding: 3px 7px;
+border-radius: 4px;
+pointer-events: none;
+white-space: nowrap;
+max-width: calc(100% - 16px);
+overflow: hidden;
+text-overflow: ellipsis;
+}
 @media (max-width: 768px) {
 .article-card.card-featured {
 grid-template-columns: 1fr;

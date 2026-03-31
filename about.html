@@ -55,23 +55,17 @@
     .about-content ul li { color: var(--text-secondary); font-size: var(--size-body); padding: 8px 0 8px 24px; position: relative; border-bottom: 1px solid rgba(42,42,58,0.5); }
     .about-content ul li::before { content: '→'; position: absolute; left: 0; color: var(--accent-teal); font-weight: 700; }
     .about-content ul li:last-child { border-bottom: none; }
-    .sources-stack { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 32px; }
-    .source-card { background: rgba(10,10,22,0.95); border: 1px solid rgba(255,255,255,0.08); border-top-width: 3px; border-radius: var(--radius-md); padding: 18px 16px; display: flex; flex-direction: column; gap: 12px; }
-    .source-card.market     { border-top-color: #6B8EF0; }
-    .source-card.rates      { border-top-color: var(--accent-teal); }
-    .source-card.investment { border-top-color: #10B981; }
-    .source-card-label { font-size: var(--size-small); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
-    .source-card.market     .source-card-label { color: #6B8EF0; }
-    .source-card.rates      .source-card-label { color: var(--accent-teal); }
-    .source-card.investment .source-card-label { color: #10B981; }
-    .source-card-items { display: flex; flex-wrap: wrap; gap: 6px; }
-    .source-chip { font-size: 0.75rem; color: var(--text-secondary); background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-sm); padding: 4px 8px; }
-    @media (max-width: 900px) {
-      .sources-stack { grid-template-columns: repeat(2, 1fr); }
-    }
-    @media (max-width: 540px) {
-      .sources-stack { grid-template-columns: 1fr; }
-    }
+    .source-group { margin-bottom: 28px; }
+    .source-group-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-secondary); margin-bottom: 10px; }
+    .source-favicon-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .source-favicon-card { background: rgba(10,10,22,0.8); border: 1px solid rgba(255,255,255,0.07); border-radius: var(--radius-md); padding: 12px 10px; display: flex; align-items: center; gap: 10px; transition: border-color 0.2s; }
+    .source-favicon-card:hover { border-color: rgba(0,212,170,0.35); }
+    .source-favicon { width: 28px; height: 28px; border-radius: 4px; flex-shrink: 0; }
+    .source-favicon-info { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+    .source-favicon-name { font-size: 0.78rem; font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .source-favicon-domain { font-size: 0.66rem; color: var(--text-secondary); opacity: 0.65; }
+    @media (max-width: 900px) { .source-favicon-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 540px) { .source-favicon-grid { grid-template-columns: repeat(2, 1fr); } }
 .free-commitment { background: linear-gradient(135deg, rgba(45,91,227,0.1) 0%, rgba(0,212,170,0.1) 100%); border: 1px solid rgba(0,212,170,0.2); border-radius: var(--radius-lg); padding: 32px; text-align: center; margin-bottom: 48px; }
     .free-commitment h3 { font-size: var(--size-h3); margin-bottom: 10px; }
     .free-commitment p { font-size: var(--size-small); color: var(--text-secondary); margin: 0; }
@@ -147,15 +141,15 @@
   <div class="about-content">
 
     <h2>Our Mission</h2>
-    <p>RealtyDataLabs is an independent real estate intelligence platform built to give everyday people access to the same data that industry professionals use every day. Our mission is simple: aggregate the most important housing market news, mortgage rate data, real estate investment intelligence, and media into one clean, fast, and free platform — covering Real Estate News, Rates &amp; Market Data, Investment &amp; Rental, and Media &amp; Insights.</p>
+    <p>RealtyDataLabs is an independent real estate intelligence platform built to give everyday people access to the same data that industry professionals use every day. Our mission is simple: aggregate the most important housing market news, mortgage rate data, and real estate investment intelligence into one clean, fast, and free platform — covering Real Estate News, Rates &amp; Market Data, and Investment &amp; Rental.</p>
     <p>We believe that objective data should be accessible to everyone &mdash; not just those who can afford expensive subscriptions or have insider connections. Whether you are a first-time buyer trying to understand if now is the right time to purchase, a seasoned investor analyzing cap rates, or an agent tracking national trends, RealtyDataLabs is built for you.</p>
 
     <h2>What We Provide</h2>
     <ul>
-      <li><strong>Real Estate News</strong> &mdash; Breaking housing market news, home price trends, inventory data, and market analysis aggregated from Redfin, Zillow, and Realtor.com.</li>
-      <li><strong>Rates &amp; Market Data</strong> &mdash; Live 30-year and 15-year fixed mortgage rate data sourced from Freddie Mac via the Federal Reserve FRED API, plus CFPB and RISMedia updates.</li>
-      <li><strong>Investment &amp; Rental</strong> &mdash; Free investing guides, rental market data, and real estate investment strategies from FortuneBuilders, REtipster, and Keeping Current Matters.</li>
-      <li><strong>Contact a Licensed Agent</strong> &mdash; Connect directly with Nick Williams, a licensed Georgia REALTOR&reg; affiliated with KW Elevate, for buying, selling, or investing in North Georgia real estate.</li>
+      <li><strong>Real Estate News</strong> &mdash; Breaking housing market news, home price trends, inventory data, and market analysis aggregated from Realtor.com, HousingWire, Redfin, Realty Times, Keeping Current Matters, World Property Journal, The Mortgage Reports, and National Mortgage Professional.</li>
+      <li><strong>Rates &amp; Market Data</strong> &mdash; Live 30-year and 15-year fixed mortgage rate data sourced directly from the Federal Reserve FRED API, updated automatically every week.</li>
+      <li><strong>Investment &amp; Rental</strong> &mdash; Real estate investment strategies, rental market data, cap rate analysis, and multifamily trends from BiggerPockets, Norada Real Estate, REtipster, Mashvisor, Bisnow, Connect CRE, Commercial Property Executive, and Nareit.</li>
+      <li><strong>Find an Agent</strong> &mdash; Connect with a licensed real estate expert for your market. Serving buyers, sellers, and investors directly or via referral nationwide.</li>
       <li><strong>Free Access, Always</strong> &mdash; No paywalls, no subscriptions, no accounts required.</li>
     </ul>
 
@@ -172,38 +166,92 @@
     <h2>Data Sources</h2>
     <p>RealtyDataLabs aggregates headlines, summaries, and links from publicly available RSS feeds, and displays live economic data from government and institutional APIs. All original content remains the property of the respective publishers. We link directly to every source article &mdash; we never reproduce full articles without permission.</p>
 
-    <div class="sources-stack">
-      <div class="source-card market">
-        <div class="source-card-label">Real Estate News</div>
-        <div class="source-card-items">
-          <span class="source-chip">Redfin (redfin.com)</span>
-          <span class="source-chip">HousingWire (housingwire.com)</span>
-          <span class="source-chip">RISMedia (rismedia.com)</span>
-          <span class="source-chip">Keeping Current Matters (keepingcurrentmatters.com)</span>
-          <span class="source-chip">Eye on Housing &mdash; NAHB (eyeonhousing.org)</span>
-          <span class="source-chip">Calculated Risk (calculatedriskblog.com)</span>
+    <div class="source-group">
+      <div class="source-group-label">Real Estate News</div>
+      <div class="source-favicon-grid">
+        <div class="source-favicon-card">
+          <img class="source-favicon" src="https://www.google.com/s2/favicons?domain=realtor.com&sz=64" alt="" loading="lazy">
+          <div class="source-favicon-info"><span class="source-favicon-name">Realtor.com</span><span class="source-favicon-domain">realtor.com</span></div>
+        </div>
+        <div class="source-favicon-card">
+          <img class="source-favicon" src="https://www.google.com/s2/favicons?domain=housingwire.com&sz=64" alt="" loading="lazy">
+          <div class="source-favicon-info"><span class="source-favicon-name">HousingWire</span><span class="source-favicon-domain">housingwire.com</span></div>
+        </div>
+        <div class="source-favicon-card">
+          <img class="source-favicon" src="https://www.google.com/s2/favicons?domain=redfin.com&sz=64" alt="" loading="lazy">
+          <div class="source-favicon-info"><span class="source-favicon-name">Redfin</span><span class="source-favicon-domain">redfin.com</span></div>
+        </div>
+        <div class="source-favicon-card">
+          <img class="source-favicon" src="https://www.google.com/s2/favicons?domain=realtytimes.com&sz=64" alt="" loading="lazy">
+          <div class="source-favicon-info"><span class="source-favicon-name">Realty Times</span><span class="source-favicon-domain">realtytimes.com</span></div>
+        </div>
+        <div class="source-favicon-card">
+          <img class="source-favicon" src="https://www.google.com/s2/favicons?domain=keepingcurrentmatters.com&sz=64" alt="" loading="lazy">
+          <div class="source-favicon-info"><span class="source-favicon-name">Keeping Current Matters</span><span class="source-favicon-domain">keepingcurrentmatters.com</span></div>
+        </div>
+        <div class="source-favicon-card">
+          <img class="source-favicon" src="https://www.google.com/s2/favicons?domain=worldpropertyjournal.com&sz=64" alt="" loading="lazy">
+          <div class="source-favicon-info"><span class="source-favicon-name">World Property Journal</span><span class="source-favicon-domain">worldpropertyjournal.com</span></div>
+        </div>
+        <div class="source-favicon-card">
+          <img class="source-favicon" src="https://www.google.com/s2/favicons?domain=themortgagereports.com&sz=64" alt="" loading="lazy">
+          <div class="source-favicon-info"><span class="source-favicon-name">The Mortgage Reports</span><span class="source-favicon-domain">themortgagereports.com</span></div>
+        </div>
+        <div class="source-favicon-card">
+          <img class="source-favicon" src="https://www.google.com/s2/favicons?domain=nationalmortgageprofessional.com&sz=64" alt="" loading="lazy">
+          <div class="source-favicon-info"><span class="source-favicon-name">National Mortgage Professional</span><span class="source-favicon-domain">nationalmortgageprofessional.com</span></div>
         </div>
       </div>
-      <div class="source-card rates">
-        <div class="source-card-label">Rates &amp; Economic Data</div>
-        <div class="source-card-items">
-          <span class="source-chip">Federal Reserve &mdash; FRED API (stlouisfed.org)</span>
-          <span class="source-chip">Freddie Mac PMMS (30yr &amp; 15yr fixed)</span>
-          <span class="source-chip">Fed H.15 Release (10-yr Treasury)</span>
-          <span class="source-chip">FOMC (Fed Funds Rate)</span>
-          <span class="source-chip">U.S. Census Bureau &amp; HUD (home prices, supply)</span>
-          <span class="source-chip">BLS (Consumer Price Index)</span>
+    </div>
+
+    <div class="source-group">
+      <div class="source-group-label">Rates &amp; Economic Data</div>
+      <div class="source-favicon-grid">
+        <div class="source-favicon-card">
+          <img class="source-favicon" src="https://www.google.com/s2/favicons?domain=stlouisfed.org&sz=64" alt="" loading="lazy">
+          <div class="source-favicon-info"><span class="source-favicon-name">Federal Reserve FRED API</span><span class="source-favicon-domain">stlouisfed.org</span></div>
+        </div>
+        <div class="source-favicon-card">
+          <img class="source-favicon" src="https://www.google.com/s2/favicons?domain=freddiemac.com&sz=64" alt="" loading="lazy">
+          <div class="source-favicon-info"><span class="source-favicon-name">Freddie Mac PMMS</span><span class="source-favicon-domain">freddiemac.com</span></div>
         </div>
       </div>
-      <div class="source-card investment">
-        <div class="source-card-label">Investment &amp; Rental</div>
-        <div class="source-card-items">
-          <span class="source-chip">FortuneBuilders (fortunebuilders.com)</span>
-          <span class="source-chip">REtipster (retipster.com)</span>
-          <span class="source-chip">BiggerPockets (biggerpockets.com)</span>
-          <span class="source-chip">Multifamily Dive (multifamilydive.com)</span>
-          <span class="source-chip">RISMedia (rismedia.com)</span>
-          <span class="source-chip">Keeping Current Matters (keepingcurrentmatters.com)</span>
+    </div>
+
+    <div class="source-group">
+      <div class="source-group-label">Investment &amp; Rental</div>
+      <div class="source-favicon-grid">
+        <div class="source-favicon-card">
+          <img class="source-favicon" src="https://www.google.com/s2/favicons?domain=biggerpockets.com&sz=64" alt="" loading="lazy">
+          <div class="source-favicon-info"><span class="source-favicon-name">BiggerPockets</span><span class="source-favicon-domain">biggerpockets.com</span></div>
+        </div>
+        <div class="source-favicon-card">
+          <img class="source-favicon" src="https://www.google.com/s2/favicons?domain=noradarealestate.com&sz=64" alt="" loading="lazy">
+          <div class="source-favicon-info"><span class="source-favicon-name">Norada Real Estate</span><span class="source-favicon-domain">noradarealestate.com</span></div>
+        </div>
+        <div class="source-favicon-card">
+          <img class="source-favicon" src="https://www.google.com/s2/favicons?domain=retipster.com&sz=64" alt="" loading="lazy">
+          <div class="source-favicon-info"><span class="source-favicon-name">REtipster</span><span class="source-favicon-domain">retipster.com</span></div>
+        </div>
+        <div class="source-favicon-card">
+          <img class="source-favicon" src="https://www.google.com/s2/favicons?domain=mashvisor.com&sz=64" alt="" loading="lazy">
+          <div class="source-favicon-info"><span class="source-favicon-name">Mashvisor</span><span class="source-favicon-domain">mashvisor.com</span></div>
+        </div>
+        <div class="source-favicon-card">
+          <img class="source-favicon" src="https://www.google.com/s2/favicons?domain=bisnow.com&sz=64" alt="" loading="lazy">
+          <div class="source-favicon-info"><span class="source-favicon-name">Bisnow</span><span class="source-favicon-domain">bisnow.com</span></div>
+        </div>
+        <div class="source-favicon-card">
+          <img class="source-favicon" src="https://www.google.com/s2/favicons?domain=connectcre.com&sz=64" alt="" loading="lazy">
+          <div class="source-favicon-info"><span class="source-favicon-name">Connect CRE</span><span class="source-favicon-domain">connectcre.com</span></div>
+        </div>
+        <div class="source-favicon-card">
+          <img class="source-favicon" src="https://www.google.com/s2/favicons?domain=commercialsearch.com&sz=64" alt="" loading="lazy">
+          <div class="source-favicon-info"><span class="source-favicon-name">Commercial Property Executive</span><span class="source-favicon-domain">commercialsearch.com</span></div>
+        </div>
+        <div class="source-favicon-card">
+          <img class="source-favicon" src="https://www.google.com/s2/favicons?domain=reit.com&sz=64" alt="" loading="lazy">
+          <div class="source-favicon-info"><span class="source-favicon-name">Nareit</span><span class="source-favicon-domain">reit.com</span></div>
         </div>
       </div>
     </div>

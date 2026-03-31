@@ -50,6 +50,10 @@ function buildCard(article, featured = false) {
 const cfg = CATEGORY_CONFIG[article.category] || CATEGORY_CONFIG.market;
 const time = formatRelativeTime(article.pubDate);
 const featuredClass = featured ? ' card-featured' : '';
+const srcEsc = (article.source || '').replace(/"/g,'&quot;');
+const ogAttr = !article.image && article.link
+? ` data-og-url="${article.link.replace(/"/g,'&quot;')}" data-og-source="${srcEsc}"`
+: '';
 const imageHtml = article.image
 ? `<img
 src="${article.image}"
@@ -58,7 +62,7 @@ loading="lazy"
 decoding="async"
 onload="this.classList.add('loaded')"
 onerror="this.closest('.article-card').classList.add('no-image')"
-/>`
+/><span class="card-img-source">${article.source || ''}</span>`
 : `<div class="card-image-placeholder">
 <span class="card-placeholder-source">${article.source || ''}</span>
 <span class="card-placeholder-date">${
@@ -76,7 +80,7 @@ onclick="reportArticle(event,'${article.link.replace(/'/g, "\\'")}','${article.t
 return `
 <a href="${article.link}" target="_blank" rel="noopener noreferrer"
 class="article-card${featuredClass} fade-in" aria-label="${article.title}">
-<div class="card-image-wrap">${imageHtml}</div>
+<div class="card-image-wrap"${ogAttr}>${imageHtml}</div>
 <div class="card-body">
 <div class="card-meta">
 <span class="badge ${cfg.badgeClass}">${cfg.label}</span>
@@ -130,4 +134,39 @@ return;
 }
 container.innerHTML = articles.map((art, i) => buildCard(art, featuredFirst && i === 0)).join('');
 }
+(function initOGLoader() {
+if (typeof IntersectionObserver === 'undefined') return;
+const WORKER = 'https://rss-proxy.nawilliams95.workers.dev/og-image?url=';
+const obs = new IntersectionObserver(entries => {
+entries.forEach(entry => {
+if (!entry.isIntersecting) return;
+const wrap = entry.target;
+const ogUrl = wrap.dataset.ogUrl;
+if (!ogUrl) return;
+obs.unobserve(wrap);
+const ctrl = new AbortController();
+const t = setTimeout(() => ctrl.abort(), 3000);
+fetch(WORKER + encodeURIComponent(ogUrl), { signal: ctrl.signal })
+.then(r => r.ok ? r.json() : null)
+.then(d => {
+clearTimeout(t);
+if (d && d.image) {
+const src = (wrap.dataset.ogSource || '').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+wrap.innerHTML = `<img src="${d.image}" loading="lazy" decoding="async" alt=""
+onload="this.classList.add('loaded')"
+onerror="this.closest('.article-card').classList.add('no-image')"/><span class="card-img-source">${src}</span>`;
+delete wrap.dataset.ogUrl;
+}
+})
+.catch(() => clearTimeout(t));
+});
+}, { rootMargin: '300px 0px' });
+new MutationObserver(mutations => {
+mutations.forEach(m => m.addedNodes.forEach(n => {
+if (n.nodeType !== 1) return;
+if (n.matches && n.matches('.card-image-wrap[data-og-url]')) obs.observe(n);
+n.querySelectorAll && n.querySelectorAll('.card-image-wrap[data-og-url]').forEach(el => obs.observe(el));
+}));
+}).observe(document.documentElement, { childList: true, subtree: true });
+})();
 window.RDLCards = { buildCard, buildSkeletonCard, renderSkeletons, renderCards, reportArticle, CATEGORY_CONFIG };
