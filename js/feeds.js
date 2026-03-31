@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v25';
+const CACHE_VERSION = 'v26';
 const CACHE_TTL = 2 * 60 * 60 * 1000; // 2 hours client-side
 const WORKER = 'https://rss-proxy.nawilliams95.workers.dev/?url=';
 (function() {
@@ -32,8 +32,6 @@ feeds: [
 'https://www.biggerpockets.com/blog/feed',
 'https://www.noradarealestate.com/blog/feed',
 'https://retipster.com/feed',
-'https://www.bisnow.com/rss',
-'https://www.connectcre.com/feed',
 'https://www.commercialsearch.com/news/feed',
 'https://www.reit.com/rss.xml'
 ],
@@ -112,8 +110,7 @@ let host = '';
 try { host = new URL(feedUrl).hostname.replace('www.',''); } catch(e) {}
 let category = 'market';
 if (host.includes('biggerpockets') || host.includes('noradarealestate') ||
-host.includes('retipster') || host.includes('bisnow') ||
-host.includes('connectcre') || host.includes('commercialsearch') ||
+host.includes('retipster') || host.includes('commercialsearch') ||
 host.includes('reit.com'))
 category = 'investment';
 return items.slice(0, 25).map(item => {

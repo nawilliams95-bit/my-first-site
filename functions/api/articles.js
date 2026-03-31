@@ -2,7 +2,7 @@
 // Cloudflare Pages Function — fetches & caches all RSS articles server-side
 // Requires KV namespace bound as ARTICLES_CACHE in Pages project settings
 
-const CACHE_KEY = 'articles_v4';
+const CACHE_KEY = 'articles_v5';
 const CACHE_TTL = 3600; // 1 hour in KV
 
 const WORKER_BASE = 'https://rss-proxy.nawilliams95.workers.dev';
@@ -21,8 +21,6 @@ const INVEST_FEEDS = [
   'https://www.biggerpockets.com/blog/feed',
   'https://www.noradarealestate.com/blog/feed',
   'https://retipster.com/feed',
-  'https://www.bisnow.com/rss',
-  'https://www.connectcre.com/feed',
   'https://www.commercialsearch.com/news/feed',
   'https://www.reit.com/rss.xml',
 ];
