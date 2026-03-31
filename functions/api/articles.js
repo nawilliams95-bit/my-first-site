@@ -2,25 +2,27 @@
 // Cloudflare Pages Function — fetches & caches all RSS articles server-side
 // Requires KV namespace bound as ARTICLES_CACHE in Pages project settings
 
-const CACHE_KEY = 'articles_v2';
+const CACHE_KEY = 'articles_v3';
 const CACHE_TTL = 3600; // 1 hour in KV
 
 const MARKET_FEEDS = [
+  'https://www.realtor.com/news/feed',
+  'https://www.realtor.com/news/trends/feed',
   'https://www.redfin.com/blog/feed',
-  'https://www.housingwire.com/feed/',
-  'https://www.rismedia.com/feed/',
-  'https://keepingcurrentmatters.com/feed',
-  'https://eyeonhousing.org/feed/',
-  'https://calculatedriskblog.com/feeds/posts/default',
+  'https://realtytimes.com/archives?format=feed',
+  'https://www.worldpropertyjournal.com/rss.xml',
+  'https://themortgagereports.com/feed',
+  'https://nationalmortgageprofessional.com/feed',
 ];
 
 const INVEST_FEEDS = [
-  'https://www.fortunebuilders.com/feed/',
-  'https://retipster.com/feed/',
   'https://www.biggerpockets.com/blog/feed',
-  'https://keepingcurrentmatters.com/feed',
-  'https://www.multifamilydive.com/feeds/news/',
-  'https://www.rismedia.com/feed/',
+  'https://www.noradarealestate.com/blog/feed',
+  'https://retipster.com/feed',
+  'https://www.bisnow.com/rss',
+  'https://www.connectcre.com/feed',
+  'https://www.commercialsearch.com/news/feed',
+  'https://www.reit.com/rss.xml',
 ];
 
 const INVEST_KEEP = [
