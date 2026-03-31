@@ -2,12 +2,14 @@
 // Cloudflare Pages Function — fetches & caches all RSS articles server-side
 // Requires KV namespace bound as ARTICLES_CACHE in Pages project settings
 
-const CACHE_KEY = 'articles_v3';
+const CACHE_KEY = 'articles_v4';
 const CACHE_TTL = 3600; // 1 hour in KV
 
+const WORKER_BASE = 'https://rss-proxy.nawilliams95.workers.dev';
+
+const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36';
+
 const MARKET_FEEDS = [
-  'https://www.realtor.com/news/feed',
-  'https://www.realtor.com/news/trends/feed',
   'https://www.redfin.com/blog/feed',
   'https://realtytimes.com/archives?format=feed',
   'https://www.worldpropertyjournal.com/rss.xml',
@@ -23,6 +25,12 @@ const INVEST_FEEDS = [
   'https://www.connectcre.com/feed',
   'https://www.commercialsearch.com/news/feed',
   'https://www.reit.com/rss.xml',
+];
+
+// Worker scraper endpoints — already have their own caching + UA handling
+const SCRAPER_FEEDS = [
+  { url: `${WORKER_BASE}/realtor-news`, category: 'market' },
+  { url: `${WORKER_BASE}/zillow-research`, category: 'market' },
 ];
 
 const INVEST_KEEP = [
@@ -42,12 +50,20 @@ const INVEST_SKIP = [
   'interior design','landscap','best mattress','gift guide',
 ];
 
-// ─── Fetch with timeout ───────────────────────────────────────────────────────
-async function fetchFeed(url) {
+// ─── Fetch with timeout + User-Agent ─────────────────────────────────────────
+async function fetchFeed(url, isWorker = false) {
   const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), 8000);
+  const timer = setTimeout(() => ctrl.abort(), 9000);
   try {
-    const res = await fetch(url, { signal: ctrl.signal });
+    const headers = isWorker
+      ? {}
+      : {
+          'User-Agent': UA,
+          'Accept': 'application/rss+xml, application/xml, text/xml, */*',
+          'Accept-Language': 'en-US,en;q=0.9',
+          'Cache-Control': 'no-cache',
+        };
+    const res = await fetch(url, { signal: ctrl.signal, headers });
     clearTimeout(timer);
     if (!res.ok) return null;
     return await res.text();
@@ -139,15 +155,16 @@ export async function onRequest(context) {
     } catch (e) {}
   }
 
-  // 2. Fetch all feeds concurrently
-  const jobs = [
-    ...MARKET_FEEDS.map(url => ({ url, category: 'market' })),
-    ...INVEST_FEEDS.map(url => ({ url, category: 'investment' })),
+  // 2. Fetch all feeds + scrapers concurrently
+  const rssJobs = [
+    ...MARKET_FEEDS.map(url => ({ url, category: 'market', isWorker: false })),
+    ...INVEST_FEEDS.map(url => ({ url, category: 'investment', isWorker: false })),
+    ...SCRAPER_FEEDS.map(({ url, category }) => ({ url, category, isWorker: true })),
   ];
 
   const results = await Promise.allSettled(
-    jobs.map(async ({ url, category }) => {
-      const text     = await fetchFeed(url);
+    rssJobs.map(async ({ url, category, isWorker }) => {
+      const text     = await fetchFeed(url, isWorker);
       const articles = parseRSS(text, url, category);
       return category === 'investment'
         ? articles.filter(investFilter)
@@ -155,9 +172,16 @@ export async function onRequest(context) {
     })
   );
 
+  // 3. Deduplicate by link
+  const seen = new Set();
   const articles = results
     .filter(r => r.status === 'fulfilled')
     .flatMap(r => r.value)
+    .filter(a => {
+      if (seen.has(a.link)) return false;
+      seen.add(a.link);
+      return true;
+    })
     .sort((a, b) => {
       const da = a.pubDate ? new Date(a.pubDate).getTime() : 0;
       const db = b.pubDate ? new Date(b.pubDate).getTime() : 0;
@@ -166,7 +190,7 @@ export async function onRequest(context) {
 
   const payload = JSON.stringify(articles);
 
-  // 3. Store in KV for next request
+  // 4. Store in KV for next request
   if (env.ARTICLES_CACHE) {
     try {
       await env.ARTICLES_CACHE.put(CACHE_KEY, payload, { expirationTtl: CACHE_TTL });
