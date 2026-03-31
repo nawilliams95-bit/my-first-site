@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v24';
+const CACHE_VERSION = 'v25';
 const CACHE_TTL = 2 * 60 * 60 * 1000; // 2 hours client-side
 const WORKER = 'https://rss-proxy.nawilliams95.workers.dev/?url=';
 (function() {
@@ -16,10 +16,8 @@ marketData: {
 feeds: [
 'https://www.realtor.com/news/feed',
 'https://www.realtor.com/news/trends/feed',
-'https://www.housingwire.com/feed',
 'https://www.redfin.com/blog/feed',
 'https://realtytimes.com/archives?format=feed',
-'https://keepingcurrentmatters.com/feed',
 'https://www.worldpropertyjournal.com/rss.xml',
 'https://themortgagereports.com/feed',
 'https://nationalmortgageprofessional.com/feed'
@@ -34,7 +32,6 @@ feeds: [
 'https://www.biggerpockets.com/blog/feed',
 'https://www.noradarealestate.com/blog/feed',
 'https://retipster.com/feed',
-'https://www.mashvisor.com/blog/feed',
 'https://www.bisnow.com/rss',
 'https://www.connectcre.com/feed',
 'https://www.commercialsearch.com/news/feed',
@@ -115,9 +112,9 @@ let host = '';
 try { host = new URL(feedUrl).hostname.replace('www.',''); } catch(e) {}
 let category = 'market';
 if (host.includes('biggerpockets') || host.includes('noradarealestate') ||
-host.includes('retipster') || host.includes('mashvisor') ||
-host.includes('bisnow') || host.includes('connectcre') ||
-host.includes('commercialsearch') || host.includes('reit.com'))
+host.includes('retipster') || host.includes('bisnow') ||
+host.includes('connectcre') || host.includes('commercialsearch') ||
+host.includes('reit.com'))
 category = 'investment';
 return items.slice(0, 25).map(item => {
 const ns = 'http://search.yahoo.com/mrss/';
