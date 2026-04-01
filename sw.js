@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rdl-cache-v3';
+const CACHE_NAME = 'rdl-cache-v4';
 const PRECACHE_URLS = [
   '/',
   '/about',
@@ -86,6 +86,9 @@ self.addEventListener('fetch', function(event) {
     );
     return;
   }
+
+  // API calls: always network, never cache
+  if (url.pathname.startsWith('/api/')) return;
 
   // Assets (CSS, JS, images): cache first, network fallback
   event.respondWith(
